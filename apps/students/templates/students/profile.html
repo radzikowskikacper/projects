@@ -1,0 +1,41 @@
+{% extends 'students/base.html' %}
+{% block content %}
+    {% include "common/messages.html" %}
+
+    {% include "common/profile.html" %}
+    <h2>Student profile</h2>
+    <div><h4>Team</h4>
+        <ul>
+        {% for member in student.team.team_members %}
+            <li>{{ member.user.username }}, email: <a href="mailto:{{ member.user.email }}">{{ member.user.email }}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div><h4>Project preference </h4>
+        {% with project_preference=student.team.project_preference %}
+            {% if project_preference == None %}
+                <div>You have not picked project</div>
+            {% else %}
+                <div>
+                    <a href="{% url 'students:project' project_preference.pk %}">
+                        {{ project_preference }}</a>
+                    </a>
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+    <div><h4>Status</h4>
+        {% with project_assigned=student.team.project_assigned %}
+            {% if project_assigned == None %}
+                <div>You are not assigned to project</div>
+            {% else %}
+                <div>You are assigned to project:
+                    <a href="{% url 'students:project' project_assigned.pk %}">
+                        {{ project_assigned }}
+                    </a>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+    </div>
+{% endblock %}

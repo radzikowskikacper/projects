@@ -1,0 +1,58 @@
+{% extends 'lecturers/base.html' %}
+
+{% block content %}
+    {% load bootstrap3 %}
+    {% include 'common/project_detail.html' %}
+    {% if project.lecturer == lecturer %}
+    <br>
+    <a href="{% url "lecturers:modify_project" project.pk %}" class="btn btn-primary"> {% bootstrap_icon "edit" %}
+        Edit</a>
+    <br>
+    <br>
+    {% endif %}
+    <h4>Team assigned</h4>
+    <ul>
+        {% for member in project.team_assigned.team_members %}
+            <li>{{ member.user.username }}, email: <a href="mailto:{{ member.user.email }}">{{ member.user.email }}</a>
+            </li>
+            {% empty %}
+            <p> No team is assigned to the project. </p>
+        {% endfor %}
+    </ul>
+
+    {% if project.status == "free" %}
+        <h4>Teams preferring this project</h4>
+        {% for team in project.teams_with_preference %}
+            <h5>Team</h5>
+            <ul>
+                {% for member in team.team_members %}
+                    <li>{{ member.user.username }}, email: <a
+                            href="mailto:{{ member.user.email }}">{{ member.user.email }}</a></li>
+
+                {% endfor %}
+                {% empty %}
+                <ul><p>No team picked the project.</p></ul>
+            </ul>
+
+        {% endfor %}
+
+
+        {% if project.lecturer == lecturer %}
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <form id="assign_form" action="{% url 'lecturers:assign_team' project.pk %}" method="post">
+                {% csrf_token %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        {% bootstrap_icon "pencil" %} Assign teams
+                    </button>
+                {% endbuttons %}
+            </form>
+        {% endif %}
+    {% endif %}
+{% endblock %}

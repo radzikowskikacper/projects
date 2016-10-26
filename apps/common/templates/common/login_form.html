@@ -1,0 +1,21 @@
+{% extends "common/base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+    {% if form.errors %}
+        <p>Your username and password didn't match. Please try again.</p>
+    {% endif %}
+    {% include "common/messages.html" %}
+    <h2>Login</h2>
+    <form method="post" action="{% url 'common:login' %}">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                {% bootstrap_icon "star" %} Login
+            </button>
+
+        {% endbuttons %}
+    </form>
+
+
+{% endblock %}

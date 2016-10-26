@@ -1,0 +1,17 @@
+{% extends "common/base.html" %}
+{% load bootstrap3 %}
+
+{% block content %}
+    {% include "common/messages.html" %}
+    <h2>Register</h2>
+    <form id="registration_form" action="{% url 'common:register' %}" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                {% bootstrap_icon "star" %} Register
+            </button>
+        {% endbuttons %}
+    </form>
+
+{% endblock %}

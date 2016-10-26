@@ -1,0 +1,9 @@
+coverage==4.1
+Django==1.9.5
+django-bootstrap3==7.0.1
+django-coverage==1.2.4
+django-registration==2.0.4
+django-vanilla-views==1.0.4
+django-webtest==1.7.8
+model-mommy==1.2.6
+psycopg2==2.6.1

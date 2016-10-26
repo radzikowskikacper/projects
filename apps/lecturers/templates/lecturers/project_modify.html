@@ -1,0 +1,15 @@
+{% extends "lecturers/base.html" %}
+{% block content %}
+    {% include "common/messages.html" %}
+    <h2>Modify project</h2>
+    {% load bootstrap3 %}
+    <form id="project_modify_form" action="{% url "lecturers:modify_project" project.pk %}" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                {% bootstrap_icon "ok" %} Submit
+            </button>
+        {% endbuttons %}
+    </form>
+{% endblock %}

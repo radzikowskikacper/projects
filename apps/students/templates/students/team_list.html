@@ -1,0 +1,73 @@
+{% extends "students/base.html" %}
+{% block content %}
+    {% load bootstrap3 %}
+    {% include "common/messages.html" %}
+
+
+    <h2>Teams</h2>
+    <form id="join_team_form" action="{% url 'students:join_team' %}" method="post">
+        {% csrf_token %}
+        <table class="table table-striped">
+            <tr>
+                <th>Join</th>
+                <th>Team</th>
+                <th>Assigned project</th>
+                <th>Preferred project</th>
+            </tr>
+            {% for team in teams %}
+                <tr>
+                    <td>
+                        {% if student_team == team %}
+                            {% bootstrap_icon "user" %}
+                        {% elif student_team.is_locked %}
+
+                        {% elif not team.is_full and  not team.is_locked %}
+                            <input type="radio" name="to_join" id="{{ team.pk }}"
+                                   value="{{ team.pk }}"/>
+                        {% endif %}
+                    </td>
+                    <td>{{ team }}</td>
+                    <td>
+                        {% with project_assigned=team.project_assigned %}
+                            {% if project_assigned != None %}
+                                <a href='{% url 'students:project' project_assigned.pk %}'> {{ project_assigned }} </a>
+                            {% else %}
+                                {{ project_assigned }}
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td>
+                        {% with project_preference=team.project_preference %}
+                            {% if project_preference != None %}
+                                <a href='{% url 'students:project' project_preference.pk %}'> {{ project_preference }} </a>
+                            {% else %}
+                                {{ project_preference }}
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                </tr>
+
+            {% endfor %}
+        </table>
+
+        {% if not student_team.is_locked %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    {% bootstrap_icon "ok" %} Join
+                </button>
+            {% endbuttons %}
+        {% endif %}
+    </form>
+    {% if not student_team.is_locked %}
+        <form id="new_team_form" action="{% url 'students:new_team' %}" method="post">
+        {% csrf_token %}
+        {% buttons %}
+            <button class="btn btn-secondary"
+                    type="submit">
+                Leave team
+            </button>
+        {% endbuttons %}
+    {% endif %}
+</form>
+
+{% endblock %}
