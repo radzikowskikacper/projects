@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.views.generic import ListView
 
-from projects_helper.apps.common.models import Project, Student, Team
+from projects_helper.apps.common.models import Project, Student, Team, Course
 from projects_helper.apps.students import is_student
 
 
@@ -70,6 +70,10 @@ class ListProjects(ListView, LoginRequiredMixin, UserPassesTestMixin):
     template_name = "students/project_list.html"
     context_object_name = 'projects'
 
+    def get_queryset(self):
+        qs = super(ListProjects, self).get_queryset()
+        return qs.filter(course=Course.objects.get(name=self.request.session['selectedCourse']))
+
     def get_context_data(self, **kwargs):
         context = super(ListProjects, self).get_context_data(**kwargs)
         student = Student.objects.get(user=self.request.user)
@@ -86,6 +90,10 @@ class ListTeams(ListView, LoginRequiredMixin, UserPassesTestMixin):
         model = Team
         template_name = "students/team_list.html"
         context_object_name = 'teams'
+
+        def get_queryset(self):
+            qs = super(ListTeams, self).get_queryset()
+            return qs.filter(course=Course.objects.get(name=self.request.session['selectedCourse']))
 
         def get_context_data(self, **kwargs):
             context = super(ListTeams, self).get_context_data(**kwargs)

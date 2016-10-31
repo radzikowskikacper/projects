@@ -12,6 +12,7 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Course)
 admin.site.register(Team)
 admin.site.register(Project)
 admin.site.register(Student)

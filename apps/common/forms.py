@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from registration.forms import RegistrationForm
+from django.forms import Form
 from django.forms.fields import *  # NOQA
 
-from projects_helper.apps.common.models import CustomUser
+from projects_helper.apps.common.models import CustomUser, Course
 
 
 class CustomRegistrationForm(RegistrationForm):
@@ -26,3 +27,9 @@ class CustomRegistrationForm(RegistrationForm):
         if commit:
             user.save()
         return user
+
+class CourseSelectorForm(Form):
+    selection = ChoiceField(
+        choices=[(c.name, c.name) for c in Course.objects.all()],
+        label='Select course',
+        )

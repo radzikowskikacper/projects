@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
 
-from projects_helper.apps.common.models import Project, Lecturer
+from projects_helper.apps.common.models import Project, Lecturer, Course
 from projects_helper.apps.lecturers import is_lecturer
 from projects_helper.apps.lecturers.forms import ProjectForm
 
@@ -22,7 +22,8 @@ def profile(request):
 def project_list(request):
     title = request.GET.get('title')
     lecturer = Lecturer.objects.get(user=request.user)
-    projects = Project.objects.filter(lecturer=lecturer)
+    course = Course.objects.get(name=request.session['selectedCourse'])
+    projects = Project.objects.filter(lecturer=lecturer).filter(course=course)
     return render(request,
                   template_name="lecturers/project_list.html",
                   context={"projects": projects,
@@ -33,9 +34,10 @@ def project_list(request):
 def filtered_project_list(request):
     title = request.GET.get('title')
     lecturer = Lecturer.objects.get(user=request.user)
-    filtered_projects = Project.objects.filter(
-        lecturer=lecturer
-    ).filter(
+    course = Course.objects.get(name=request.session['selectedCourse'])
+    projects = Project.objects.filter(lecturer=lecturer).filter(course=course)
+
+    filtered_projects = projects.filter(
         title__contains=title
     )
     return render(request,
@@ -81,6 +83,7 @@ def project_new(request):
         try:
             proj = form.save(commit=False)
             proj.lecturer = Lecturer.objects.get(user=request.user)
+            proj.course = Course.objects.get(name=request.session['selectedCourse'])
             proj.save()
         except IntegrityError as error:
             messages.error(request, "\n You must provide unique project name")

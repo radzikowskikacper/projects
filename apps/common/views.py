@@ -1,19 +1,23 @@
 from django.contrib import auth
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.core.urlresolvers import reverse
 
 # Create your views here.
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic.edit import FormView
 from registration.backends.simple.views import RegistrationView
 
 from projects_helper.apps import students
 from projects_helper.apps import lecturers
 from projects_helper.apps.common.forms import CustomRegistrationForm
 from .models import *
+from .forms import CourseSelectorForm
 
 
 @sensitive_post_parameters()
@@ -29,10 +33,9 @@ def user_login(request):
         user = authenticate(username=username, password=password)
         if user:
             login(request, user)
-            if students.is_student(user):
-                return redirect('students:profile')
-            elif lecturers.is_lecturer(user):
-                return redirect('lecturers:profile')
+            request.session['selectedCourse'] = ''
+            if students.is_student(user) or lecturers.is_lecturer(user):
+                return redirect('common:select_course')
             else:
                 messages.error(request, "Invalid login details supplied.")
                 return redirect('common:login')
@@ -59,10 +62,22 @@ class CustomRegistrationView(RegistrationView):
         return new_user
 
     def get_success_url(self, new_user):
-        if students.is_student(new_user):
-            return 'students:profile'
-        elif lecturers.is_lecturer(new_user):
-            return 'lecturers:profile'
+        return 'common:select_course'
 
+def course_selection(request):
+    if request.method == 'POST':
+        form = CourseSelectorForm(request.POST)
+        if form.is_valid():
+            request.session['selectedCourse'] = form.cleaned_data.get('selection')
+            print (request.session['selectedCourse'])
+            user = request.user
+            if students.is_student(user):
+                return redirect('students:profile')
+            elif lecturers.is_lecturer(user):
+                return redirect('lecturers:profile')
+    else:
+        form = CourseSelectorForm()
+
+    return render(request, 'common/course_selection_form.html', {'form': form})
 
 

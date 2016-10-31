@@ -5,10 +5,17 @@ from django.db import models
 from random import randint
 
 
+class Course(models.Model):
+    name = models.CharField(max_length=255, primary_key=True)
+
+
 class Team(models.Model):
     project_preference = models.ForeignKey('common.Project',
                                            null=True,
                                            blank=True)
+    course = models.ForeignKey('common.Course',
+                                       null=True,
+                                       blank=False)
 
     def select_preference(self, project):
         if not self.is_locked:
@@ -64,8 +71,13 @@ class Project(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
 
+    course = models.ForeignKey('common.Course',
+                                           null=True,
+                                           blank=False)
     lecturer = models.ForeignKey('common.Lecturer',
-                                 on_delete=models.CASCADE)
+                                 on_delete=models.CASCADE,
+                                 null=True,
+                                 blank=True)
     team_assigned = models.OneToOneField('common.Team',
                                          null=True,
                                          blank=True)
@@ -128,7 +140,8 @@ class Student(models.Model):
 
     def new_team(self):
         if not self.team.is_locked:
-            team = Team()
+            print ('debug' + request.session['selectedCourse'])
+            team = Team(course=Course.objects.get(name=request.session['selectedCourse']))
             team.save()
             self.join_team(team)
 
