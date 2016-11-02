@@ -33,7 +33,7 @@
                 <tr>
                     <td>
                         {% if project.lecturer == lecturer and project.status == "free" %}
-                            <input type="radio" name="to_delete" id="{{ project.pk }}"
+                            <input type="checkbox" name="to_delete" id="{{ project.pk }}"
                                    value="{{ project.pk }}"/>
                         {% endif %}
                     </td>

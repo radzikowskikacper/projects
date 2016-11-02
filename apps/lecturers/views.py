@@ -58,17 +58,16 @@ def project(request, project_pk):
 @login_required
 @user_passes_test(is_lecturer)
 def project_delete(request):
-    proj_pk = request.POST.get('to_delete', False)
-    if proj_pk:
-        proj = get_object_or_404(Project, pk=request.POST['to_delete'])
+    projects_to_delete = Project.objects.filter(pk__in=request.POST.getlist('to_delete'))
+
+    for proj in projects_to_delete:
         if proj.lecturer.user == request.user:
             if proj.status() == 'free':
                 proj.delete()
             else:
-                messages.error(request, "Cannot delete occupied project")
+                messages.error(request, "Cannot delete occupied project: " + proj.title)
         else:
-            messages.error(request, "Cannot delete project: access denied")
-
+            messages.error(request, "Cannot delete project: " + proj.title + " - access denied")
     return redirect(reverse('lecturers:project_list'))
 
 
