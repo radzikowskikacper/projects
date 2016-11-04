@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles'
+    'django.contrib.staticfiles',
+    'django_cas_ng'
 ]
 
 PROJECT_APPS = []
@@ -48,6 +49,13 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    #'django_cas_ng.backends.CASBackend',
+    'common.backends.ExtendedCASBackend'
+)
+
 
 ROOT_URLCONF = 'projects_helper.urls'
 
@@ -135,6 +143,17 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# CAS
+CAS_SERVER_URL = 'https://merkury.elka.pw.edu.pl/cas/'
+#CAS_VERSION = '3'
+CAS_LOGOUT_COMPLETELY = True
+CAS_IGNORE_REFERER = False
+CAS_RETRY_LOGIN = True
+
+
+# Redirect to this url after successful logging in
+CAS_REDIRECT_URL = '/common/select_course/'
 
 # Login page
 LOGIN_URL = '/common/login/'

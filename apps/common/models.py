@@ -116,7 +116,7 @@ class CustomUser(AbstractUser):
     )
     user_type = models.CharField(max_length=2,
                                  choices=type_choices,
-                                 default='SU')
+                                 default='S')
 
 
 class Student(models.Model):
