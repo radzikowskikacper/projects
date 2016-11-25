@@ -12,28 +12,28 @@ class ExtendedCASBackend(CASBackend):
             ticket, service, request)
 
         attributes = request.session.get('attributes', None)
-        lecturer_Model = apps.get_model('common', 'Lecturer')
+        lecturerModel = apps.get_model('common', 'Lecturer')
         studentModel = apps.get_model('common', 'Student')
 
         if attributes is not None:
-        	if attributes['employeeType'] == 'S':
-        		try:
-        			student = studentModel.objects.get(user=user)
-        			return user
-        		except studentModel.DoesNotExist:
-					# first login, create student user
-	        		user.user_type = 'S'
-	        		user.save()
-	        		studentModel.objects.create(user=user)
-        	elif attributes['employeeType'] == 'L':		#TODO check what is proper employeeType for lecturer
-        		try:
-        			student = studentModel.objects.get(user=user)
-        			return user
-        		except studentModel.DoesNotExist:
-					# first login, create lecturer user
-	        		user.user_type = 'L'
-	        		user.save()
-	        		lecturerModel.objects.create(user=user)
+            if attributes['employeeType'] == 'S':
+                try:
+                    student = studentModel.objects.get(user=user)
+                    return user
+                except studentModel.DoesNotExist:
+                	# logged in for the first time, create student user
+                    user.user_type = 'S'
+                    user.save()
+                    studentModel.objects.create(user=user)
+            elif attributes['employeeType'] == 'P':
+                try:
+                    lecturer = lecturerModel.objects.get(user=user)
+                    return user
+                except lecturerModel.DoesNotExist:
+                    # logged in for the first time, create lecturer user
+                    user.user_type = 'L'
+                    user.save()
+                    lecturerModel.objects.create(user=user)
 
         return user
 

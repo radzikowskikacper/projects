@@ -161,6 +161,7 @@ class Student(models.Model):
 class Lecturer(models.Model):
     user = models.OneToOneField(CustomUser,
                                 primary_key=True)
+    max_students = models.IntegerField(default=20, null=True)
 
     def __str__(self):
         return self.user.username
