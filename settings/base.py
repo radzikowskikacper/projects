@@ -17,6 +17,9 @@ IN_TESTING = sys.argv[1:2] == ['test']
 
 ALLOWED_HOSTS = []
 
+# Insert username of the superuser/admin below
+ADMIN_LOGIN = ''
+
 # Application definition
 
 INSTALLED_APPS = [

@@ -138,10 +138,9 @@ class Student(models.Model):
     def project_preference(self):
         return self.team.project_preference
 
-    def new_team(self):
+    def new_team(self, selectedCourse):
         if not self.team.is_locked:
-            print ('debug' + request.session['selectedCourse'])
-            team = Team(course=Course.objects.get(name=request.session['selectedCourse']))
+            team = Team(course=Course.objects.get(name=selectedCourse))
             team.save()
             self.join_team(team)
 
@@ -165,3 +164,10 @@ class Lecturer(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    def max_students_reached(self):
+        assigned_students = Student.objects.filter(team__project_preference__lecturer=self).count()
+        return assigned_students >= self.max_students
+
+
+

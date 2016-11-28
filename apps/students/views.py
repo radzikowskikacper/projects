@@ -35,7 +35,18 @@ def pick_project(request):
     proj_pk = request.POST.get('to_pick', False)
     if proj_pk:
         project_picked = Project.objects.get(pk=proj_pk)
-        if project_picked.status() == "free" and not team.is_locked:
+        if not project_picked.lecturer:
+            messages.error(request,
+                           "Project " + project_picked.title +
+                           " doesn't have any assigned lecturer. " +
+                           " You can't pick that project right now.")
+
+        elif project_picked.lecturer.max_students_reached():
+            messages.error(request,
+                           "Max number of students who can be assigned " +
+                           "to this lecturer has been reached. " +
+                           "Choose project from another lecturer.")
+        elif project_picked.status() == "free" and not team.is_locked:
             team.select_preference(project_picked)
             team.save()
             messages.success(request,
@@ -140,7 +151,7 @@ def join_team(request):
 @user_passes_test(is_student)
 def new_team(request):
     student = Student.objects.get(user=request.user)
-    student.new_team()
+    student.new_team(request.session['selectedCourse'])
     student.save()
     Team.remove_empty()
     return redirect(reverse('students:team_list'))
