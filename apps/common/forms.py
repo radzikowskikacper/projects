@@ -31,5 +31,5 @@ class CustomRegistrationForm(RegistrationForm):
 class CourseSelectorForm(Form):
     selection = ChoiceField(
         choices=[(c.name, c.name) for c in Course.objects.all()],
-        label='Select course',
+        label='',
         )

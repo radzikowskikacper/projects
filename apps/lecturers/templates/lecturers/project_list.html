@@ -19,7 +19,7 @@
         </div>
 
     </form>
-    <h2>Projects</h2>
+    <h2>My Projects</h2>
     <form action="{% url 'lecturers:project_delete' %}" method="post">
         {% csrf_token %}
         <table class="table table-striped">
@@ -27,7 +27,6 @@
                 <th>Delete</th>
                 <th>Status</th>
                 <th>Title</th>
-                <th>Owner</th>
             </tr>
             {% for project in projects %}
                 <tr>
@@ -39,7 +38,6 @@
                     </td>
                     <td>{{ project.status }}</td>
                     <td><a href="{% url 'lecturers:project' project.pk %}">{{ project.title }}</a></td>
-                    <td>{{ project.lecturer }}</td>
 
                 </tr>
             {% endfor %}

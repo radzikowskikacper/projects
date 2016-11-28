@@ -17,6 +17,7 @@ from projects_helper.apps.students import is_student
 def profile(request):
     student = Student.objects.get(pk=request.user.pk)
     project_assigned = student.team.project_assigned
+    course = Course.objects.get(name=request.session['selectedCourse'])
     if project_assigned is not None:
         messages.info(request, "You are already assigned to project.")
         messages.info(request, "You can't switch project preference.")
@@ -24,7 +25,8 @@ def profile(request):
     return render(request,
                   "students/profile.html",
                   {'user': request.user,
-                   'student': student})
+                   'student': student,
+                   'selectedCourse': course})
 
 
 @login_required
@@ -69,8 +71,10 @@ def pick_project(request):
 @user_passes_test(is_student)
 def project(request, project_pk):
     proj = Project.objects.get(pk=project_pk)
+    course = Course.objects.get(name=request.session['selectedCourse'])
     return render(request,
-                  context={'project': proj},
+                  context={'project': proj,
+                           'selectedCourse': course},
                   template_name='students/project_detail.html')
 
 
@@ -92,6 +96,7 @@ class ListProjects(ListView, LoginRequiredMixin, UserPassesTestMixin):
         context["student"] = student
         context['team'] = student.team
         context['project_picked'] = student.project_preference
+        context['selectedCourse'] = Course.objects.get(name=self.request.session['selectedCourse'])
         return context
 
 
@@ -112,11 +117,13 @@ class ListTeams(ListView, LoginRequiredMixin, UserPassesTestMixin):
             student = Student.objects.get(user=self.request.user)
             context['student_team'] = student.team
             context['student'] = student
+            context['selectedCourse'] = Course.objects.get(name=self.request.session['selectedCourse'])
             return context
 
 @login_required
 @user_passes_test(is_student)
 def filtered_project_list(request):
+    course = Course.objects.get(name=request.session['selectedCourse'])
     query = request.GET.get('query')
     student = Student.objects.get(user=request.user)
     filtered_projects = Project.objects.complex_filter(
@@ -129,7 +136,8 @@ def filtered_project_list(request):
                   template_name="students/project_list.html",
                   context={"projects": filtered_projects,
                            "student": student,
-                           "student_team": student.team})
+                           "student_team": student.team,
+                           "selectedCourse": course})
 
 
 

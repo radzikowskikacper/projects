@@ -8,7 +8,10 @@
                     <a class="nav-link" href="{% url 'lecturers:profile' %}">PROFILE</a>
                 </li>
                 <li class="navbar-left">
-                    <a class="nav-link" href="{% url 'lecturers:project_list' %}">PROJECTS</a>
+                    <a class="nav-link" href="{% url 'lecturers:team_list' %}">MY TEAMS</a>
+                </li>
+                <li class="navbar-left">
+                    <a class="nav-link" href="{% url 'lecturers:project_list' %}">MY PROJECTS</a>
                 </li>
                 <li class="navbar-left">
                     <a class="nav-link" href="{% url 'lecturers:project_new' %}">NEW PROJECT</a>
@@ -19,10 +22,11 @@
                     <a href="{% url 'common:select_course' %}">Change course</a>
                 </li>
                 <li>
-                    <a href="{% url 'common:logout' %}">Logout</a>
+                    <a href="{% url 'common:cas_ng_logout' %}">Logout</a>
                 </li>
             </ul>
         </div>
+        <span class="label label-default">{{selectedCourse}}</span>
     </nav>
 {% endblock %}
 

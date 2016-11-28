@@ -85,7 +85,7 @@ class Project(models.Model):
     lecturer = models.ForeignKey('common.Lecturer',
                                  on_delete=models.CASCADE,
                                  null=True,
-                                 blank=True)
+                                 blank=False)
     team_assigned = models.OneToOneField('common.Team',
                                          null=True,
                                          blank=True)
@@ -113,7 +113,7 @@ class Project(models.Model):
             self.save()
 
     def __str__(self):
-        return self.title
+        return self.lecturer.user.username + " - " + self.title
 
 
 class CustomUser(AbstractUser):
@@ -131,6 +131,7 @@ class Student(models.Model):
     user = models.OneToOneField(CustomUser,
                                 primary_key=True)
     team = models.ForeignKey('common.Team',
+                             null=True,
                              blank=True)
 
     @property
@@ -191,6 +192,7 @@ class Lecturer(models.Model):
 # when removing multiple students or lecturers from the admin site, post_delete signals
 # have to be catched and CustomUsers related to those users has to be deleted,
 # because 'delete' method of Student/Lecturer isnt called in this case
+
 @receiver(post_delete, sender=Student)
 def post_delete_user_after_stud(sender, instance, *args, **kwargs):
     if instance.user is not None: # just in case user is not specified or already deleted

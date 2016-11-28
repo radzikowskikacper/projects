@@ -2,7 +2,7 @@
 <div><h4>Title</h4>{{ project.title }}</div>
 
 <div><h4>Lecturer</h4> {{ project.lecturer.user.username }},
-    email: <a href="mailto:{{ member.user.email }}">{{ member.user.email }}</a>
+    email: <a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer.user.email }}</a>
 </div>
 
 <div><h4>Description</h4>

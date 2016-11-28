@@ -1,0 +1,38 @@
+{% extends "lecturers/base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+
+    {% include "common/messages.html" %}
+
+    <h2>My teams</h2>
+    <form action="{% url 'lecturers:team_delete' %}" method="post">
+        {% csrf_token %}
+        <table class="table table-striped">
+            <tr>
+                <th>Delete</th>
+                <th>Members</th>
+                <th>Project preference</th>
+                <th>Assigned</th>
+            </tr>
+            {% for team in teams %}
+                <tr>
+                    <td>
+                        <input type="checkbox" name="to_delete" id="{{ team.pk }}"
+                                value="{{ team.pk }}"/>
+                    </td>
+                    <td>{{ team }}</td>
+                    <td>{{ team.project_preference.title }}</td>
+                    <td>{% if team.is_locked %} Yes {% else %} No {% endif %}</td>
+
+                </tr>
+            {% endfor %}
+        </table>
+        Be aware: 'Delete' operation deletes teams as well as its members. This means that student accounts will be deleted!
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                {% bootstrap_icon "remove" %} Delete
+            </button>
+        {% endbuttons %}
+    </form>
+    </br>
+{% endblock %}
