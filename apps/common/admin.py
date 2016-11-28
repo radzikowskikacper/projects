@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.models import *
 from django.contrib.auth.admin import UserAdmin
 from .models import *
 
@@ -6,9 +7,10 @@ from .models import *
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
 
-    fieldsets = UserAdmin.fieldsets + (
+    fieldsets =  (
         (None, {'fields': ('user_type',)}),
-    )
+    ) + UserAdmin.fieldsets
+
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
@@ -17,3 +19,5 @@ admin.site.register(Team)
 admin.site.register(Project)
 admin.site.register(Student)
 admin.site.register(Lecturer)
+admin.site.unregister(Group)
+

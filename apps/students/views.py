@@ -48,6 +48,7 @@ def pick_project(request):
                            "Choose project from another lecturer.")
         elif project_picked.status() == "free" and not team.is_locked:
             team.select_preference(project_picked)
+            team.set_course(Course.objects.get(name=request.session['selectedCourse']))
             team.save()
             messages.success(request,
                              "You have successfully picked project " +

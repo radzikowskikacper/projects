@@ -3,10 +3,15 @@ from enum import Enum
 from django.contrib.auth.models import User, AbstractUser
 from django.db import models
 from random import randint
+from django.dispatch import receiver
+from django.db.models.signals import post_delete
 
 
 class Course(models.Model):
     name = models.CharField(max_length=255, primary_key=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Team(models.Model):
@@ -22,6 +27,9 @@ class Team(models.Model):
             self.project_preference = project
         else:
             self.project_preference = self.project_assigned
+
+    def set_course(self, course):
+        self.course = course
 
     @property
     def project_assigned(self):
@@ -153,6 +161,10 @@ class Student(models.Model):
             self.team = Team.objects.create()
         return super(Student, self).save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        self.user.delete()
+        return super(self.__class__, self).delete(*args, **kwargs)
+
     def __str__(self):
         return self.user.username
 
@@ -169,5 +181,17 @@ class Lecturer(models.Model):
         assigned_students = Student.objects.filter(team__project_preference__lecturer=self).count()
         return assigned_students >= self.max_students
 
+    def delete(self, *args, **kwargs):
+        self.user.delete()
+        return super(self.__class__, self).delete(*args, **kwargs)
 
 
+@receiver(post_delete, sender=Student)
+def post_delete_user_after_stud(sender, instance, *args, **kwargs):
+    if instance.user is not None: # just in case user is not specified or already deleted
+        instance.user.delete()
+
+@receiver(post_delete, sender=Lecturer)
+def post_delete_user_after_lect(sender, instance, *args, **kwargs):
+    if instance.user is not None: # just in case user is not specified or already deleted
+        instance.user.delete()
