@@ -76,9 +76,9 @@ def course_selection(request):
             user = request.user
             print (user.get_full_name())
             if students.is_student(user):
-                return redirect('students:profile')
+                return redirect('/students/projects')
             elif lecturers.is_lecturer(user):
-                return redirect('lecturers:profile')
+                return redirect('/lecturers/projects')
     else:
         form = CourseSelectorForm()
 
