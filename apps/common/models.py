@@ -163,6 +163,7 @@ class Student(models.Model):
 
     def delete(self, *args, **kwargs):
         self.user.delete()
+        Team.remove_empty()
         return super(self.__class__, self).delete(*args, **kwargs)
 
     def __str__(self):
@@ -183,15 +184,21 @@ class Lecturer(models.Model):
 
     def delete(self, *args, **kwargs):
         self.user.delete()
+        Team.remove_empty()
         return super(self.__class__, self).delete(*args, **kwargs)
 
 
+# when removing multiple students or lecturers from the admin site, post_delete signals
+# have to be catched and CustomUsers related to those users has to be deleted,
+# because 'delete' method of Student/Lecturer isnt called in this case
 @receiver(post_delete, sender=Student)
 def post_delete_user_after_stud(sender, instance, *args, **kwargs):
     if instance.user is not None: # just in case user is not specified or already deleted
         instance.user.delete()
+    Team.remove_empty()
 
 @receiver(post_delete, sender=Lecturer)
 def post_delete_user_after_lect(sender, instance, *args, **kwargs):
     if instance.user is not None: # just in case user is not specified or already deleted
         instance.user.delete()
+    Team.remove_empty()
