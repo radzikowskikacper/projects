@@ -1,9 +1,10 @@
 from django.conf.urls import url, include
+from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import RedirectView
 
-urlpatterns = [
+urlpatterns = i18n_patterns(
     url(r'^admin/', admin.site.urls),
     url(r'^students/', include('projects_helper.apps.students.urls', namespace='students')),
     url(r'^lecturers/', include('projects_helper.apps.lecturers.urls', namespace='lecturers')),
@@ -11,4 +12,4 @@ urlpatterns = [
     url(r'^$', RedirectView.as_view(url=reverse_lazy('common:welcome')), name='redirect_welcome'),
     # url(r'$', RedirectView.as_view(url='common/login')),
 
-]
+)
