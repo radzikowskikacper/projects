@@ -1,14 +1,15 @@
 {% extends "lecturers/base.html" %}
+{% load i18n %}
 {% block content %}
     {% include "common/messages.html" %}
-    <h2>New project</h2>
+    <h2>{% trans "New project" %}</h2>
     {% load bootstrap3 %}
     <form id="project_form" action="{% url 'lecturers:project_new' %}" method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
             <button type="submit" class="btn btn-primary">
-                {% bootstrap_icon "ok" %} Submit
+                {% bootstrap_icon "ok" %} {% trans "Submit" %}
             </button>
         {% endbuttons %}
     </form>

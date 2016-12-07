@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-07 15:17+0000\n"
+"POT-Creation-Date: 2016-12-07 18:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,9 +18,252 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: projects_helper/apps/common/templates/common/welcome.html:4
+#: projects_helper/apps/common/templates/common/base.html:5
+#: projects_helper/apps/lecturers/templates/lecturers/base.html:5
+#: projects_helper/apps/students/templates/students/base.html:5
+msgid "Project Helper"
+msgstr "Zapisy na projekty"
+
+#: projects_helper/apps/common/templates/common/base.html:9
+msgid "LOGIN / REGISTER"
+msgstr "LOGOWANIE / REJESTRACJA"
+
+#: projects_helper/apps/common/templates/common/course_selection_form.html:6
+msgid "Select course"
+msgstr "Wybierz przedmiot"
+
+#: projects_helper/apps/common/templates/common/course_selection_form.html:12
+msgid "Select"
+msgstr "Wybierz"
+
+#: projects_helper/apps/common/templates/common/logout.html:5
+msgid "You have been logged out"
+msgstr "Zostałeś wylogowany"
+
+#: projects_helper/apps/common/templates/common/messages.html:5
+#, python-format
+msgid "%(message)s "
+msgstr ""
+
+#: projects_helper/apps/common/templates/common/profile.html:2
+msgid "Profile"
+msgstr "Profil"
+
+#: projects_helper/apps/common/templates/common/profile.html:3
+msgid "Username"
+msgstr "Nazwa użytkownika"
+
+#: projects_helper/apps/common/templates/common/profile.html:4
+msgid "Email"
+msgstr "Email"
+
+#: projects_helper/apps/common/templates/common/project_detail.html:2
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:31
+#: projects_helper/apps/students/templates/students/project_list.html:31
+msgid "Title"
+msgstr "Tytuł"
+
+#: projects_helper/apps/common/templates/common/project_detail.html:4
+#: projects_helper/apps/students/templates/students/project_list.html:32
+msgid "Lecturer"
+msgstr "Prowadzący"
+
+#: projects_helper/apps/common/templates/common/project_detail.html:5
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:17
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:30
+msgid "email"
+msgstr "email"
+
+#: projects_helper/apps/common/templates/common/project_detail.html:8
+msgid "Description"
+msgstr "Opis"
+
+#: projects_helper/apps/common/templates/common/welcome.html:5
 msgid "Welcome on Projects Helper main page. Login to continue."
 msgstr "Witaj w serwisie Zapisy na projekty. Zaloguj się, aby kontynuować."
+
+#: projects_helper/apps/lecturers/templates/lecturers/base.html:9
+#: projects_helper/apps/students/templates/students/base.html:9
+msgid "PROFILE"
+msgstr "PROFIL"
+
+#: projects_helper/apps/lecturers/templates/lecturers/base.html:12
+msgid "MY TEAMS"
+msgstr "MOJE ZESPOŁY"
+
+#: projects_helper/apps/lecturers/templates/lecturers/base.html:15
+msgid "MY PROJECTS"
+msgstr "MOJE PROJEKTY"
+
+#: projects_helper/apps/lecturers/templates/lecturers/base.html:18
+msgid "NEW PROJECT"
+msgstr "NOWY PROJEKT"
+
+#: projects_helper/apps/lecturers/templates/lecturers/base.html:23
+#: projects_helper/apps/students/templates/students/base.html:20
+msgid "Change course"
+msgstr "Wybierz przedmiot"
+
+#: projects_helper/apps/lecturers/templates/lecturers/base.html:26
+#: projects_helper/apps/students/templates/students/base.html:23
+msgid "Logout"
+msgstr "Wyloguj"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:10
+msgid "Edit"
+msgstr "Edytuj"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:14
+msgid "Team assigned"
+msgstr "Przypisany zespół"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:20
+msgid "No team is assigned to the project."
+msgstr "Żaden zespół nie został przypisany do projektu"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:25
+msgid "Teams preferring this project"
+msgstr "Zespoły preferujące ten projekt"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:35
+msgid "No team picked the project."
+msgstr "Żaden zespół nie wybrał tego projektu"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:53
+msgid "Assign teams"
+msgstr "Dokonaj przypisania zespołów"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:16
+msgid "Project title..."
+msgstr "Tytuł projektu..."
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:24
+msgid "My Projects"
+msgstr "Moje projekty"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:29
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:49
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:13
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:34
+msgid "Delete"
+msgstr "Usuń"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:30
+#: projects_helper/apps/students/templates/students/profile.html:28
+#: projects_helper/apps/students/templates/students/project_list.html:30
+msgid "Status"
+msgstr "Status"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:5
+msgid "Modify project"
+msgstr "Modyfikuj projekt"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:12
+#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:12
+msgid "Submit"
+msgstr "Zatwierdź"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:5
+msgid "New project"
+msgstr "Nowy projekt"
+
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:8
+msgid "My teams"
+msgstr "Moje zespoły"
+
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:14
+msgid "Members"
+msgstr "Członkowie"
+
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:15
+msgid "Project preference"
+msgstr "Zapisy na projekty"
+
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:16
+msgid "Assigned"
+msgstr "Przydzielony"
+
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:26
+msgid "Yes"
+msgstr "Tak"
+
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:26
+msgid "No"
+msgstr "Nie"
+
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:31
+msgid ""
+"Be aware: 'Delete' operation deletes teams as well as its members. This "
+"means that student accounts will be deleted!"
+msgstr "Uwaga: Operacja 'Usuń' usunie zarówno wybrane zespoły, jak i ich "
+"członków. To znaczy, że konta studentów również zostaną usunięte!"
+
+#: projects_helper/apps/students/templates/students/base.html:12
+msgid "PROJECTS"
+msgstr "PROJEKTY"
+
+#: projects_helper/apps/students/templates/students/base.html:15
+msgid "TEAMS"
+msgstr "ZESPOŁY"
+
+#: projects_helper/apps/students/templates/students/profile.html:7
+msgid "Student profile"
+msgstr "Profil Studenta"
+
+#: projects_helper/apps/students/templates/students/profile.html:8
+#: projects_helper/apps/students/templates/students/team_list.html:14
+msgid "Team"
+msgstr "Zespół"
+
+#: projects_helper/apps/students/templates/students/profile.html:15
+msgid "Project preference "
+msgstr "Zapisy na projekty "
+
+#: projects_helper/apps/students/templates/students/profile.html:18
+msgid "You have not picked project"
+msgstr "Zostałeś wylogowany"
+
+#: projects_helper/apps/students/templates/students/profile.html:31
+msgid "You are not assigned to project"
+msgstr "Nie jesteś przydzielony do żadnego projektu"
+
+#: projects_helper/apps/students/templates/students/profile.html:33
+msgid "You are assigned to project:"
+msgstr "Jesteś przydzielony do projektu:"
+
+#: projects_helper/apps/students/templates/students/project_list.html:17
+msgid "Search..."
+msgstr "Szukaj..."
+
+#: projects_helper/apps/students/templates/students/project_list.html:24
+msgid "Projects"
+msgstr "Projekty"
+
+#: projects_helper/apps/students/templates/students/project_list.html:29
+#: projects_helper/apps/students/templates/students/project_list.html:53
+msgid "Pick"
+msgstr "Wybierz"
+
+#: projects_helper/apps/students/templates/students/team_list.html:8
+msgid "Teams"
+msgstr "Zespoły"
+
+#: projects_helper/apps/students/templates/students/team_list.html:13
+#: projects_helper/apps/students/templates/students/team_list.html:57
+msgid "Join"
+msgstr "Dołącz"
+
+#: projects_helper/apps/students/templates/students/team_list.html:15
+msgid "Assigned project"
+msgstr "Przydzielony projekt"
+
+#: projects_helper/apps/students/templates/students/team_list.html:16
+msgid "Preferred project"
+msgstr "Preferowany projekt"
+
+#: projects_helper/apps/students/templates/students/team_list.html:68
+msgid "Leave team"
+msgstr "Opuść zespół"
 
 #: projects_helper/settings/base.py:94
 msgid "English"
@@ -30,3 +272,15 @@ msgstr ""
 #: projects_helper/settings/base.py:95
 msgid "Polski"
 msgstr ""
+
+#: projects_helper/templates/404.html:7
+msgid "This is not the page you were looking for."
+msgstr "To nie jest strona, której szukasz."
+
+#: projects_helper/templates/500.html:7
+msgid "Whoops!"
+msgstr "Uuups!"
+
+#: projects_helper/templates/base.html:13
+msgid "Student Projects Helper"
+msgstr "Zapisy na projekty"

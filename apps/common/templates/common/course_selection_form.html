@@ -1,14 +1,15 @@
 {% extends "common/base.html" %}
 {% load bootstrap3 %}
+{% load i18n %}
 {% block content %}
     {% include "common/messages.html" %}
-    <h2>Select course</h2>
+    <h2>{% trans "Select course" %}</h2>
     <form method="post" action="{% url 'common:select_course' %}">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
             <button type="submit" class="btn btn-primary">
-                {% bootstrap_icon "star" %} Select
+                {% bootstrap_icon "star" %} {% trans "Select" %}
             </button>
 
         {% endbuttons %}

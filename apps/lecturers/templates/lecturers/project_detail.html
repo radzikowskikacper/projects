@@ -1,4 +1,5 @@
 {% extends 'lecturers/base.html' %}
+{% load i18n %}
 
 {% block content %}
     {% load bootstrap3 %}
@@ -6,32 +7,32 @@
     {% if project.lecturer == lecturer %}
     <br>
     <a href="{% url "lecturers:modify_project" project.pk %}" class="btn btn-primary"> {% bootstrap_icon "edit" %}
-        Edit</a>
+        {% trans "Edit" %}</a>
     <br>
     <br>
     {% endif %}
-    <h4>Team assigned</h4>
+    <h4>{% trans "Team assigned" %}</h4>
     <ul>
         {% for member in project.team_assigned.team_members %}
-            <li>{{ member.user.username }}, email: <a href="mailto:{{ member.user.email }}">{{ member.user.email }}</a>
+            <li>{{ member.user.username }}, {% trans "email" %}: <a href="mailto:{{ member.user.email }}">{{ member.user.email }}</a>
             </li>
             {% empty %}
-            <p> No team is assigned to the project. </p>
+            <p> {% trans "No team is assigned to the project." %} </p>
         {% endfor %}
     </ul>
 
     {% if project.status == "free" %}
-        <h4>Teams preferring this project</h4>
+        <h4>{% trans "Teams preferring this project" %}</h4>
         {% for team in project.teams_with_preference %}
             <h5>Team</h5>
             <ul>
                 {% for member in team.team_members %}
-                    <li>{{ member.user.username }}, email: <a
+                    <li>{{ member.user.username }}, {% trans "email" %}: <a
                             href="mailto:{{ member.user.email }}">{{ member.user.email }}</a></li>
 
                 {% endfor %}
                 {% empty %}
-                <ul><p>No team picked the project.</p></ul>
+                <ul><p>{% trans "No team picked the project." %}</p></ul>
             </ul>
 
         {% endfor %}
@@ -49,7 +50,7 @@
                 {% csrf_token %}
                 {% buttons %}
                     <button type="submit" class="btn btn-primary">
-                        {% bootstrap_icon "pencil" %} Assign teams
+                        {% bootstrap_icon "pencil" %} {% trans "Assign teams" %}
                     </button>
                 {% endbuttons %}
             </form>

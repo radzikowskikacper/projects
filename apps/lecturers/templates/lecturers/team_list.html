@@ -1,18 +1,19 @@
 {% extends "lecturers/base.html" %}
+{% load i18n %}
 {% load bootstrap3 %}
 {% block content %}
 
     {% include "common/messages.html" %}
 
-    <h2>My teams</h2>
+    <h2>{% trans "My teams" %}</h2>
     <form action="{% url 'lecturers:team_delete' %}" method="post">
         {% csrf_token %}
         <table class="table table-striped">
             <tr>
-                <th>Delete</th>
-                <th>Members</th>
-                <th>Project preference</th>
-                <th>Assigned</th>
+                <th>{% trans "Delete" %}</th>
+                <th>{% trans "Members" %}</th>
+                <th>{% trans "Project preference" %}</th>
+                <th>{% trans "Assigned" %}</th>
             </tr>
             {% for team in teams %}
                 <tr>
@@ -22,15 +23,15 @@
                     </td>
                     <td>{{ team }}</td>
                     <td>{{ team.project_preference.title }}</td>
-                    <td>{% if team.is_locked %} Yes {% else %} No {% endif %}</td>
+                    <td>{% if team.is_locked %} {% trans "Yes" %} {% else %} {% trans "No" %} {% endif %}</td>
 
                 </tr>
             {% endfor %}
         </table>
-        Be aware: 'Delete' operation deletes teams as well as its members. This means that student accounts will be deleted!
+        {% trans "Be aware: 'Delete' operation deletes teams as well as its members. This means that student accounts will be deleted!" %}
         {% buttons %}
             <button type="submit" class="btn btn-primary">
-                {% bootstrap_icon "remove" %} Delete
+                {% bootstrap_icon "remove" %} {% trans "Delete" %}
             </button>
         {% endbuttons %}
     </form>

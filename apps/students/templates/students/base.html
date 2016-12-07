@@ -1,25 +1,26 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block nav %}
     <nav class="navbar navbar-inverse" role="navigation">
-        <span class="navbar-brand">Project Helper</span>
+        <span class="navbar-brand">{% trans "Project Helper" %}</span>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="navbar-left">
-                    <a class="nav-link" href="{% url 'students:profile' %}">PROFILE</a>
+                    <a class="nav-link" href="{% url 'students:profile' %}">{% trans "PROFILE" %}</a>
                 </li>
                 <li class="navbar-left">
-                    <a class="nav-link" href="{% url 'students:project_list' %}">PROJECTS</a>
+                    <a class="nav-link" href="{% url 'students:project_list' %}">{% trans "PROJECTS" %}</a>
                 </li>
                 <li class="navbar-left">
-                    <a class="nav-link" href="{% url 'students:team_list' %}">TEAMS</a>
+                    <a class="nav-link" href="{% url 'students:team_list' %}">{% trans "TEAMS" %}</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="{% url 'common:select_course' %}">Change course</a>
+                    <a href="{% url 'common:select_course' %}">{% trans "Change course" %}</a>
                 </li>
                 <li>
-                    <a href="{% url 'common:cas_ng_logout' %}">Logout</a>
+                    <a href="{% url 'common:cas_ng_logout' %}">{% trans "Logout" %}</a>
                 </li>
             </ul>
         </div>
