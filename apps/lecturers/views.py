@@ -106,7 +106,7 @@ def team_list(request):
     title = request.GET.get('title')
     lecturer = Lecturer.objects.get(user=request.user)
     course = Course.objects.get(name=request.session['selectedCourse'])
-    teams = Team.objects.filter(project_preference__lecturer=lecturer).filter(course=course)
+    teams = Team.objects.filter(project_preference__lecturer=lecturer).filter(course=course).exclude(project_preference__isnull=True)
     return render(request,
                   template_name="lecturers/team_list.html",
                   context={"teams": teams,

@@ -110,7 +110,7 @@ class ListTeams(ListView, LoginRequiredMixin, UserPassesTestMixin):
 
         def get_queryset(self):
             qs = super(ListTeams, self).get_queryset()
-            return qs.filter(course=Course.objects.get(name=self.request.session['selectedCourse']))
+            return qs.filter(course=Course.objects.get(name=self.request.session['selectedCourse'])).exclude(project_preference__isnull=True)
 
         def get_context_data(self, **kwargs):
             context = super(ListTeams, self).get_context_data(**kwargs)
@@ -148,9 +148,15 @@ def join_team(request):
     if team_pk:
         team = Team.objects.get(pk=team_pk)
         student = Student.objects.get(user=request.user)
-        student.join_team(team)
-        student.save()
-        Team.remove_empty()
+        if team.project_preference.lecturer.max_students_reached():
+            messages.error(request,
+                           "Max number of students who can be assigned " +
+                           "to this lecturer has been reached. " +
+                           "Choose project from another lecturer.")
+        else:
+            student.join_team(team)
+            student.save()
+            Team.remove_empty()
 
 
     return redirect(reverse('students:team_list'))

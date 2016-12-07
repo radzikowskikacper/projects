@@ -12,11 +12,20 @@ class CustomUserAdmin(UserAdmin):
     ) + UserAdmin.fieldsets
 
 
+class ProjectAdmin(admin.ModelAdmin):
+	model = Project
+	list_display = ('__str__', 'lecturer', 'course')
+	search_fields = ['title']
+
+class TeamAdmin(admin.ModelAdmin):
+	model = Team
+	list_display = ('__str__', 'project_preference', 'course')
+
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Course)
-admin.site.register(Team)
-admin.site.register(Project)
+admin.site.register(Team, TeamAdmin)
+admin.site.register(Project, ProjectAdmin)
 admin.site.register(Student)
 admin.site.register(Lecturer)
 admin.site.unregister(Group)

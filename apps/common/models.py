@@ -10,6 +10,9 @@ from django.db.models.signals import post_delete
 class Course(models.Model):
     name = models.CharField(max_length=255, primary_key=True)
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return self.name
 
@@ -92,6 +95,7 @@ class Project(models.Model):
 
     class Meta:
         unique_together = ('lecturer', 'title',)
+        ordering = ['lecturer', 'course', 'title']
 
     def teams_with_preference(self):
         return Team.objects.filter(project_preference=self)
@@ -113,7 +117,7 @@ class Project(models.Model):
             self.save()
 
     def __str__(self):
-        return self.lecturer.user.username + " - " + self.title
+        return self.title
 
 
 class CustomUser(AbstractUser):
@@ -133,6 +137,9 @@ class Student(models.Model):
     team = models.ForeignKey('common.Team',
                              null=True,
                              blank=True)
+
+    class Meta:
+        ordering = ['user__username']
 
     @property
     def is_assigned_to_project(self):
@@ -175,6 +182,9 @@ class Lecturer(models.Model):
     user = models.OneToOneField(CustomUser,
                                 primary_key=True)
     max_students = models.IntegerField(default=20, null=True)
+
+    class Meta:
+        ordering = ['user__username']
 
     def __str__(self):
         return self.user.username
