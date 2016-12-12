@@ -38,7 +38,7 @@
                                    value="{{ project.pk }}"/>
                         {% endif %}
                     </td>
-                    <td>{{ project.status }}</td>
+                    <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
                     <td><a href="{% url 'lecturers:project' project.pk %}">{{ project.title }}</a></td>
 
                 </tr>
