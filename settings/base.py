@@ -95,7 +95,7 @@ LANGUAGES = (
     ('pl', _('Polski')),
 )
 
-LANGUAGE_CODE = 'en-gb'
+LANGUAGE_CODE = 'pl'
 
 TIME_ZONE = 'UTC'
 
