@@ -5,13 +5,16 @@ from django.db import models
 from random import randint
 from django.dispatch import receiver
 from django.db.models.signals import post_delete
+from django.utils.translation import ugettext_lazy as _
 
 
 class Course(models.Model):
-    name = models.CharField(max_length=255, primary_key=True)
+    name = models.CharField(verbose_name=_('name'), max_length=255, primary_key=True)
 
     class Meta:
         ordering = ['name']
+        verbose_name = _('course')
+        verbose_name_plural = _('courses')
 
     def __str__(self):
         return self.name
@@ -19,11 +22,17 @@ class Course(models.Model):
 
 class Team(models.Model):
     project_preference = models.ForeignKey('common.Project',
+                                           verbose_name=_('project preference'),
                                            null=True,
                                            blank=True)
     course = models.ForeignKey('common.Course',
+                                       verbose_name=_('course'),
                                        null=True,
                                        blank=False)
+
+    class Meta:
+        verbose_name = _('team')
+        verbose_name_plural = _('teams')
 
     def select_preference(self, project):
         if not self.is_locked:
@@ -79,23 +88,28 @@ class Team(models.Model):
 
 
 class Project(models.Model):
-    title = models.CharField(max_length=255)
-    description = models.TextField()
+    title = models.CharField(verbose_name=_('title'), max_length=255)
+    description = models.TextField(verbose_name=_('desciption'))
 
     course = models.ForeignKey('common.Course',
+                                           verbose_name=_('course'),
                                            null=True,
                                            blank=False)
     lecturer = models.ForeignKey('common.Lecturer',
+                                 verbose_name=_('lecturer'),
                                  on_delete=models.CASCADE,
                                  null=True,
                                  blank=False)
     team_assigned = models.OneToOneField('common.Team',
+                                         verbose_name=_('team assigned'),
                                          null=True,
                                          blank=True)
 
     class Meta:
         unique_together = ('lecturer', 'title',)
         ordering = ['lecturer', 'course', 'title']
+        verbose_name = _('project')
+        verbose_name_plural = _('projects')
 
     def teams_with_preference(self):
         return Team.objects.filter(project_preference=self)
@@ -126,20 +140,25 @@ class CustomUser(AbstractUser):
         ('S', 'Student'),
         ('L', 'Lecturer'),
     )
-    user_type = models.CharField(max_length=2,
+    user_type = models.CharField(verbose_name=_('user type'),
+                                 max_length=2,
                                  choices=type_choices,
                                  default='S')
 
 
 class Student(models.Model):
     user = models.OneToOneField(CustomUser,
+                                verbose_name=_('user'),
                                 primary_key=True)
     team = models.ForeignKey('common.Team',
+                             verbose_name=_('team'),
                              null=True,
                              blank=True)
 
     class Meta:
         ordering = ['user__username']
+        verbose_name = _('student')
+        verbose_name_plural = _('students')
 
     @property
     def is_assigned_to_project(self):
@@ -180,11 +199,14 @@ class Student(models.Model):
 
 class Lecturer(models.Model):
     user = models.OneToOneField(CustomUser,
+                                verbose_name=_('user'),
                                 primary_key=True)
-    max_students = models.IntegerField(default=20, null=True)
+    max_students = models.IntegerField(verbose_name=_('students limit'), default=20, null=True)
 
     class Meta:
         ordering = ['user__username']
+        verbose_name = _('lecturer')
+        verbose_name_plural = _('lecturers')
 
     def __str__(self):
         return self.user.username

@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -68,9 +69,9 @@ def project_delete(request):
             if proj.status() == 'free':
                 proj.delete()
             else:
-                messages.error(request, "Cannot delete occupied project: " + proj.title)
+                messages.error(request, _("Cannot delete occupied project: ") + proj.title)
         else:
-            messages.error(request, "Cannot delete project: " + proj.title + " - access denied")
+            messages.error(request, _("Cannot delete project: " + proj.title + " - access denied"))
     return redirect(reverse('lecturers:project_list'))
 
 
@@ -89,12 +90,12 @@ def project_new(request):
             proj.course = Course.objects.get(name=request.session['selectedCourse'])
             proj.save()
         except IntegrityError as error:
-            messages.error(request, "\n You must provide unique project name")
+            messages.error(request, _("\n You must provide unique project name"))
             return render(request, "lecturers/project_new.html",
                           context={'form': form,
                                     'selectedCourse': course})
 
-        messages.info(request, "You have succesfully added new project: " + proj.title)
+        messages.info(request, _("You have succesfully added new project: ") + proj.title)
         return redirect(reverse('lecturers:project_list'))
     return render(request, "lecturers/project_new.html",
                   context={'form': form,
@@ -123,9 +124,9 @@ def team_delete(request):
             if team.is_locked == False:
                 team.delete()
             else:
-                messages.error(request, "Cannot delete assigned team: " + str(team))
+                messages.error(request, _("Cannot delete assigned team: ") + str(team))
         else:
-            messages.error(request, "Cannot delete team: " + str(team) + " - access denied")
+            messages.error(request, _("Cannot delete team: " + str(team) + " - access denied"))
     return redirect(reverse('lecturers:team_list'))
 
 @login_required
@@ -134,11 +135,11 @@ def assign_team(request, project_pk):
     proj = Project.objects.get(pk=project_pk)
     if proj.lecturer.user == request.user:
         if proj.teams_with_preference().count() == 0:
-            messages.error(request, "Cannot assign: No teams waiting for project")
+            messages.error(request, _("Cannot assign: No teams waiting for project"))
         else:
             proj.assign_random_team()
     else:
-        messages.error(request, "Cannot assign: access denied")
+        messages.error(request, _("Cannot assign: access denied"))
 
     return redirect(reverse_lazy('lecturers:project', kwargs={'project_pk': proj.pk}))
 
@@ -152,9 +153,9 @@ def modify_project(request, project_pk):
     if form.is_valid():
         if proj.lecturer == Lecturer.objects.get(user = request.user):
             form.save()
-            messages.info(request, "You have successfully updated project:" + proj.title)
+            messages.info(request, _("You have successfully updated project:") + proj.title)
         else:
-            messages.error(request, "Access denied")
+            messages.error(request, _("Access denied"))
         return redirect(reverse("lecturers:modify_project", kwargs={'project_pk': proj.pk}))
     return render(request, "lecturers/project_modify.html",
                   context={'form': form,

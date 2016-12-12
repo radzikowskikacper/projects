@@ -72,14 +72,12 @@ def course_selection(request):
         form = CourseSelectorForm(request.POST)
         if form.is_valid():
             request.session['selectedCourse'] = form.cleaned_data.get('selection')
-            print (request.session['selectedCourse'])
             user = request.user
-            print (user.get_full_name())
             if students.is_student(user):
-                print('student')
+                #print('student')
                 return redirect('/students/projects')
             elif lecturers.is_lecturer(user):
-                print('lecturer')
+                #print('lecturer')
                 return redirect('/lecturers/projects')
     else:
         form = CourseSelectorForm()

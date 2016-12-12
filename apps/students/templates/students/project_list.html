@@ -41,7 +41,7 @@
                     {% else %}
                         <td></td>
                     {% endif %}
-                    <td>{{ project.status }}</td>
+                    <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
                     <td><a href="{% url 'students:project' project.pk %}">{{ project.title }}</a></td>
                     <td><a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer.user.username }}</a></td>
                 </tr>

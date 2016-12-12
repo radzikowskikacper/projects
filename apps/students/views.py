@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.shortcuts import render, redirect
+from django.utils.translation import ugettext_lazy as _
 
 # Create your views here.
 from django.views.generic import ListView
@@ -19,9 +20,9 @@ def profile(request):
     project_assigned = student.team.project_assigned
     course = Course.objects.get(name=request.session['selectedCourse'])
     if project_assigned is not None:
-        messages.info(request, "You are already assigned to project.")
-        messages.info(request, "You can't switch project preference.")
-        messages.info(request, "You can't switch or create new team.")
+        messages.info(request, _("You are already assigned to project."))
+        messages.info(request, _("You can't switch project preference."))
+        messages.info(request, _("You can't switch or create new team."))
     return render(request,
                   "students/profile.html",
                   {'user': request.user,
@@ -39,30 +40,30 @@ def pick_project(request):
         project_picked = Project.objects.get(pk=proj_pk)
         if not project_picked.lecturer:
             messages.error(request,
-                           "Project " + project_picked.title +
+                           _("Project " + project_picked.title +
                            " doesn't have any assigned lecturer. " +
-                           " You can't pick that project right now.")
+                           " You can't pick that project right now."))
 
         elif project_picked.lecturer.max_students_reached():
             messages.error(request,
-                           "Max number of students who can be assigned " +
+                           _("Max number of students who can be assigned " +
                            "to this lecturer has been reached. " +
-                           "Choose project from another lecturer.")
+                           "Choose project from another lecturer."))
         elif project_picked.status() == "free" and not team.is_locked:
             team.select_preference(project_picked)
             team.set_course(Course.objects.get(name=request.session['selectedCourse']))
             team.save()
             messages.success(request,
-                             "You have successfully picked project " +
+                             _("You have successfully picked project ") +
                              project_picked.title)
         elif project_picked.status() != "free":
             messages.error(request,
-                           "Project " + project_picked +
+                           _("Project " + project_picked +
                            " is already occupied," +
-                           " you can't pick that project")
+                           " you can't pick that project"))
         elif team.is_locked:
             messages.error(request,
-                           "You can't pick project: project already assigned")
+                           _("You can't pick project: project already assigned"))
 
     return redirect(reverse('students:project_list'))
 
@@ -150,13 +151,15 @@ def join_team(request):
         student = Student.objects.get(user=request.user)
         if team.project_preference.lecturer.max_students_reached():
             messages.error(request,
-                           "Max number of students who can be assigned " +
+                           _("Max number of students who can be assigned " +
                            "to this lecturer has been reached. " +
-                           "Choose project from another lecturer.")
+                           "Choose project from another lecturer."))
         else:
             student.join_team(team)
             student.save()
             Team.remove_empty()
+            messages.success(request,
+                 _("You have successfully joined selected team "))
 
 
     return redirect(reverse('students:team_list'))
@@ -166,7 +169,11 @@ def join_team(request):
 @user_passes_test(is_student)
 def new_team(request):
     student = Student.objects.get(user=request.user)
+    was_empty_team = student.team.project_preference is None
     student.new_team(request.session['selectedCourse'])
     student.save()
     Team.remove_empty()
+    if request.method == 'POST' and not was_empty_team:
+        messages.success(request,
+         _("You have successfully left the team "))
     return redirect(reverse('students:team_list'))
