@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'projects_helper.apps.students',
     'projects_helper.apps.lecturers',
     'registration',
-    'django.contrib.admin',
+    'django.contrib.admin.apps.SimpleAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -160,17 +160,19 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # CAS
 CAS_SERVER_URL = 'https://merkury.elka.pw.edu.pl/cas/'
-#CAS_VERSION = '3'
+CAS_ADMIN_PREFIX = '/admin'
+CAS_VERSION = '3'
 CAS_LOGOUT_COMPLETELY = True
 CAS_IGNORE_REFERER = False
 CAS_RETRY_LOGIN = True
-
-
-# Redirect to this url after successful logging in
-CAS_REDIRECT_URL = '/common/select_course/'
+CAS_LOGIN_MSG = None
+CAS_LOGGED_MSG = None
+#CAS_REDIRECT_URL = '/common/select_course/'
 
 # Login page
 LOGIN_URL = '/common/login/'
+# Logout page
+LOGOUT_URL = '/common/logout/'
 
 # User model
 AUTH_USER_MODEL = 'common.CustomUser'

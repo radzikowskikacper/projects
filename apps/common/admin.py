@@ -28,5 +28,5 @@ admin.site.register(Team, TeamAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Student)
 admin.site.register(Lecturer)
-admin.site.unregister(Group)
+admin.site.register(Group)
 
