@@ -18,14 +18,20 @@ class ExtendedCASBackend(CASBackend):
 
         if attributes is not None:
             if attributes['employeeType'] == 'S':
+            # CHANGE THIS: two step checking needed when user type was changed manually
                 try:
                     student = studentModel.objects.get(user=user)
                     print("User logged in: email: " + attributes['mail'] + ", CAS employeeType: " + attributes['employeeType'])
                     return user
                 except studentModel.DoesNotExist:
-                	# logged in for the first time, create student user
-                    user.user_type = 'S'
-                    user.email = attributes['mail']
+                    try:
+                        lecturer = lecturerModel.objects.get(user=user)
+                        print("User logged in: email: " + attributes['mail'] + ", CAS employeeType: " + attributes['employeeType'])
+                        return user
+                    except lecturerModel.DoesNotExist:
+                    	# logged in for the first time, create student user
+                        user.user_type = 'S'
+                        user.email = attributes['mail']
 
                     user.save()
                     studentModel.objects.create(user=user)
