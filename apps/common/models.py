@@ -189,7 +189,7 @@ class Student(models.Model):
         return super(Student, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        self.user.delete()
+        #self.user.delete()
         Team.remove_empty()
         return super(self.__class__, self).delete(*args, **kwargs)
 
@@ -216,7 +216,7 @@ class Lecturer(models.Model):
         return assigned_students >= self.max_students
 
     def delete(self, *args, **kwargs):
-        self.user.delete()
+        #self.user.delete()
         Team.remove_empty()
         return super(self.__class__, self).delete(*args, **kwargs)
 
@@ -228,11 +228,13 @@ class Lecturer(models.Model):
 @receiver(post_delete, sender=Student)
 def post_delete_user_after_stud(sender, instance, *args, **kwargs):
     if instance.user is not None: # just in case user is not specified or already deleted
-        instance.user.delete()
+ #       instance.user.delete()
+        pass
     Team.remove_empty()
 
 @receiver(post_delete, sender=Lecturer)
 def post_delete_user_after_lect(sender, instance, *args, **kwargs):
     if instance.user is not None: # just in case user is not specified or already deleted
-        instance.user.delete()
+ #       instance.user.delete()
+        pass
     Team.remove_empty()

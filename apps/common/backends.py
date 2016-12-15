@@ -20,6 +20,7 @@ class ExtendedCASBackend(CASBackend):
             if attributes['employeeType'] == 'S':
                 try:
                     student = studentModel.objects.get(user=user)
+                    print("User logged in: email: " + attributes['mail'] + ", CAS employeeType: " + attributes['employeeType'])
                     return user
                 except studentModel.DoesNotExist:
                 	# logged in for the first time, create student user
@@ -31,6 +32,7 @@ class ExtendedCASBackend(CASBackend):
             elif attributes['employeeType'] == 'P':
                 try:
                     lecturer = lecturerModel.objects.get(user=user)
+                    print("User logged in: email: " + attributes['mail'] + ", CAS employeeType: " + attributes['employeeType'])
                     return user
                 except lecturerModel.DoesNotExist:
                     # logged in for the first time, create lecturer user
@@ -44,5 +46,8 @@ class ExtendedCASBackend(CASBackend):
                     user.save()
                     lecturerModel.objects.create(user=user)
 
+        print("New user created:")
+        for arg, val in attributes.items():
+            print(arg + ": " + val)
         return user
 
