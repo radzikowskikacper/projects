@@ -38,10 +38,6 @@ INSTALLED_APPS = [
     'django_cas_ng'
 ]
 
-PROJECT_APPS = []
-
-INSTALLED_APPS += PROJECT_APPS
-
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -170,9 +166,9 @@ CAS_LOGGED_MSG = None
 #CAS_REDIRECT_URL = '/common/select_course/'
 
 # Login page
-LOGIN_URL = '/common/login/'
+LOGIN_URL = '/login/'
 # Logout page
-LOGOUT_URL = '/common/logout/'
+LOGOUT_URL = '/logout/'
 
 # User model
 AUTH_USER_MODEL = 'common.CustomUser'

@@ -1,5 +1,4 @@
 from django.conf.urls import url
-
 from projects_helper.apps.lecturers import views
 
 urlpatterns = [
@@ -13,6 +12,4 @@ urlpatterns = [
     url(r'^projects/search$', views.filtered_project_list, name="filtered_project_list"),
     url(r'^teams/$', views.team_list, name="team_list"),
     url(r'^teams/del/$', views.team_delete, name="team_delete"),
-
-
 ]
