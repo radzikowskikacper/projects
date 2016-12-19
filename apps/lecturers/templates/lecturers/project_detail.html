@@ -4,7 +4,7 @@
 {% block content %}
     {% load bootstrap3 %}
     {% include 'common/project_detail.html' %}
-    {% if project.lecturer == lecturer %}
+    {% if project.lecturer == user.lecturer %}
     <br>
     <a href="{% url "lecturers:modify_project" project.pk %}" class="btn btn-primary"> {% bootstrap_icon "edit" %}
         {% trans "Edit" %}</a>
@@ -38,7 +38,7 @@
         {% endfor %}
 
 
-        {% if project.lecturer == lecturer %}
+        {% if project.lecturer == user.lecturer %}
             {% if messages %}
                 <ul class="messages">
                     {% for message in messages %}

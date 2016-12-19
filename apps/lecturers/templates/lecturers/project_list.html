@@ -33,7 +33,7 @@
             {% for project in projects %}
                 <tr>
                     <td>
-                        {% if project.lecturer == lecturer and project.status == "free" %}
+                        {% if project.lecturer == user.lecturer and project.status == "free" %}
                             <input type="checkbox" name="to_delete" id="{{ project.pk }}"
                                    value="{{ project.pk }}"/>
                         {% endif %}

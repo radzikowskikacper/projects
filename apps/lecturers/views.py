@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
 
-from projects_helper.apps.common.models import Project, Lecturer, Course, Team
+from projects_helper.apps.common.models import Project, Course, Team
 from projects_helper.apps.lecturers import is_lecturer
 from projects_helper.apps.lecturers.forms import ProjectForm
 
@@ -13,38 +13,33 @@ from projects_helper.apps.lecturers.forms import ProjectForm
 @login_required
 @user_passes_test(is_lecturer)
 def profile(request):
-    course = Course.objects.get(name=request.session['selectedCourse'])
-    return render(request, "lecturers/profile.html",
-                            context={"selectedCourse": course})
+    return render(request,
+                  "lecturers/profile.html",
+                  {'selectedCourse': request.session['selectedCourse']})
 
 @login_required
 @user_passes_test(is_lecturer)
 def project_list(request):
-    title = request.GET.get('title')
-    lecturer = Lecturer.objects.get(user=request.user)
     course = Course.objects.get(name=request.session['selectedCourse'])
-    projects = Project.objects.filter(lecturer=lecturer).filter(course=course)
+    projects = Project.objects.filter(lecturer=request.user.lecturer).filter(course=course)
     return render(request,
                   template_name="lecturers/project_list.html",
                   context={"projects": projects,
-                           "lecturer": lecturer,
                            "selectedCourse": course})
 
 @login_required
 @user_passes_test(is_lecturer)
 def filtered_project_list(request):
     title = request.GET.get('title')
-    lecturer = Lecturer.objects.get(user=request.user)
     course = Course.objects.get(name=request.session['selectedCourse'])
-    projects = Project.objects.filter(lecturer=lecturer).filter(course=course)
+    projects = Project.objects.filter(lecturer=request.user.lecturer).filter(course=course)
 
     filtered_projects = projects.filter(
-        title__contains=title
+        title__icontains=title
     )
     return render(request,
                   template_name="lecturers/project_list.html",
                   context={"projects": filtered_projects,
-                           "lecturer": lecturer,
                            "selectedCourse": course})
 
 
@@ -55,7 +50,6 @@ def project(request, project_pk):
     course = Course.objects.get(name=request.session['selectedCourse'])
     return render(request, "lecturers/project_detail.html",
                   context={'project': proj,
-                           'lecturer': Lecturer.objects.get(user=request.user),
                            'selectedCourse': course})
 
 
@@ -86,10 +80,10 @@ def project_new(request):
     if form.is_valid():
         try:
             proj = form.save(commit=False)
-            proj.lecturer = Lecturer.objects.get(user=request.user)
+            proj.lecturer = request.user.lecturer
             proj.course = Course.objects.get(name=request.session['selectedCourse'])
             proj.save()
-        except IntegrityError as error:
+        except IntegrityError:
             messages.error(request, _("\n You must provide unique project name"))
             return render(request, "lecturers/project_new.html",
                           context={'form': form,
@@ -104,14 +98,11 @@ def project_new(request):
 @login_required
 @user_passes_test(is_lecturer)
 def team_list(request):
-    title = request.GET.get('title')
-    lecturer = Lecturer.objects.get(user=request.user)
     course = Course.objects.get(name=request.session['selectedCourse'])
-    teams = Team.objects.filter(project_preference__lecturer=lecturer).filter(course=course).exclude(project_preference__isnull=True)
+    teams = Team.objects.filter(project_preference__lecturer=request.user.lecturer).filter(course=course).exclude(project_preference__isnull=True)
     return render(request,
                   template_name="lecturers/team_list.html",
                   context={"teams": teams,
-                           "lecturer": lecturer,
                            "selectedCourse": course})
 
 @login_required
@@ -151,7 +142,7 @@ def modify_project(request, project_pk):
     form = ProjectForm(request.POST or None, instance=proj)
     course = Course.objects.get(name=request.session['selectedCourse'])
     if form.is_valid():
-        if proj.lecturer == Lecturer.objects.get(user = request.user):
+        if proj.lecturer == request.user.lecturer:
             form.save()
             messages.info(request, _("You have successfully updated project:") + proj.title)
         else:

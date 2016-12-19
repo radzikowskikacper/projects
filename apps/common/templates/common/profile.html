@@ -1,5 +1,5 @@
 {% load i18n %}
 <h2>{% trans "Profile" %}</h2>
-<div> <h4>{% trans "Username" %} </h4>{{ user.username }}</div>
+<div> <h4>{% trans "Username" %} </h4>{{ user.get_username }}</div>
 <div> <h4>{% trans "Email" %}</h4> <a href="mailto:{{ user.email }}">{{ user.email }}</a></div>
 

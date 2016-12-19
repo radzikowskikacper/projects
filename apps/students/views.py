@@ -1,40 +1,24 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext_lazy as _
-
-# Create your views here.
-from django.views.generic import ListView
-
-from projects_helper.apps.common.models import Project, Student, Team, Course
+from projects_helper.apps.common.models import Project, Team, Course
 from projects_helper.apps.students import is_student
 
 
 @login_required
 @user_passes_test(is_student)
 def profile(request):
-    student = Student.objects.get(pk=request.user.pk)
-    project_assigned = student.team.project_assigned
-    course = Course.objects.get(name=request.session['selectedCourse'])
-    if project_assigned is not None:
-        messages.info(request, _("You are already assigned to project."))
-        messages.info(request, _("You can't switch project preference."))
-        messages.info(request, _("You can't switch or create new team."))
     return render(request,
                   "students/profile.html",
-                  {'user': request.user,
-                   'student': student,
-                   'selectedCourse': course})
-
+                  {'selectedCourse': request.session['selectedCourse']})
 
 @login_required
 @user_passes_test(is_student)
 def pick_project(request):
-    student = Student.objects.get(user=request.user)
-    team = student.team
+    team = request.user.student.team
     proj_pk = request.POST.get('to_pick', False)
     if proj_pk:
         project_picked = Project.objects.get(pk=proj_pk)
@@ -67,7 +51,6 @@ def pick_project(request):
 
     return redirect(reverse('students:project_list'))
 
-
 @login_required
 @user_passes_test(is_student)
 def project(request, project_pk):
@@ -78,57 +61,36 @@ def project(request, project_pk):
                            'selectedCourse': course},
                   template_name='students/project_detail.html')
 
+@login_required
+@user_passes_test(is_student)
+def project_list(request):
+    course = Course.objects.get(name=request.session['selectedCourse'])
+    projects = Project.objects.select_related('lecturer').filter(course=course)
+    return render(request,
+                  template_name="students/project_list.html",
+                  context={"projects": projects,
+                           "team" : request.user.student.team,
+                           "project_picked" : request.user.student.project_preference,
+                           "selectedCourse": course})
 
-class ListProjects(ListView, LoginRequiredMixin, UserPassesTestMixin):
-    def test_func(self):
-        return is_student(self.request.user)
-
-    model = Project
-    template_name = "students/project_list.html"
-    context_object_name = 'projects'
-
-    def get_queryset(self):
-        qs = super(ListProjects, self).get_queryset()
-        return qs.filter(course=Course.objects.get(name=self.request.session['selectedCourse']))
-
-    def get_context_data(self, **kwargs):
-        context = super(ListProjects, self).get_context_data(**kwargs)
-        student = Student.objects.get(user=self.request.user)
-        context["student"] = student
-        context['team'] = student.team
-        context['project_picked'] = student.project_preference
-        context['selectedCourse'] = Course.objects.get(name=self.request.session['selectedCourse'])
-        return context
-
-
-class ListTeams(ListView, LoginRequiredMixin, UserPassesTestMixin):
-        def test_func(self):
-            return is_student(self.request.user)
-
-        model = Team
-        template_name = "students/team_list.html"
-        context_object_name = 'teams'
-
-        def get_queryset(self):
-            qs = super(ListTeams, self).get_queryset()
-            return qs.filter(course=Course.objects.get(name=self.request.session['selectedCourse'])).exclude(project_preference__isnull=True)
-
-        def get_context_data(self, **kwargs):
-            context = super(ListTeams, self).get_context_data(**kwargs)
-            student = Student.objects.get(user=self.request.user)
-            context['student_team'] = student.team
-            context['student'] = student
-            context['selectedCourse'] = Course.objects.get(name=self.request.session['selectedCourse'])
-            return context
+@login_required
+@user_passes_test(is_student)
+def team_list(request):
+    course = Course.objects.get(name=request.session['selectedCourse'])
+    teams = Team.objects.filter(course=Course.objects.get(name=request.session['selectedCourse'])).exclude(project_preference__isnull=True)
+    return render(request,
+                  template_name="students/team_list.html",
+                  context={"teams": teams,
+                           "student_team" : request.user.student.team,
+                           "selectedCourse": course})
 
 @login_required
 @user_passes_test(is_student)
 def filtered_project_list(request):
     course = Course.objects.get(name=request.session['selectedCourse'])
     query = request.GET.get('query')
-    student = Student.objects.get(user=request.user)
-    filtered_projects = Project.objects.complex_filter(
-        Q(title__contains=query) |
+    filtered_projects = Project.objects.select_related('lecturer').complex_filter(
+        Q(title__icontains=query) |
         Q(lecturer__user__username__contains=query) |
         Q(lecturer__user__email__contains=query)
     )
@@ -136,11 +98,8 @@ def filtered_project_list(request):
     return render(request,
                   template_name="students/project_list.html",
                   context={"projects": filtered_projects,
-                           "student": student,
-                           "student_team": student.team,
+                           "student_team": request.user.student.team,
                            "selectedCourse": course})
-
-
 
 @login_required
 @user_passes_test(is_student)
@@ -148,7 +107,7 @@ def join_team(request):
     team_pk = request.POST.get('to_join', False)
     if team_pk:
         team = Team.objects.get(pk=team_pk)
-        student = Student.objects.get(user=request.user)
+        student = request.user.student
         if team.project_preference.lecturer.max_students_reached():
             messages.error(request,
                            _("Max number of students who can be assigned " +
@@ -161,14 +120,12 @@ def join_team(request):
             messages.success(request,
                  _("You have successfully joined selected team "))
 
-
     return redirect(reverse('students:team_list'))
-
 
 @login_required
 @user_passes_test(is_student)
 def new_team(request):
-    student = Student.objects.get(user=request.user)
+    student = request.user.student
     was_empty_team = student.team.project_preference is None
     student.new_team(request.session['selectedCourse'])
     student.save()
