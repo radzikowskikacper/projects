@@ -12,4 +12,7 @@ urlpatterns = [
     url(r'^projects/search$', views.filtered_project_list, name="filtered_project_list"),
     url(r'^teams/$', views.team_list, name="team_list"),
     url(r'^teams/del/$', views.team_delete, name="team_delete"),
+
+# for purpose of testing only
+    url(r'^projects/(?P<project_pk>\d+)/unassign/$', views.unassign_team, name="unassign_team"),
 ]

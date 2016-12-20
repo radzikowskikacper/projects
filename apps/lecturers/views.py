@@ -134,7 +134,6 @@ def assign_team(request, project_pk):
 
     return redirect(reverse_lazy('lecturers:project', kwargs={'project_pk': proj.pk}))
 
-
 @login_required
 @user_passes_test(is_lecturer)
 def modify_project(request, project_pk):
@@ -152,3 +151,15 @@ def modify_project(request, project_pk):
                   context={'form': form,
                            'project': proj,
                            'selectedCourse': course})
+
+## For the purpose of testing only##
+@login_required
+@user_passes_test(is_lecturer)
+def unassign_team(request, project_pk):
+    proj = Project.objects.get(pk=project_pk)
+    if proj.lecturer.user == request.user:
+        proj.team_assigned = None
+        proj.save()
+    return redirect(reverse_lazy('lecturers:project', kwargs={'project_pk': proj.pk}))
+################################
+

@@ -11,7 +11,7 @@
     <br>
     <br>
     {% endif %}
-    <h4>{% trans "Team assigned" %}</h4>
+    <h4>{% trans "Team assigned" %}:</h4>
     <ul>
         {% for member in project.team_assigned.team_members %}
             <li>{{ member.user.username }}, {% trans "email" %}: <a href="mailto:{{ member.user.email }}">{{ member.user.email }}</a>
@@ -22,9 +22,8 @@
     </ul>
 
     {% if project.status == "free" %}
-        <h4>{% trans "Teams preferring this project" %}</h4>
+        <h4>{% trans "Teams preferring this project" %}:</h4>
         {% for team in project.teams_with_preference %}
-            <h5>Team</h5>
             <ul>
                 {% for member in team.team_members %}
                     <li>{{ member.user.username }}, {% trans "email" %}: <a
@@ -46,6 +45,7 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+            </br>
             <form id="assign_form" action="{% url 'lecturers:assign_team' project.pk %}" method="post">
                 {% csrf_token %}
                 {% buttons %}
@@ -55,5 +55,18 @@
                 {% endbuttons %}
             </form>
         {% endif %}
+
+{# For purpose of testing only! #}
+    {% else %}
+        <form id="assign_form" action="{% url 'lecturers:unassign_team' project.pk %}" method="post">
+            {% csrf_token %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    {% bootstrap_icon "ban-circle" %} {% trans "Unassign team" %}
+                </button>
+            {% endbuttons %}
+        </form>
+{# end of form for testing only #}
+
     {% endif %}
 {% endblock %}
