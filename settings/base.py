@@ -17,7 +17,13 @@ IN_TESTING = sys.argv[1:2] == ['test']
 
 ALLOWED_HOSTS = []
 
-# Insert username of the superuser/admin below
+# See: https://docs.djangoproject.com/en/1.10/ref/settings/#internal-ips
+INTERNAL_IPS = (
+    '0.0.0.0',
+    '127.0.0.1',
+)
+
+# Username of user with access to the admin page.
 ADMIN_LOGIN = ''
 
 # Application definition
@@ -62,14 +68,15 @@ ROOT_URLCONF = 'projects_helper.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'projects_helper.wsgi.application'
 
+
 # Database
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'projects_helper',
-        'USER': 'projects_user',
-        'PASSWORD': 'password',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -83,7 +90,9 @@ if IN_TESTING:
         }
     }
 
-# Internationalization
+
+
+# Internationalization and localization
 
 from django.utils.translation import ugettext_lazy as _
 LANGUAGES = (
@@ -93,7 +102,7 @@ LANGUAGES = (
 
 LANGUAGE_CODE = 'pl'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Poland'
 
 USE_I18N = True
 
@@ -105,12 +114,12 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
 )
 
-# Static files (CSS, JavaScript, Images)
 
+
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 
 # Additional locations of static files
-
 STATICFILES_DIRS = (
     root('assets'),
 )
@@ -154,15 +163,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# CAS
-CAS_SERVER_URL = 'https://merkury.elka.pw.edu.pl/cas/'
-CAS_ADMIN_PREFIX = '/admin'
+# CAS settings. See: https://github.com/mingchen/django-cas-ng
+
+CAS_SERVER_URL = ''
 CAS_VERSION = '3'
 CAS_LOGOUT_COMPLETELY = True
 CAS_IGNORE_REFERER = False
 CAS_RETRY_LOGIN = True
 CAS_LOGIN_MSG = None
 CAS_LOGGED_MSG = None
+#CAS_ADMIN_PREFIX = '/admin'
 #CAS_REDIRECT_URL = '/common/select_course/'
 
 # Login page
@@ -172,12 +182,6 @@ LOGOUT_URL = '/logout/'
 
 # User model
 AUTH_USER_MODEL = 'common.CustomUser'
-
-# .local.py overrides all the common settings.
-try:
-    from .local import *  # noqa
-except ImportError:
-    pass
 
 # importing test settings file if necessary
 if IN_TESTING:
