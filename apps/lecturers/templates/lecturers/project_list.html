@@ -27,8 +27,9 @@
         <table class="table table-striped">
             <tr>
                 <th>{% trans "Delete" %}</th>
-                <th>{% trans "Status" %}</th>
                 <th>{% trans "Title" %}</th>
+                <th>{% trans "Has teams" %}</th>
+                <th>{% trans "Status" %}</th>
             </tr>
             {% for project in projects %}
                 <tr>
@@ -38,9 +39,9 @@
                                    value="{{ project.pk }}"/>
                         {% endif %}
                     </td>
-                    <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
                     <td><a href="{% url 'lecturers:project' project.pk %}">{{ project.title }}</a></td>
-
+                    <td>{% if project.teams_with_preference %} {% trans "yes" %} {% else %} {% trans "no" %} {% endif %}</td>
+                    <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
                 </tr>
             {% endfor %}
         </table>

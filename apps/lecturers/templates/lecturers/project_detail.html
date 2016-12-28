@@ -22,10 +22,9 @@
     <ul>
         <li>
         {% for member in project.team_assigned.team_members %}
-            <a href="mailto:{{ member.user.email }}">{{ member.user.username }}</a>,
-
+                <a href="mailto:{{ member.user.email }}">{{ member.user.username }}</a>,
         {% empty %}
-            <p> {% trans "No team is assigned to the project." %} </p>
+            <p>{% trans "No team is assigned to the project." %}</p>
         {% endfor %}
         </li>
     </ul>
@@ -33,15 +32,15 @@
     {% if project.status == "free" %}
         <h4>{% trans "Teams preferring this project" %}:</h4>
         <ol>
-        {% for team in project.teams_with_preference %}
-            <li>
-            {% for member in team.team_members %}
-                <a href="mailto:{{ member.user.email }}">{{ member.user.username }}</a>,
+            {% for team in project.teams_with_preference %}
+                <li>
+                {% for member in team.team_members %}
+                    <a href="mailto:{{ member.user.email }}">{{ member.user.username }}</a>,
+                {% endfor %}
+                </li>
+            {% empty %}
+                <p>{% trans "No team picked the project." %}</p>
             {% endfor %}
-            </li>
-        {% empty %}
-                <ul><p>{% trans "No team picked the project." %}</p></ul>
-        {% endfor %}
         </ol>
 
         {% if project.lecturer == user.lecturer %}
