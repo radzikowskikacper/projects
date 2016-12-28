@@ -7,10 +7,11 @@
     <form id="project_modify_form" action="{% url "lecturers:modify_project" project.pk %}" method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
-        {% buttons %}
-            <button type="submit" class="btn btn-primary">
-                {% bootstrap_icon "ok" %} {% trans "Submit" %}
-            </button>
-        {% endbuttons %}
+        <a href="{% url "lecturers:project_list" %}" class="btn btn-primary" role="button">
+            {% trans "Back to project list" %}
+        </a>
+        <button type="submit" class="btn btn-primary">
+                {% trans "Submit" %}
+        </button>
     </form>
 {% endblock %}
