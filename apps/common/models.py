@@ -52,10 +52,6 @@ class Team(models.Model):
             return None
 
     @property
-    def students_in_team(self):
-        return self.student_set.all()
-
-    @property
     def is_full(self):
         return len(self.student_set.all()) == 2
 
@@ -71,7 +67,7 @@ class Team(models.Model):
     @staticmethod
     def remove_empty():
         for team in Team.objects.all():
-            if len(team.students_in_team) == 0:
+            if len(team.team_members) == 0:
                 team.delete()
 
     def __str__(self):
