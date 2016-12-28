@@ -51,5 +51,13 @@
             </button>
         {% endbuttons %}
     </form>
+    <form id="assign_all_form" action="{% url 'lecturers:assign_teams_to_projects' %}" method="post">
+        {% csrf_token %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                {% bootstrap_icon "pencil" %} {% trans "Assign teams" %}
+            </button>
+        {% endbuttons %}
+    </form>
     </br>
 {% endblock %}

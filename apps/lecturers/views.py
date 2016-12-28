@@ -73,27 +73,27 @@ def project_delete(request):
 @user_passes_test(is_lecturer)
 def project_new(request):
     course = Course.objects.get(name=request.session['selectedCourse'])
-    if request.method == 'POST':
-        form = ProjectForm(request.POST)
-    else:
-        form = ProjectForm()
+    form = ProjectForm(request.POST or None)
+    context = {
+        'form': form,
+        'selectedCourse': course
+    }
+
     if form.is_valid():
         try:
             proj = form.save(commit=False)
             proj.lecturer = request.user.lecturer
-            proj.course = Course.objects.get(name=request.session['selectedCourse'])
+            proj.course = course
             proj.save()
         except IntegrityError:
             messages.error(request, _("\n You must provide unique project name"))
-            return render(request, "lecturers/project_new.html",
-                          context={'form': form,
-                                    'selectedCourse': course})
+            return render(request, "lecturers/project_new.html", context)
 
         messages.info(request, _("You have succesfully added new project: ") + proj.title)
         return redirect(reverse('lecturers:project_list'))
-    return render(request, "lecturers/project_new.html",
-                  context={'form': form,
-                            'selectedCourse': course})
+
+    # GET
+    return render(request, "lecturers/project_new.html", context)
 
 @login_required
 @user_passes_test(is_lecturer)
@@ -136,23 +136,65 @@ def assign_team(request, project_pk):
 
 @login_required
 @user_passes_test(is_lecturer)
+def assign_teams_to_projects(request):
+    course = Course.objects.get(name=request.session['selectedCourse'])
+    projects = Project.objects.filter(lecturer=request.user.lecturer).filter(course=course)
+    if projects:
+        for proj in projects:
+            proj.assign_random_team()
+        messages.info(request, _("You have successfully assigned teams to projects"))
+    else:
+        messages.info(request, _("You haven't got any projects"))
+    return redirect(reverse('lecturers:project_list'))
+
+@login_required
+@user_passes_test(is_lecturer)
 def modify_project(request, project_pk):
     proj = get_object_or_404(Project, pk=project_pk)
     form = ProjectForm(request.POST or None, instance=proj)
     course = Course.objects.get(name=request.session['selectedCourse'])
+
     if form.is_valid():
-        if proj.lecturer == request.user.lecturer:
+        try:
             form.save()
-            messages.info(request, _("You have successfully updated project:") + proj.title)
-        else:
-            messages.error(request, _("Access denied"))
-        return redirect(reverse("lecturers:modify_project", kwargs={'project_pk': proj.pk}))
+        except IntegrityError:
+            messages.error(request, _("\n You must provide unique project name"))
+            return redirect(reverse("lecturers:modify_project", kwargs={'project_pk': proj.pk}))
+
+        messages.info(request, _("You have successfully updated project:") + proj.title)
+        return redirect(reverse('lecturers:project_list'))
+
     return render(request, "lecturers/project_modify.html",
                   context={'form': form,
                            'project': proj,
                            'selectedCourse': course})
 
-## For the purpose of testing only##
+@login_required
+@user_passes_test(is_lecturer)
+def project_copy(request, project_pk):
+    new_proj = get_object_or_404(Project, pk = project_pk)
+    new_proj.pk = None # autogen a new pk
+    new_proj.title = new_proj.title + " - " + str(_("copy"))
+    form =  ProjectForm(request.POST or None, instance = new_proj)
+    course = Course.objects.get(name=request.session['selectedCourse'])
+    context = {
+        'form': form,
+        'selectedCourse': course
+    }
+
+    if form.is_valid():
+        try:
+            form.save()
+        except IntegrityError:
+            messages.error(request, _("\n You must provide unique project name"))
+            return render(request, "lecturers/project_new.html", context)
+
+        messages.info(request, _("You have succesfully added new project: ") + new_proj.title)
+        return redirect(reverse('lecturers:project_list'))
+
+    return render(request, "lecturers/project_new.html", context)
+
+
 @login_required
 @user_passes_test(is_lecturer)
 def unassign_team(request, project_pk):
@@ -161,5 +203,4 @@ def unassign_team(request, project_pk):
         proj.team_assigned = None
         proj.save()
     return redirect(reverse_lazy('lecturers:project', kwargs={'project_pk': proj.pk}))
-################################
 
