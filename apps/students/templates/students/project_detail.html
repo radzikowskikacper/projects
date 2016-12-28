@@ -1,5 +1,16 @@
 {% extends 'students/base.html' %}
 {% load i18n %}
 {% block content %}
-    {% include 'common/project_detail.html' %}
+    <div>
+    	<h4>{% trans "Title" %}</h4>
+    	{{ project.title }}
+    </div>
+	<div>
+		<h4>{% trans "Lecturer" %}</h4>
+		{{ project.lecturer.user.username }},
+	    {% trans "email" %}: <a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer.user.email }}</a>
+	</div>
+	<div><h4>{% trans "Description" %}</h4>
+	    {{ project.description }}
+	</div>
 {% endblock %}
