@@ -10,7 +10,9 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-
+                <li>
+                    <a class="nav-link" href="{% url 'about:info' %}">{% trans "About" %}</a>
+                </li>
                 <li class="dropdown">
                   {% get_language_info for LANGUAGE_CODE as current %}
                   {% get_available_languages as LANGUAGES %}

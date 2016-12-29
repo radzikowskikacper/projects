@@ -41,6 +41,7 @@
 {% endblock %}
 
 {% block content %}
+<div class="jumbotron">
     {% include "common/messages.html" %}
     <h2>{% trans "Select course" %}</h2>
     <br>
@@ -48,6 +49,6 @@
         {% csrf_token %}
         <h4>{% bootstrap_form form %}</h4>
     </form>
-
+</div>
 
 {% endblock %}

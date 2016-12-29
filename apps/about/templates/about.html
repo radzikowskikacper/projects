@@ -1,0 +1,11 @@
+{% extends basetemplate %}
+{% load bootstrap3 %}
+{% load version %}
+{% block content %}
+
+<div class="jumbotron">
+    <p>Copyright by {% contributors %}.</p>
+    <p>Server info: version: {% version_number %}, Django version: {% django_version %}, debug: {% if debug %} True {% else %} False {% endif %}</p>
+</div>
+
+{% endblock %}

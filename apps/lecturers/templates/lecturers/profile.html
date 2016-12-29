@@ -3,8 +3,9 @@
 {% load i18n %}
 {% block content %}
     {% include "common/messages.html" %}
-    {% include "common/profile.html" %}
-    <br>
-    <a href="{% url "lecturers:project_new" selectedCourse.code %}" class="btn btn-primary" role="button">{% trans "New Project" %}</a>
-
+    <div class="jumbotron">
+        {% include "common/profile.html" %}
+        <br>
+        <a href="{% url "lecturers:project_new" selectedCourse.code %}" class="btn btn-primary" role="button">{% trans "New Project" %}</a>
+    </div>
 {% endblock %}

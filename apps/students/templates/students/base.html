@@ -19,7 +19,9 @@
                 <li>
                     <a href="{% url 'common:select_course' %}">{% trans "Change course" %}</a>
                 </li>
-
+                <li>
+                    <a class="nav-link" href="{% url 'about:info' %}">{% trans "About" %}</a>
+                </li>
                 <li class="dropdown">
                   {% get_language_info for LANGUAGE_CODE as current %}
                   {% get_available_languages as LANGUAGES %}

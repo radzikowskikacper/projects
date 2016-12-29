@@ -1,4 +1,5 @@
 from django import template
+import django
 import os, re
 
 register = template.Library()
@@ -24,7 +25,10 @@ def get_contributors():
 def version_number():
     return get_version('projects_helper/apps')
 
-
 @register.simple_tag
 def contributors():
     return get_contributors()
+
+@register.simple_tag
+def django_version():
+    return django.get_version()

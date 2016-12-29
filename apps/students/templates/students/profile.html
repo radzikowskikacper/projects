@@ -2,42 +2,43 @@
 {% load i18n %}
 {% block content %}
     {% include "common/messages.html" %}
+    <div class="jumbotron">
+        {% include "common/profile.html" %}
+        <div><h4>{% trans "Team" %}</h4>
+            <ul>
+            {% for member in user.student.team.team_members %}
+                <li>{{ member.user.username }}, email: <a href="mailto:{{ member.user.email }}">{{ member.user.email }}</a>
+                    {% if member.user == user %} ({% trans "You" %}) {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        <div><h4>{% trans "Project preference " %}</h4>
+            {% with project_preference=user.student.team.project_preference %}
+                {% if project_preference == None %}
+                    <div>{% trans "You have not picked project" %}</div>
+                {% else %}
+                    <div>
+                        <a href="{% url 'students:project' selectedCourse.code project_preference.pk %}">
+                            {{ project_preference }}</a>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+        <div><h4>{% trans "Status" %}</h4>
+            {% with project_assigned=user.student.team.project_assigned %}
+                {% if project_assigned == None %}
+                    <div>{% trans "You are not assigned to project" %}</div>
+                {% else %}
+                    <div>{% trans "You are assigned to project:" %}
+                        <a href="{% url 'students:project' selectedCourse.code project_assigned.pk %}">
+                            {{ project_assigned }}
+                        </a>
+                    </div>
+                {% endif %}
+            {% endwith %}
 
-    {% include "common/profile.html" %}
-    <div><h4>{% trans "Team" %}</h4>
-        <ul>
-        {% for member in user.student.team.team_members %}
-            <li>{{ member.user.username }}, email: <a href="mailto:{{ member.user.email }}">{{ member.user.email }}</a>
-                {% if member.user == user %} ({% trans "You" %}) {% endif %}
-            </li>
-        {% endfor %}
-        </ul>
-    </div>
-    <div><h4>{% trans "Project preference " %}</h4>
-        {% with project_preference=user.student.team.project_preference %}
-            {% if project_preference == None %}
-                <div>{% trans "You have not picked project" %}</div>
-            {% else %}
-                <div>
-                    <a href="{% url 'students:project' selectedCourse.code project_preference.pk %}">
-                        {{ project_preference }}</a>
-                    </a>
-                </div>
-            {% endif %}
-        {% endwith %}
-    </div>
-    <div><h4>{% trans "Status" %}</h4>
-        {% with project_assigned=user.student.team.project_assigned %}
-            {% if project_assigned == None %}
-                <div>{% trans "You are not assigned to project" %}</div>
-            {% else %}
-                <div>{% trans "You are assigned to project:" %}
-                    <a href="{% url 'students:project' selectedCourse.code project_assigned.pk %}">
-                        {{ project_assigned }}
-                    </a>
-                </div>
-            {% endif %}
-        {% endwith %}
-
+        </div>
     </div>
 {% endblock %}
