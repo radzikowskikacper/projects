@@ -182,7 +182,7 @@ LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
 
 # User model
-AUTH_USER_MODEL = 'common.CustomUser'
+AUTH_USER_MODEL = 'common.CAS_User'
 
 # importing test settings file if necessary
 if IN_TESTING:

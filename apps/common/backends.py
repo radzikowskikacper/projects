@@ -12,48 +12,45 @@ class ExtendedCASBackend(CASBackend):
         user = super(ExtendedCASBackend, self).authenticate(
             ticket, service, request)
 
-        attributes = request.session.get('attributes', None)
-        lecturerModel = apps.get_model('common', 'Lecturer')
-        studentModel = apps.get_model('common', 'Student')
+        lecturerModel = apps.get_model('lecturers', 'Lecturer')
+        studentModel = apps.get_model('students', 'Student')
 
-        if attributes is not None:
-            if attributes['employeeType'] == 'S':
-            # CHANGE THIS: two step checking needed when user type was changed manually
+        if user.user_type == 'N':
+            attributes = request.session.get('attributes', None)
+            if attributes:
                 try:
-                    student = studentModel.objects.get(user=user)
-                    print("User logged in: email: " + attributes['mail'] + ", CAS employeeType: " + attributes['employeeType'])
+                    attributes['employeeType']
+                except KeyError:
+                    # inform about exception. this user will be redirected back
+                    # to home page (see: .views.redirect_user)
+                    print(
+                        "Exception: CAS attribute 'employeeType' not found!" +
+                        " (username: " + user.username + ").")
                     return user
-                except studentModel.DoesNotExist:
-                    try:
-                        lecturer = lecturerModel.objects.get(user=user)
-                        print("User logged in: email: " + attributes['mail'] + ", CAS employeeType: " + attributes['employeeType'])
-                        return user
-                    except lecturerModel.DoesNotExist:
-                    	# logged in for the first time, create student user
-                        user.user_type = 'S'
-                        user.email = attributes['mail']
-
-                    user.save()
+                if attributes['employeeType'] == 'S':
+                    user.user_type = 'S'
                     studentModel.objects.create(user=user)
-            elif attributes['employeeType'] == 'P':
-                try:
-                    lecturer = lecturerModel.objects.get(user=user)
-                    print("User logged in: email: " + attributes['mail'] + ", CAS employeeType: " + attributes['employeeType'])
-                    return user
-                except lecturerModel.DoesNotExist:
-                    # logged in for the first time, create lecturer user
+                elif attributes['employeeType'] == 'P':
+                    user.user_type = 'L'
                     is_admin = (settings.ADMIN_LOGIN == user.username)
                     if is_admin:
                         user.is_staff = True
                         user.is_superuser = True
-
-                    user.user_type = 'L'
+                        lecturerModel.objects.create(user=user)
+                try:
                     user.email = attributes['mail']
-                    user.save()
-                    lecturerModel.objects.create(user=user)
+                except KeyError:
+                    print(
+                        "Exception: CAS attribute 'mail' not found!" +
+                        " (username: " + user.username + ").")
+                    user.email = 'user@mail.com'
+                user.save()
 
-        print("New user created:")
-        for arg, val in attributes.items():
-            print(arg + ": " + val)
+                print("New user created:")
+                for arg, val in attributes.items():
+                    print(arg + ": " + val)
+
+        elif user.user_type == 'S' or user.user_type == 'L':
+            print("User logged in: email: " + user.email)
+
         return user
-
