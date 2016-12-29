@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from registration.forms import RegistrationForm
-from django.forms import Form
+from django.forms import Form, RadioSelect
 from django.forms.fields import *  # NOQA
 
-from projects_helper.apps.common.models import CustomUser, Course
+from projects_helper.apps.common.models import Course
 
 
 class CustomRegistrationForm(RegistrationForm):
@@ -30,6 +30,7 @@ class CustomRegistrationForm(RegistrationForm):
 
 class CourseSelectorForm(Form):
     selection = ChoiceField(
-        choices=[(c.name, c.name) for c in Course.objects.all()],
+        choices=[(c.code, c.name) for c in Course.objects.all()],
         label='',
+        widget=RadioSelect(attrs={'onclick': 'form.submit()'})
         )

@@ -13,10 +13,10 @@
     </div>
     {% if project.lecturer == user.lecturer %}
     <br>
-    <a href="{% url "lecturers:modify_project" project.pk %}" class="btn btn-primary"> {% bootstrap_icon "edit" %}
+    <a href="{% url "lecturers:modify_project" selectedCourse.code project.pk %}" class="btn btn-primary"> {% bootstrap_icon "edit" %}
         {% trans "Edit" %}</a>
-    <a href="{% url "lecturers:project_copy" project.pk %}" class="btn btn-primary"> {% bootstrap_icon "edit" %}
-        {% trans "Create copy" %}</a>
+    <a href="{% url "lecturers:project_copy" selectedCourse.code project.pk %}" class="btn btn-primary"> {% bootstrap_icon "duplicate" %}
+        {% trans "Create a copy" %}</a>
     <br>
     <br>
     {% endif %}

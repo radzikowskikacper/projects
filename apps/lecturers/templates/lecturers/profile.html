@@ -5,6 +5,6 @@
     {% include "common/messages.html" %}
     {% include "common/profile.html" %}
     <br>
-    <a href="{% url "lecturers:project_new" %}" class="btn btn-primary" role="button">{% trans "New Project" %}</a>
+    <a href="{% url "lecturers:project_new" selectedCourse.code %}" class="btn btn-primary" role="button">{% trans "New Project" %}</a>
 
 {% endblock %}

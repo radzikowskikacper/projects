@@ -4,10 +4,10 @@
     {% include "common/messages.html" %}
     <h2>{% trans "New project" %}</h2>
     {% load bootstrap3 %}
-    <form id="project_form" action="{% url 'lecturers:project_new' %}" method="post">
+    <form id="project_form" action="{% url 'lecturers:project_new' selectedCourse.code %}" method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
-        <a href="{% url "lecturers:project_list" %}" class="btn btn-primary" role="button">
+        <a href="{% url "lecturers:project_list" selectedCourse.code %}" class="btn btn-primary" role="button">
             {% trans "Back to project list" %}
         </a>
         <button type="submit" class="btn btn-primary">

@@ -7,7 +7,7 @@
 
     <form class="navbar-form navbar-right"
           role="search"
-          action="{% url 'lecturers:filtered_project_list' %}"
+          action="{% url 'lecturers:filtered_project_list' selectedCourse.code %}"
           method="get">
         <div class="form-group">
             <input class="form-control" type="text"
@@ -39,7 +39,7 @@
                                    value="{{ project.pk }}"/>
                         {% endif %}
                     </td>
-                    <td><a href="{% url 'lecturers:project' project.pk %}">{{ project.title }}</a></td>
+                    <td><a href="{% url 'lecturers:project' selectedCourse.code project.pk %}">{{ project.title }}</a></td>
                     <td>{% if project.teams_with_preference %} {% trans "yes" %} {% else %} {% trans "no" %} {% endif %}</td>
                     <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
                 </tr>
@@ -51,7 +51,7 @@
             </button>
         {% endbuttons %}
     </form>
-    <form id="assign_all_form" action="{% url 'lecturers:assign_teams_to_projects' %}" method="post">
+    <form id="assign_all_form" action="{% url 'lecturers:assign_teams_to_projects' selectedCourse.code %}" method="post">
         {% csrf_token %}
         {% buttons %}
             <button type="submit" class="btn btn-primary">

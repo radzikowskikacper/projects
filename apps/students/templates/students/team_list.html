@@ -31,7 +31,7 @@
                     <td>
                         {% with project_assigned=team.project_assigned %}
                             {% if project_assigned != None %}
-                                <a href='{% url 'students:project' project_assigned.pk %}'> {{ project_assigned }} </a>
+                                <a href='{% url 'students:project' selectedCourse.code project_assigned.pk %}'> {{ project_assigned }} </a>
                             {% else %}
                                 {{ project_assigned }}
                             {% endif %}
@@ -40,7 +40,7 @@
                     <td>
                         {% with project_preference=team.project_preference %}
                             {% if project_preference != None %}
-                                <a href='{% url 'students:project' project_preference.pk %}'> {{ project_preference }} </a>
+                                <a href='{% url 'students:project' selectedCourse.code project_preference.pk %}'> {{ project_preference }} </a>
                             {% else %}
                                 {{ project_preference }}
                             {% endif %}

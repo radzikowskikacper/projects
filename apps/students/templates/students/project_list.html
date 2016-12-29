@@ -8,7 +8,7 @@
     <form class="navbar-form navbar-right"
           id="search_form"
           role="search"
-          action="{% url 'students:filtered_project_list' %}"
+          action="{% url 'students:filtered_project_list' selectedCourse.code %}"
           method="get">
         <div class="form-group">
             <input class="form-control" type="text"
@@ -42,7 +42,7 @@
                         <td></td>
                     {% endif %}
                     <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
-                    <td><a href="{% url 'students:project' project.pk %}">{{ project.title }}</a></td>
+                    <td><a href="{% url 'students:project' selectedCourse.code project.pk %}">{{ project.title }}</a></td>
                     <td><a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer.user.username }}</a></td>
                 </tr>
             {% endfor %}

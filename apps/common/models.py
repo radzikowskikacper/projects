@@ -1,6 +1,4 @@
-from enum import Enum
-
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from random import randint
 from django.dispatch import receiver
@@ -9,7 +7,13 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Course(models.Model):
-    name = models.CharField(verbose_name=_('name'), max_length=255, primary_key=True)
+    name = models.CharField(verbose_name=_('name'),
+                            max_length=255,
+                            primary_key=True)
+    code = models.CharField(verbose_name=_('code'),
+                            default='',
+                            max_length=6,
+                            blank=False)
 
     class Meta:
         ordering = ['name']
@@ -26,9 +30,9 @@ class Team(models.Model):
                                            null=True,
                                            blank=True)
     course = models.ForeignKey('common.Course',
-                                       verbose_name=_('course'),
-                                       null=True,
-                                       blank=False)
+                               verbose_name=_('course'),
+                               null=True,
+                               blank=False)
 
     class Meta:
         verbose_name = _('team')
@@ -88,9 +92,9 @@ class Project(models.Model):
     description = models.TextField(verbose_name=_('desciption'))
 
     course = models.ForeignKey('common.Course',
-                                           verbose_name=_('course'),
-                                           null=True,
-                                           blank=False)
+                               verbose_name=_('course'),
+                               null=True,
+                               blank=False)
     lecturer = models.ForeignKey('common.Lecturer',
                                  verbose_name=_('lecturer'),
                                  on_delete=models.CASCADE,
@@ -171,7 +175,7 @@ class Student(models.Model):
 
     def new_team(self, selectedCourse):
         if not self.team.is_locked:
-            team = Team(course=Course.objects.get(name=selectedCourse))
+            team = Team(course=Course.objects.get(code=selectedCourse))
             team.save()
             self.join_team(team)
 

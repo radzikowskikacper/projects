@@ -43,15 +43,10 @@
 {% block content %}
     {% include "common/messages.html" %}
     <h2>{% trans "Select course" %}</h2>
+    <br>
     <form method="post" action="{% url 'common:select_course' %}">
         {% csrf_token %}
-        {% bootstrap_form form %}
-        {% buttons %}
-            <button type="submit" class="btn btn-primary">
-                {% trans "Select" %}
-            </button>
-
-        {% endbuttons %}
+        <h4>{% bootstrap_form form %}</h4>
     </form>
 
 

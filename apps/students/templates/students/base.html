@@ -9,10 +9,10 @@
                     <a class="nav-link" href="{% url 'students:profile' %}">{% trans "PROFILE" %}</a>
                 </li>
                 <li class="navbar-left">
-                    <a class="nav-link" href="{% url 'students:project_list' %}">{% trans "PROJECTS" %}</a>
+                    <a class="nav-link" href="{% url 'students:project_list' selectedCourse.code %}">{% trans "PROJECTS" %}</a>
                 </li>
                 <li class="navbar-left">
-                    <a class="nav-link" href="{% url 'students:team_list' %}">{% trans "TEAMS" %}</a>
+                    <a class="nav-link" href="{% url 'students:team_list' selectedCourse.code %}">{% trans "TEAMS" %}</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
