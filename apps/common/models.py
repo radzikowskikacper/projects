@@ -112,6 +112,7 @@ class Project(models.Model):
                                  blank=False)
     team_assigned = models.OneToOneField('common.Team',
                                          verbose_name=_('team assigned'),
+                                         on_delete=models.SET_NULL,
                                          null=True,
                                          blank=True)
 

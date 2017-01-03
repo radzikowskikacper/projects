@@ -28,9 +28,14 @@ class CustomRegistrationForm(RegistrationForm):
             user.save()
         return user
 
+# this callable will be necessary to avoid executing queries
+# at the time this models.py is imported
+def get_course_set():
+    return Course.objects.all()
+
 class CourseSelectorForm(Form):
     selection = ChoiceField(
-        choices=[(c.code, c.name) for c in Course.objects.all()],
+        choices=[(c.code, c.name) for c in get_course_set()],
         label='',
         widget=RadioSelect(attrs={'onclick': 'form.submit()'})
         )

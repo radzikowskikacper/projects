@@ -11,6 +11,7 @@ class Student(models.Model):
                                 primary_key=True)
     team = models.ForeignKey('common.Team',
                              verbose_name=_('team'),
+                             on_delete=models.SET_NULL,
                              null=True,
                              blank=True)
 
