@@ -128,9 +128,9 @@ def join_team(request):
                              "to this lecturer has been reached. " +
                              "Choose project from another lecturer."))
         else:
+            student.leave_team()
             student.join_team(team)
             student.save()
-            Team.remove_empty()
             messages.success(request,
                              _("You have successfully joined selected team "))
 
@@ -143,9 +143,9 @@ def join_team(request):
 def new_team(request):
     student = request.user.student
     was_empty_team = student.team.project_preference is None
+    student.leave_team()
     student.new_team(request.session['selectedCourse'])
     student.save()
-    Team.remove_empty()
     if request.method == 'POST' and not was_empty_team:
         messages.success(request,
                          _("You have successfully left the team "))

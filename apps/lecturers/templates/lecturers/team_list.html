@@ -21,14 +21,21 @@
                         <input type="checkbox" name="to_delete" id="{{ team.pk }}"
                                 value="{{ team.pk }}"/>
                     </td>
-                    <td>{{ team }}</td>
-                    <td>{{ team.project_preference.title }}</td>
+                    <td>
+                        {% for stud in team.team_members %}
+                            <a href="mailto:{{ stud.user.email }}">{{ stud }}</a><br>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{% url 'lecturers:project' selectedCourse.code team.project_preference.pk %}">
+                        {{ team.project_preference.title }}</a>
+                    </td>
                     <td>{% if team.is_locked %} {% trans "Yes" %} {% else %} {% trans "No" %} {% endif %}</td>
 
                 </tr>
             {% endfor %}
         </table>
-        {% trans "Be aware: 'Delete' operation deletes teams as well as its members. This means that student accounts will be deleted!" %}
+
         {% buttons %}
             <button type="submit" class="btn btn-primary">
                 {% bootstrap_icon "remove" %} {% trans "Delete" %}

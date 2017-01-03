@@ -21,11 +21,6 @@ class Student(models.Model):
         verbose_name_plural = _('students')
 
     @property
-    def is_assigned_to_project(self):
-        val = self.project_assigned is not None
-        return val
-
-    @property
     def project_assigned(self):
         return self.team.project_assigned
 
@@ -34,14 +29,20 @@ class Student(models.Model):
         return self.team.project_preference
 
     def new_team(self, selectedCourse):
-        if not self.team.is_locked:
+        if (self.team_id is None) or (not self.team.is_locked):
             team = Team(course=Course.objects.get(code=selectedCourse))
             team.save()
             self.join_team(team)
 
     def join_team(self, team):
-        if not self.team.is_locked and not team.is_full:
+        if (self.team_id is None) or (not self.team.is_locked and not team.is_full):
             self.team = team
+
+    def leave_team(self):
+        if (self.team_id is not None) and not self.team.is_locked:
+            if not self.team.is_full:
+                self.team.delete()
+            self.team = None
 
     def save(self, *args, **kwargs):
         if self.team_id is None:
@@ -54,7 +55,7 @@ class Student(models.Model):
         return super(self.__class__, self).delete(*args, **kwargs)
 
     def __str__(self):
-        return self.user.username
+        return self.user.get_full_name()
 
 
 # when removing multiple students or lecturers from the admin site, post_delete signals

@@ -27,7 +27,11 @@
                                    value="{{ team.pk }}"/>
                         {% endif %}
                     </td>
-                    <td>{{ team }}</td>
+                    <td>
+                        {% for stud in team.team_members %}
+                            <a href="mailto:{{ stud.user.email }}">{{ stud }}</a><br>
+                        {% endfor %}
+                    </td>
                     <td>
                         {% with project_assigned=team.project_assigned %}
                             {% if project_assigned != None %}

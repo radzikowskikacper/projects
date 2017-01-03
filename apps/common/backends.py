@@ -5,6 +5,15 @@ from django.conf import settings
 #from django.core.exceptions import ObjectDoesNotExist
 
 
+def new_user_created_info(attr):
+    print("New user created:")
+    for arg, val in attr.items():
+        print(arg + ": " + val)
+
+def arg_not_found_info(user, arg_name):
+    print("Exception: CAS attribute '" + arg_name + "' not found!" +
+    " (username: " + user.username + ").")
+
 class ExtendedCASBackend(CASBackend):
 
     def authenticate(self, ticket, service, request):
@@ -20,12 +29,11 @@ class ExtendedCASBackend(CASBackend):
             if attributes:
                 try:
                     attributes['employeeType']
-                except KeyError:
+                except KeyError as e:
                     # inform about exception. this user will be redirected back
                     # to home page (see: .views.redirect_user)
-                    print(
-                        "Exception: CAS attribute 'employeeType' not found!" +
-                        " (username: " + user.username + ").")
+                    arg_not_found_info(user, str(e))
+                    new_user_created_info(attributes)
                     return user
                 if attributes['employeeType'] == 'S':
                     user.user_type = 'S'
@@ -39,16 +47,21 @@ class ExtendedCASBackend(CASBackend):
                         lecturerModel.objects.create(user=user)
                 try:
                     user.email = attributes['mail']
-                except KeyError:
-                    print(
-                        "Exception: CAS attribute 'mail' not found!" +
-                        " (username: " + user.username + ").")
+                except KeyError as e:
+                    arg_not_found_info(user, str(e))
                     user.email = 'user@mail.com'
-                user.save()
+                try:
+                    user.first_name = attributes['givenName'].split()[0]
+                except KeyError as e:
+                    arg_not_found_info(user, str(e))
+                    user.first_name = user.username
+                try:
+                    user.last_name = attributes['sn']
+                except KeyError as e:
+                    arg_not_found_info(user, str(e))
 
-                print("New user created:")
-                for arg, val in attributes.items():
-                    print(arg + ": " + val)
+                user.save()
+                new_user_created_info(attributes)
 
         elif user.user_type == 'S' or user.user_type == 'L':
             print("User logged in: email: " + user.email)

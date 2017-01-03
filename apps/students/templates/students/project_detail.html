@@ -7,7 +7,7 @@
     </div>
 	<div>
 		<h4>{% trans "Lecturer" %}</h4>
-		{{ project.lecturer.user.username }},
+		{{ project.lecturer }},
 	    {% trans "email" %}: <a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer.user.email }}</a>
 	</div>
 	<div><h4>{% trans "Description" %}</h4>

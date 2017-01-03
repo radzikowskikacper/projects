@@ -24,7 +24,7 @@
     <ul>
         <li>
         {% for member in project.team_assigned.team_members %}
-                <a href="mailto:{{ member.user.email }}">{{ member.user.username }}</a>,
+                <a href="mailto:{{ member.user.email }}">{{ member }}</a>,
         {% empty %}
             <p>{% trans "No team is assigned to the project." %}</p>
         {% endfor %}
@@ -37,7 +37,7 @@
             {% for team in project.teams_with_preference %}
                 <li>
                 {% for member in team.team_members %}
-                    <a href="mailto:{{ member.user.email }}">{{ member.user.username }}</a>,
+                    <a href="mailto:{{ member.user.email }}">{{ member }}</a>,
                 {% endfor %}
                 </li>
             {% empty %}

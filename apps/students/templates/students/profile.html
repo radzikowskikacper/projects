@@ -7,14 +7,14 @@
         <div><h4>{% trans "Team" %}</h4>
             <ul>
             {% for member in user.student.team.team_members %}
-                <li>{{ member.user.username }}, email: <a href="mailto:{{ member.user.email }}">{{ member.user.email }}</a>
+                <li>{{ member.user.get_full_name }}, email: <a href="mailto:{{ member.user.email }}">{{ member.user.email }}</a>
                     {% if member.user == user %} ({% trans "You" %}) {% endif %}
                 </li>
             {% endfor %}
             </ul>
         </div>
         <div><h4>{% trans "Project preference " %}</h4>
-            {% with project_preference=user.student.team.project_preference %}
+            {% with project_preference=user.student.project_preference %}
                 {% if project_preference == None %}
                     <div>{% trans "You have not picked project" %}</div>
                 {% else %}
@@ -27,7 +27,7 @@
             {% endwith %}
         </div>
         <div><h4>{% trans "Status" %}</h4>
-            {% with project_assigned=user.student.team.project_assigned %}
+            {% with project_assigned=user.student.project_assigned %}
                 {% if project_assigned == None %}
                     <div>{% trans "You are not assigned to project" %}</div>
                 {% else %}
