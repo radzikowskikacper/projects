@@ -71,7 +71,7 @@ def project_delete(request):
             if proj.status() == 'free':
                 proj.delete()
             else:
-                messages.error(request, _(
+                messages.info(request, _(
                     "Cannot delete occupied project: ") + proj.title)
         else:
             messages.error(request,
@@ -101,80 +101,13 @@ def project_new(request, course_code=None):
                 "\n You must provide unique project name"))
             return render(request, "lecturers/project_new.html", context)
 
-        messages.info(request, _(
+        messages.success(request, _(
             "You have succesfully added new project: ") + proj.title)
         return redirect(reverse('lecturers:project_list',
                                 kwargs={'course_code': course_code}))
 
     # GET
     return render(request, "lecturers/project_new.html", context)
-
-
-@login_required
-@user_passes_test(is_lecturer)
-def team_list(request, course_code=None):
-    course = get_object_or_404(Course, code__iexact=course_code)
-    teams = Team.objects.filter(project_preference__lecturer=request.user.lecturer).filter(
-        course=course).exclude(project_preference__isnull=True)
-    return render(request,
-                  template_name="lecturers/team_list.html",
-                  context={"teams": teams,
-                           "selectedCourse": course})
-
-
-@login_required
-@user_passes_test(is_lecturer)
-def team_delete(request):
-    teams_to_delete = Team.objects.filter(
-        pk__in=request.POST.getlist('to_delete'))
-
-    for team in teams_to_delete:
-        if team.project_preference.lecturer.user == request.user:
-            if team.is_locked == False:
-                team.delete()
-            else:
-                messages.error(request, _(
-                    "Cannot delete assigned team: ") + str(team))
-        else:
-            messages.error(request, _("Cannot delete team: " +
-                                      str(team) + " - access denied"))
-    return redirect(reverse('lecturers:team_list',
-                            kwargs={'course_code': request.session['selectedCourse']}))
-
-
-@login_required
-@user_passes_test(is_lecturer)
-def assign_team(request, project_pk):
-    proj = Project.objects.get(pk=project_pk)
-    if proj.lecturer.user == request.user:
-        if proj.teams_with_preference().count() == 0:
-            messages.error(request, _(
-                "Cannot assign: No teams waiting for project"))
-        else:
-            proj.assign_random_team()
-    else:
-        messages.error(request, _("Cannot assign: access denied"))
-
-    return redirect(reverse_lazy('lecturers:project',
-                                 kwargs={'project_pk': proj.pk,
-                                         'course_code': request.session['selectedCourse']}))
-
-
-@login_required
-@user_passes_test(is_lecturer)
-def assign_teams_to_projects(request, course_code=None):
-    course = get_object_or_404(Course, code__iexact=course_code)
-    projects = Project.objects.filter(
-        lecturer=request.user.lecturer).filter(course=course)
-    if projects:
-        for proj in projects:
-            proj.assign_random_team()
-        messages.info(request, _(
-            "You have successfully assigned teams to projects"))
-    else:
-        messages.info(request, _("You haven't got any projects"))
-    return redirect(reverse('lecturers:project_list',
-                            kwargs={'course_code': course_code}))
 
 
 @login_required
@@ -194,8 +127,8 @@ def modify_project(request, project_pk, course_code=None):
                                     kwargs={'project_pk': proj.pk,
                                             'course_code': course_code}))
 
-        messages.info(request, _(
-            "You have successfully updated project:") + proj.title)
+        messages.success(request, _(
+            "You have successfully updated project: ") + proj.title)
         return redirect(reverse('lecturers:project_list',
                                 kwargs={'course_code': course_code}))
 
@@ -226,7 +159,7 @@ def project_copy(request, project_pk, course_code=None):
                 "\n You must provide unique project name"))
             return render(request, "lecturers/project_new.html", context)
 
-        messages.info(request, _(
+        messages.success(request, _(
             "You have succesfully added new project: ") + new_proj.title)
         return redirect(reverse('lecturers:project_list',
                                 kwargs={'course_code': course_code}))
@@ -236,11 +169,85 @@ def project_copy(request, project_pk, course_code=None):
 
 @login_required
 @user_passes_test(is_lecturer)
+def team_list(request, course_code=None):
+    course = get_object_or_404(Course, code__iexact=course_code)
+    teams = Team.objects.filter(project_preference__lecturer=request.user.lecturer).filter(
+        course=course).exclude(project_preference__isnull=True)
+    return render(request,
+                  template_name="lecturers/team_list.html",
+                  context={"teams": teams,
+                           "selectedCourse": course})
+
+
+@login_required
+@user_passes_test(is_lecturer)
+def team_delete(request):
+    teams_to_delete = Team.objects.filter(
+        pk__in=request.POST.getlist('to_delete'))
+
+    for team in teams_to_delete:
+        if team.project_preference.lecturer.user == request.user:
+            if team.is_locked == False:
+                messages.success(request, _(
+                    "You have succesfully deleted team: ") + str(team))
+                team.delete()
+            else:
+                messages.info(request, _(
+                    "Cannot delete assigned team: ") + str(team))
+        else:
+            messages.error(request, _("Cannot delete team: " +
+                                      str(team) + " - access denied"))
+    return redirect(reverse('lecturers:team_list',
+                            kwargs={'course_code': request.session['selectedCourse']}))
+
+
+@login_required
+@user_passes_test(is_lecturer)
+def assign_team(request, project_pk):
+    proj = Project.objects.get(pk=project_pk)
+    if proj.lecturer.user == request.user:
+        if proj.teams_with_preference().count() == 0:
+            messages.error(request, _(
+                "Cannot assign: No teams waiting for project"))
+        else:
+            proj.assign_random_team()
+            messages.success(request, _(
+                "You have successfully assigned team: " +
+                str(proj.team_assigned) + " to project: " + str(proj)))
+    else:
+        messages.error(request, _("Cannot assign: access denied"))
+
+    return redirect(reverse_lazy('lecturers:project',
+                                 kwargs={'project_pk': proj.pk,
+                                         'course_code': request.session['selectedCourse']}))
+
+
+@login_required
+@user_passes_test(is_lecturer)
+def assign_teams_to_projects(request, course_code=None):
+    course = get_object_or_404(Course, code__iexact=course_code)
+    projects = Project.objects.filter(
+        lecturer=request.user.lecturer).filter(course=course)
+    if projects:
+        for proj in projects:
+            proj.assign_random_team()
+        messages.success(request, _(
+            "You have successfully assigned teams to projects"))
+    else:
+        messages.info(request, _("You haven't got any projects"))
+    return redirect(reverse('lecturers:project_list',
+                            kwargs={'course_code': course_code}))
+
+
+@login_required
+@user_passes_test(is_lecturer)
 def unassign_team(request, project_pk):
     proj = Project.objects.get(pk=project_pk)
     if proj.lecturer.user == request.user:
         proj.team_assigned = None
         proj.save()
+        messages.success(request, _(
+            "You have successfully unassigned team from project: ") + str(proj))
     return redirect(reverse_lazy('lecturers:project',
                                  kwargs={'project_pk': proj.pk,
                                          'course_code': request.session['selectedCourse']}))

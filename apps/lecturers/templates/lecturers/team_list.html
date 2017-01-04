@@ -1,12 +1,27 @@
 {% extends "lecturers/base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
+
 {% block content %}
-
     {% include "common/messages.html" %}
+    {{ block.super}}
+{% endblock %}
 
-    <h2>{% trans "My teams" %}</h2>
-    <form action="{% url 'lecturers:team_delete' %}" method="post">
+
+{# Panel header #}
+
+{% block panel_heading %}
+<div class="row">
+    <div class="col-sm-12 col-xs-12">
+        <h3 class="panel-title" style="padding-top: 8px; padding-bottom: 8px;">{% trans "My teams" %}</h3>
+    </div>
+</div>
+{% endblock %}
+
+{# Panel content (non-bordered table within this block will have seamless design with the panel) #}
+
+{% block panel_content %}
+    <form id="team_delete_form" action="{% url 'lecturers:team_delete' %}" method="post">
         {% csrf_token %}
         <table class="table table-striped">
             <tr>
@@ -35,12 +50,13 @@
                 </tr>
             {% endfor %}
         </table>
-
-        {% buttons %}
-            <button type="submit" class="btn btn-primary">
-                {% bootstrap_icon "remove" %} {% trans "Delete" %}
-            </button>
-        {% endbuttons %}
     </form>
-    </br>
+{% endblock %}
+
+{# Panel footer #}
+
+{% block panel_footer %}
+    <button type="submit" class="btn btn-primary" form="team_delete_form">
+        {% bootstrap_icon "remove" %} {% trans "Delete" %}
+    </button>
 {% endblock %}

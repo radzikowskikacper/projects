@@ -1,60 +1,66 @@
 {% extends "students/base.html" %}
 {% load i18n %}
-{% block content %}
-    {% load bootstrap3 %}
-    {% include "common/messages.html" %}
+{% load bootstrap3 %}
 
+{# Panel header #}
 
-    <form class="navbar-form navbar-right"
-          id="search_form"
-          role="search"
-          action="{% url 'students:filtered_project_list' selectedCourse.code %}"
-          method="get">
-        <div class="form-group">
-            <input class="form-control" type="text"
-                   name="query"
-                   id="search_project"
-                   placeholder={% trans "Search..." %}
-                   />
-            <button type="submit" class="btn btn-default">
-                <span> {% bootstrap_icon "search" %} </span>
-            </button>
-        </div>
-    </form>
-    <h2>{% trans "Projects" %}</h2>
-    <form id='pick_project_form' action="{% url 'students:pick_project' %}" method="post">
-        {% csrf_token %}
-        <table class="table table-striped">
+{% block panel_heading %}
+<div class="row">
+    <div class="col-sm-8 col-xs-6">
+        <h3 class="panel-title" style="padding-top: 8px;">{% trans "Projects" %}</h3>
+    </div>
+    <div class="col-sm-4 col-xs-6">
+        <span class="pull-right">
+            <form role="search" method="get" action="{% url 'students:filtered_project_list' selectedCourse.code %}">
+                <div class="input-group">
+                    <input type="text" name="title" class="form-control" placeholder={% trans "Project title..." %}>
+                    <div class="input-group-btn">
+                        <button class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </span>
+    </div>
+</div>
+{% endblock %}
+
+{# Panel content (non-bordered table within this block will have seamless design with the panel) #}
+
+{% block panel_content %}
+<form id='pick_project_form' action="{% url 'students:pick_project' %}" method="post">
+    {% csrf_token %}
+    <table class="table table-striped">
+        <tr>
+            <th>{% trans "Pick" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th>{% trans "Title" %}</th>
+            <th>{% trans "Lecturer" %}</th>
+        </tr>
+        {% for project in projects %}
             <tr>
-                <th>{% trans "Pick" %}</th>
-                <th>{% trans "Status" %}</th>
-                <th>{% trans "Title" %}</th>
-                <th>{% trans "Lecturer" %}</th>
+                {% if project == project_picked %}
+                    <td>{% bootstrap_icon "user" %}</td>
+                {% elif project.status == "free" and not team.is_locked %}
+                    <td><input type="radio" name="to_pick" id="{{ project.pk }}"
+                               value="{{ project.pk }}"/></td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
+                <td><a href="{% url 'students:project' selectedCourse.code project.pk %}">{{ project.title }}</a></td>
+                <td><a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer }}</a></td>
             </tr>
-            {% for project in projects %}
-                <tr>
-                    {% if project == project_picked %}
-                        <td>{% bootstrap_icon "user" %}</td>
-                    {% elif project.status == "free" and not team.is_locked %}
-                        <td><input type="radio" name="to_pick" id="{{ project.pk }}"
-                                   value="{{ project.pk }}"/></td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                    <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
-                    <td><a href="{% url 'students:project' selectedCourse.code project.pk %}">{{ project.title }}</a></td>
-                    <td><a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer }}</a></td>
-                </tr>
-            {% endfor %}
-        </table>
-        {% if not team.is_locked %}
-            {% buttons %}
-                <button type="submit" class="btn btn-primary">
-                    {% trans "Pick" %}
-                </button>
-            {% endbuttons %}
-        {% endif %}
+        {% endfor %}
+    </table>
+</form>
+{% endblock %}
 
-    </form>
-    <br/>
+{# Panel footer #}
+
+{% block panel_footer %}
+{% if not team.is_locked %}
+    <button type="submit" class="btn btn-primary" form="pick_project_form">
+        {% trans "Pick" %}
+    </button>
+{% endif %}
 {% endblock %}

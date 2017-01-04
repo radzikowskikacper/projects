@@ -1,11 +1,29 @@
 {% extends "lecturers/base.html" %}
-{% load bootstrap3 %}
 {% load i18n %}
-{% block content %}
-    {% include "common/messages.html" %}
-    <div class="jumbotron">
-        {% include "common/profile.html" %}
-        <br>
-        <a href="{% url "lecturers:project_new" selectedCourse.code %}" class="btn btn-primary" role="button">{% trans "New Project" %}</a>
+{% load bootstrap3 %}
+
+{# Panel header #}
+
+{% block panel_heading %}
+<div class="row">
+    <div class="col-sm-12 col-xs-12">
+        <h3 class="panel-title" style="padding-top: 8px; padding-bottom: 8px;">{% trans "Profile" %}</h3>
     </div>
+</div>
+{% endblock %}
+
+{# Panel content #}
+
+{% block panel_content %}
+    <div class="panel-body">
+        {% include "common/profile.html" %}
+    </div>
+{% endblock %}
+
+{# Panel footer #}
+
+{% block panel_footer %}
+    <a href="{% url "lecturers:project_new" selectedCourse.code %}" class="btn btn-primary" role="button">
+        {% bootstrap_icon "file" %} {% trans "New project" %}
+    </a>
 {% endblock %}

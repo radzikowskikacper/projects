@@ -1,8 +1,21 @@
 {% extends 'students/base.html' %}
 {% load i18n %}
-{% block content %}
-    {% include "common/messages.html" %}
-    <div class="jumbotron">
+{% load bootstrap3 %}
+
+{# Panel header #}
+
+{% block panel_heading %}
+<div class="row">
+    <div class="col-sm-12 col-xs-12">
+        <h3 class="panel-title" style="padding-top: 8px; padding-bottom: 8px;">{% trans "Profile" %}</h3>
+    </div>
+</div>
+{% endblock %}
+
+{# Panel content #}
+
+{% block panel_content %}
+    <div class="panel-body">
         {% include "common/profile.html" %}
         <div><h4>{% trans "Team" %}</h4>
             <ul>
@@ -42,3 +55,5 @@
         </div>
     </div>
 {% endblock %}
+
+

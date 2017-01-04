@@ -1,19 +1,43 @@
 {% extends "lecturers/base.html" %}
 {% load i18n %}
-{% block content %}
-    {% include "common/messages.html" %}
-    <h2>{% trans "New project" %}</h2>
-    {% load bootstrap3 %}
-    <form id="project_form" action="{% url 'lecturers:project_new' selectedCourse.code %}" method="post">
-        {% csrf_token %}
-        {% bootstrap_form form %}
-        <a href="{% url "lecturers:project_list" selectedCourse.code %}" class="btn btn-primary" role="button">
-            {% trans "Back to project list" %}
-        </a>
-        <button type="submit" class="btn btn-primary">
-            {% trans "Submit" %}
-        </button>
-    </form>
+{% load bootstrap3 %}
+
+{# Panel header #}
+
+{% block panel_heading %}
+<div class="row">
+    <div class="col-sm-6 col-xs-6">
+        <h3 class="panel-title" style="padding-top: 8px;">{% trans "New project" %}</h3>
+    </div>
+    <div class="col-sm-6 col-xs-6">
+        <span class="pull-right">
+            <a href="{% url "lecturers:project_list" selectedCourse.code %}" class="btn btn-primary" role="button">
+                {% trans "Back to project list" %}
+            </a>
+        </span>
+    </div>
+</div>
 {% endblock %}
 
 
+{# Panel content #}
+
+{% block panel_content %}
+<div class="panel-body">
+    <form id="project_form" action="{% url 'lecturers:project_new' selectedCourse.code %}" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form layout="vertical" %}
+    </form>
+</div>
+{% endblock %}
+
+{# Panel footer #}
+
+{% block panel_footer %}
+<button type="submit" class="btn btn-primary" form="project_form">
+    {% trans "Submit" %}
+</button>
+<button type="reset" class="btn btn-default" form="project_form">
+    {% trans "Reset" %}
+</button>
+{% endblock %}

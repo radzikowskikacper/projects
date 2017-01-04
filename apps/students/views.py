@@ -29,13 +29,13 @@ def pick_project(request):
     if proj_pk:
         project_picked = Project.objects.get(pk=proj_pk)
         if not project_picked.lecturer:
-            messages.error(request,
+            messages.info(request,
                            _("Project " + project_picked.title +
                              " doesn't have any assigned lecturer. " +
                              " You can't pick that project right now."))
 
         elif project_picked.lecturer.max_students_reached():
-            messages.error(request,
+            messages.info(request,
                            _("Max number of students who can be assigned " +
                              "to this lecturer has been reached. " +
                              "Choose project from another lecturer."))
@@ -101,11 +101,10 @@ def team_list(request, course_code=None):
 @user_passes_test(is_student)
 def filtered_project_list(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
-    query = request.GET.get('query')
+    query = request.GET.get('title')
     filtered_projects = Project.objects.select_related('lecturer').complex_filter(
         Q(title__icontains=query) |
-        Q(lecturer__user__username__contains=query) |
-        Q(lecturer__user__email__contains=query)
+        Q(lecturer__user__last_name__icontains=query)
     )
 
     return render(request,
@@ -123,7 +122,7 @@ def join_team(request):
         team = Team.objects.get(pk=team_pk)
         student = request.user.student
         if team.project_preference.lecturer.max_students_reached():
-            messages.error(request,
+            messages.info(request,
                            _("Max number of students who can be assigned " +
                              "to this lecturer has been reached. " +
                              "Choose project from another lecturer."))

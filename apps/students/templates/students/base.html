@@ -1,56 +1,50 @@
-{% extends "base.html" %}
+{% extends "common/base.html" %}
 {% load i18n %}
+
 {% block nav %}
-    <nav class="navbar navbar-inverse" role="navigation">
-        <span class="navbar-brand">{% trans "Project Helper" %}</span>
-        <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="navbar-left">
-                    <a class="nav-link" href="{% url 'students:profile' %}">{% trans "PROFILE" %}</a>
-                </li>
-                <li class="navbar-left">
-                    <a class="nav-link" href="{% url 'students:project_list' selectedCourse.code %}">{% trans "PROJECTS" %}</a>
-                </li>
-                <li class="navbar-left">
-                    <a class="nav-link" href="{% url 'students:team_list' selectedCourse.code %}">{% trans "TEAMS" %}</a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="{% url 'common:select_course' %}">{% trans "Change course" %}</a>
-                </li>
-                <li>
-                    <a class="nav-link" href="{% url 'about:info' %}">{% trans "About" %}</a>
-                </li>
-                <li class="dropdown">
-                  {% get_language_info for LANGUAGE_CODE as current %}
-                  {% get_available_languages as LANGUAGES %}
-                  {% get_language_info_list for LANGUAGES as languages %}
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-foo={{ current.code }}>{{ current.name_local|capfirst }} <span class="caret"></span></a>
+    {{ block.super }}
+{% endblock %}
 
-                  <ul class="dropdown-menu">
-                    {% for language in languages %}
-                    {% if language.code != current.code %}
-                    <li>
-                        <form name="setLang{{language.code}}" action="{% url 'set_language' %}" method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="language" value="{{ language.code }}" />
-                            <a class="dab-update-lang" href="#" onclick="document.setLang{{ language.code }}.submit();return false;">{{ language.name_local|capfirst }}</a>
-                        </form>
-                    </li>
-                    {% endif %}
-                    {% endfor %}
-                  </ul>
-                </li>
+{% block navbar_left %}
+    <li>
+        <a class="nav-link" href="{% url 'students:profile' %}">{% trans "PROFILE" %}</a>
+    </li>
+    <li>
+        <a class="nav-link" href="{% url 'students:project_list' selectedCourse.code %}">{% trans "PROJECTS" %}</a>
+    </li>
+    <li>
+        <a class="nav-link" href="{% url 'students:team_list' selectedCourse.code %}">{% trans "TEAMS" %}</a>
+    </li>
+{% endblock %}
+{% block navbar_right %}
+    <li>
+        <a class="nav-link" href="{% url 'common:select_course' %}">{% trans "Change course" %}</a>
+    </li>
+    {{ block.super }}
+    <li>
+        <a class="nav-link" href="{% url 'common:cas_ng_logout' %}">{% trans "Logout" %}</a>
+    </li>
+{% endblock %}
 
-                <li>
-                    <a href="{% url 'common:cas_ng_logout' %}">{% trans "Logout" %}</a>
-                </li>
-            </ul>
-        </div>
-        <span class="label label-default">{{selectedCourse}}</span>
-    </nav>
+{% block course_label %}
+    <span class="label label-default">{{selectedCourse}}</span>
 {% endblock %}
 
 {% block content %}
+{% include "common/messages.html" %}
+
+<div class="panel panel-default">
+    <div class="panel-heading ">
+    {% block panel_heading %}
+    {% endblock %}
+    </div>
+
+    {% block panel_content %}
+    {% endblock %}
+
+    <div class="panel-footer">
+    {% block panel_footer %}
+    {% endblock %}
+    </div>
+</div>
 {% endblock %}
