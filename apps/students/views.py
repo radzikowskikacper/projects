@@ -30,15 +30,15 @@ def pick_project(request):
         project_picked = Project.objects.get(pk=proj_pk)
         if not project_picked.lecturer:
             messages.info(request,
-                           _("Project " + project_picked.title +
-                             " doesn't have any assigned lecturer. " +
-                             " You can't pick that project right now."))
+                          _("Project " + project_picked.title +
+                            " doesn't have any assigned lecturer. " +
+                            " You can't pick that project right now."))
 
         elif project_picked.lecturer.max_students_reached():
             messages.info(request,
-                           _("Max number of students who can be assigned " +
-                             "to this lecturer has been reached. " +
-                             "Choose project from another lecturer."))
+                          _("Max number of students who can be assigned " +
+                            "to this lecturer has been reached. " +
+                            "Choose project from another lecturer."))
         elif project_picked.status() == "free" and not team.is_locked:
             team.select_preference(project_picked)
             team.set_course(Course.objects.get(
@@ -54,7 +54,8 @@ def pick_project(request):
                              " you can't pick that project"))
         elif team.is_locked:
             messages.error(request,
-                           _("You can't pick project: project already assigned"))
+                           _("You can't pick project: " +
+                             "project already assigned"))
 
     return redirect(reverse('students:project_list',
                             kwargs={'course_code': request.session['selectedCourse']}))
@@ -123,9 +124,9 @@ def join_team(request):
         student = request.user.student
         if team.project_preference.lecturer.max_students_reached():
             messages.info(request,
-                           _("Max number of students who can be assigned " +
-                             "to this lecturer has been reached. " +
-                             "Choose project from another lecturer."))
+                          _("Max number of students who can be assigned " +
+                            "to this lecturer has been reached. " +
+                            "Choose project from another lecturer."))
         else:
             student.leave_team()
             student.join_team(team)
@@ -141,11 +142,13 @@ def join_team(request):
 @user_passes_test(is_student)
 def new_team(request):
     student = request.user.student
-    was_empty_team = student.team.project_preference is None
+    old_preference = student.team.project_preference
     student.leave_team()
     student.new_team(request.session['selectedCourse'])
+    student.team.select_preference(old_preference)
+    student.team.save()
     student.save()
-    if request.method == 'POST' and not was_empty_team:
+    if request.method == 'POST':
         messages.success(request,
                          _("You have successfully left the team "))
     return redirect(reverse('students:team_list',

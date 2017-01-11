@@ -73,7 +73,7 @@
         {% trans "Join" %}
     </button>
 {% endif %}
-{% if not student_team.is_locked %}
+{% if not student_team.is_locked  and student_team.project_preference is not None %}
     <button type="submit" class="btn btn-default" form="new_team_form">
         {% trans "Leave team" %}
     </button>
