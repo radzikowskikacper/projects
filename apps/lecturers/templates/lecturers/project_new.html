@@ -6,15 +6,13 @@
 
 {% block panel_heading %}
 <div class="row">
-    <div class="col-sm-6 col-xs-6">
-        <h3 class="panel-title" style="padding-top: 8px;">{% trans "New project" %}</h3>
+    <div class="col-sm-1 col-xs-1">
+        <a href="{% url 'lecturers:project_list' selectedCourse.code %}" title="{% trans "Back to project list" %}" class="btn btn-default">
+            {% bootstrap_icon "chevron-left" %} {% trans "Back" %}
+        </a>
     </div>
-    <div class="col-sm-6 col-xs-6">
-        <span class="pull-right">
-            <a href="{% url "lecturers:project_list" selectedCourse.code %}" class="btn btn-primary" role="button">
-                {% trans "Back to project list" %}
-            </a>
-        </span>
+    <div class="col-sm-11 col-xs-11">
+        <h3 class="panel-title" style="padding-top: 8px; padding-bottom: 8px;">{% trans "New project" %}</h3>
     </div>
 </div>
 {% endblock %}
@@ -34,10 +32,10 @@
 {# Panel footer #}
 
 {% block panel_footer %}
-<button type="submit" class="btn btn-primary" form="project_form">
+<button type="submit" title="{% trans "Create project" %}" class="btn btn-primary" form="project_form">
     {% trans "Submit" %}
 </button>
-<button type="reset" class="btn btn-default" form="project_form">
+<button type="reset" title="{% trans "Reset form" %}" class="btn btn-default" form="project_form">
     {% trans "Reset" %}
 </button>
 {% endblock %}

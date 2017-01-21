@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 
 from projects_helper.apps.common.models import Project, Course, Team
 from projects_helper.apps.lecturers.forms import ProjectForm
@@ -200,6 +201,31 @@ def team_delete(request):
     return redirect(reverse('lecturers:team_list',
                             kwargs={'course_code': request.session['selectedCourse']}))
 
+@login_required
+@user_passes_test(is_lecturer)
+def assign_selected_team(request, project_pk, team_pk):
+    if request.method == 'POST':
+        try:
+            project = Project.objects.get(pk=project_pk)
+            team = Team.objects.get(pk=team_pk)
+        except ObjectDoesNotExist as e:
+            print(str(e))
+            messages.error(request, _(
+                "Cannot assign team. Team or project not found!"))
+
+        if project.lecturer.user == request.user:
+            if team and project:
+                project.team_assigned = team
+                project.save()
+                messages.success(request, _(
+                    "You have successfully assigned team: " +
+                    str(team) + " to project: " + str(project)))
+        else:
+            messages.error(request, _("Cannot assign: access denied"))
+
+    return redirect(reverse_lazy('lecturers:project',
+                                 kwargs={'project_pk': project.pk,
+                                         'course_code': request.session['selectedCourse']}))
 
 @login_required
 @user_passes_test(is_lecturer)

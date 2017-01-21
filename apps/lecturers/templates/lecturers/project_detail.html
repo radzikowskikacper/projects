@@ -6,16 +6,23 @@
 
 {% block panel_heading %}
 <div class="row">
-    <div class="col-sm-6 col-xs-6">
+    <div class="col-sm-1 col-xs-1">
+        <a href="{% url 'lecturers:project_list' selectedCourse.code %}" title="{% trans "Back to project list" %}" class="btn btn-default">
+            {% bootstrap_icon "chevron-left" %} {% trans "Back" %}
+        </a>
+    </div>
+    <div class="col-sm-5 col-xs-5">
         <h3 class="panel-title" style="padding-top: 8px; padding-bottom: 8px;">{% trans "Project details" %}</h3>
     </div>
     <div class="col-sm-6 col-xs-6">
         <span class="pull-right">
         {% if project.lecturer == user.lecturer %}
-            <a href="{% url 'lecturers:modify_project' selectedCourse.code project.pk %}" class="btn btn-primary"> {% bootstrap_icon "edit" %}
-                {% trans "Edit" %}</a>
-            <a href="{% url 'lecturers:project_copy' selectedCourse.code project.pk %}" class="btn btn-primary"> {% bootstrap_icon "duplicate" %}
-                {% trans "Create a copy" %}</a>
+            <a href="{% url 'lecturers:project_copy' selectedCourse.code project.pk %}" title="{% trans "Create a copy of this project" %}" class="btn btn-default">
+                {% bootstrap_icon "duplicate" %} {% trans "Copy" %}
+            </a>
+            <a href="{% url 'lecturers:modify_project' selectedCourse.code project.pk %}" title="{% trans "Edit this project" %}" class="btn btn-default">
+                {% bootstrap_icon "edit" %} {% trans "Edit" %}
+            </a>
         {% endif %}
         </span>
     </div>
@@ -51,17 +58,27 @@
 
     {% if project.status == "free" %}
         <h4>{% trans "Teams preferring this project" %}:</h4>
-        <ol>
+        <table class="table table-hover">
             {% for team in project.teams_with_preference %}
-                <li>
-                {% for member in team.team_members %}
-                    <a href="mailto:{{ member.user.email }}">{{ member }}</a>,
-                {% endfor %}
-                </li>
-            {% empty %}
-                <br>
+                <tr>
+                    <form action="{% url 'lecturers:assign_selected_team' project.pk team.pk %}" method="post">
+                        {% csrf_token %}
+                        <td>
+                            {% for member in team.team_members %}
+                                <a href="mailto:{{ member.user.email }}">{{ member }}</a>,
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <span class="pull-right">
+                                <button type="submit" title="{% trans "Assign this team" %}" class="btn btn-primary">
+                                    {% trans "Assign" %}
+                                </button>
+                            </span>
+                        </td>
+                    </form>
+                </tr>
             {% endfor %}
-        </ol>
+        </table>
     {% endif %}
 </div>
 {% endblock %}
@@ -70,21 +87,24 @@
 
 {% block panel_footer %}
 {% if project.lecturer == user.lecturer %}
-    {% if project.status == "free" %}
+    <div class="text-right">
+    {% if project.teams_with_preference and project.status == "free" %}
+
         <form id="assign_form" action="{% url 'lecturers:assign_team' project.pk %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="btn btn-primary" form="assign_form">
-                {% bootstrap_icon "pencil" %} {% trans "Assign teams" %}
+            <button type="submit" title="{% trans "Automatically choose and assign one team to the project" %}" class="btn btn-primary" form="assign_form">
+                {% bootstrap_icon "pencil" %} {% trans "Auto assign" %}
             </button>
         </form>
-    {% else %}
+    {% elif project.status == "occupied" %}
         <form id="unassign_form" action="{% url 'lecturers:unassign_team' project.pk %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="btn btn-primary" form="unassign_form">
+            <button type="submit" title="{% trans "Unassign assigned team" %}" class="btn btn-primary" form="unassign_form">
                 {% bootstrap_icon "ban-circle" %} {% trans "Unassign team" %}
             </button>
         </form>
 
     {% endif %}
+    </div>
 {% endif %}
 {% endblock %}

@@ -1,12 +1,17 @@
 {% extends 'students/base.html' %}
 {% load i18n %}
-
+{% load bootstrap3 %}
 
 {# Panel header #}
 
 {% block panel_heading %}
 <div class="row">
-    <div class="col-sm-12 col-xs-12">
+    <div class="col-sm-1 col-xs-1">
+        <a href="{% url 'students:project_list' selectedCourse.code %}" class="btn btn-default">
+            {% bootstrap_icon "chevron-left" %} {% trans "Back" %}
+        </a>
+    </div>
+    <div class="col-sm-11 col-xs-11">
         <h3 class="panel-title" style="padding-top: 8px; padding-bottom: 8px;">{% trans "Project details" %}</h3>
     </div>
 </div>

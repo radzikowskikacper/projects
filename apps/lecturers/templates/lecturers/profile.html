@@ -23,7 +23,7 @@
 {# Panel footer #}
 
 {% block panel_footer %}
-    <a href="{% url "lecturers:project_new" selectedCourse.code %}" class="btn btn-primary" role="button">
+    <a href="{% url "lecturers:project_new" selectedCourse.code %}" title="{% trans "Create new project" %}" class="btn btn-default" role="button">
         {% bootstrap_icon "file" %} {% trans "New project" %}
     </a>
 {% endblock %}

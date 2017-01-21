@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^(?P<course_code>[a-zA-Z]+)/projects/(?P<project_pk>\d+)/copy/$', views.project_copy, name="project_copy"),
     url(r'^(?P<course_code>[a-zA-Z]+)/projects/search$', views.filtered_project_list, name="filtered_project_list"),
     url(r'^(?P<course_code>[a-zA-Z]+)/teams/$', views.team_list, name="team_list"),
+    url(r'^projects/(?P<project_pk>\d+)/assign_selected/(?P<team_pk>\d+)$', views.assign_selected_team, name="assign_selected_team"),
     url(r'^projects/(?P<project_pk>\d+)/assign/$', views.assign_team, name="assign_team"),
     url(r'^projects/(?P<project_pk>\d+)/unassign/$', views.unassign_team, name="unassign_team"),
     url(r'^projects/del/$', views.project_delete, name="project_delete"),

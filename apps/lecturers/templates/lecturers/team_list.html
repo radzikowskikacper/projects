@@ -50,7 +50,7 @@
 {# Panel footer #}
 
 {% block panel_footer %}
-    <button type="submit" class="btn btn-primary" form="team_delete_form">
+    <button type="submit" title="{% trans "Delete selected teams" %}" class="btn btn-default" form="team_delete_form">
         {% bootstrap_icon "remove" %} {% trans "Delete" %}
     </button>
 {% endblock %}
