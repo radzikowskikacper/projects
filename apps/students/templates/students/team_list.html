@@ -46,7 +46,7 @@
                         {% if project_assigned != None %}
                             <a href='{% url 'students:project' selectedCourse.code project_assigned.pk %}'> {{ project_assigned }} </a>
                         {% else %}
-                            {{ project_assigned }}
+                            -
                         {% endif %}
                     {% endwith %}
                 </td>
