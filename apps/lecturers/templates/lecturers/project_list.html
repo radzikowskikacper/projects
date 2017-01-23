@@ -31,10 +31,10 @@
     {% csrf_token %}
     <table class="table table-hover">
         <tr>
-            <th>{% trans "Delete" %}</th>
-            <th>{% trans "Title" %}</th>
-            <th>{% trans "Has teams" %}</th>
-            <th>{% trans "Status" %}</th>
+            <th class="col-md-0">{% bootstrap_icon "ok" %}</th>
+            <th class="col-md-10">{% trans "Title" %}</th>
+            <th class="col-md-1">{% trans "Teams" %}</th>
+            <th class="col-md-1">{% trans "Status" %}</th>
         </tr>
         {% for project in projects %}
             <tr>

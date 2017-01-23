@@ -22,15 +22,19 @@ class Student(models.Model):
 
     @property
     def project_assigned(self):
+        if not self.team:
+            return None
         return self.team.project_assigned
 
     @property
     def project_preference(self):
+        if not self.team:
+            return None
         return self.team.project_preference
 
     def new_team(self, selectedCourse):
         if (self.team_id is None) or (not self.team.is_locked):
-            team = Team(course=Course.objects.get(code=selectedCourse))
+            team = Team(course=selectedCourse)
             team.save()
             self.join_team(team)
 

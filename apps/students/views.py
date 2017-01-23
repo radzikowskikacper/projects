@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.core.urlresolvers import reverse
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from projects_helper.apps.common.models import Project, Team, Course
@@ -24,10 +24,17 @@ def profile(request):
 @login_required
 @user_passes_test(is_student)
 def pick_project(request):
-    team = request.user.student.team
+    course = get_object_or_404(Course, code__iexact=request.session['selectedCourse'])
     proj_pk = request.POST.get('to_pick', False)
+    if not request.user.student.team:
+        request.user.student.new_team(course)
+        request.user.student.save()
+    team = request.user.student.team
     if proj_pk:
-        project_picked = Project.objects.get(pk=proj_pk)
+        try:
+            project_picked = Project.objects.get(pk=proj_pk)
+        except ObjectDoesNotExist as e:
+            print(str(e))
         if not project_picked.lecturer:
             messages.info(request,
                           _("Project " + project_picked.title +
@@ -41,8 +48,7 @@ def pick_project(request):
                             "Choose project from another lecturer."))
         elif project_picked.status() == "free" and not team.is_locked:
             team.select_preference(project_picked)
-            team.set_course(Course.objects.get(
-                code=request.session['selectedCourse']))
+            team.set_course(course)
             team.save()
             messages.success(request,
                              _("You have successfully picked project ") +
@@ -90,7 +96,8 @@ def project_list(request, course_code=None):
 def team_list(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
     teams = Team.objects.filter(course=course).exclude(
-        project_preference__isnull=True)
+        project_preference__isnull=True).annotate(num_stud=Count('student')) \
+                .order_by('-num_stud')
     return render(request,
                   template_name="students/team_list.html",
                   context={"teams": teams,
@@ -141,15 +148,23 @@ def join_team(request):
 @login_required
 @user_passes_test(is_student)
 def new_team(request):
+    course = get_object_or_404(Course, code__iexact=request.session['selectedCourse'])
     student = request.user.student
-    old_preference = student.team.project_preference
-    student.leave_team()
-    student.new_team(request.session['selectedCourse'])
-    student.team.select_preference(old_preference)
-    student.team.save()
-    student.save()
+    old_team = student.team
+    old_preference = None
+    if old_team:
+        old_preference = old_team.project_preference
+    try:
+        student.leave_team()
+        student.new_team(course)
+        student.team.select_preference(old_preference)
+        student.team.save()
+        student.save()
+    except Exception as e:
+        print(str(e))
     if request.method == 'POST':
         messages.success(request,
-                         _("You have successfully left the team "))
+                         _("You have successfully left the team. Your project preference "
+                            + "has not changed. If you want to change it, choose another project."))
     return redirect(reverse('students:team_list',
                             kwargs={'course_code': request.session['selectedCourse']}))

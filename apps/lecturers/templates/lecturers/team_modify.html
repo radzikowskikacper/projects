@@ -1,0 +1,129 @@
+{% extends "lecturers/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{# Panel header #}
+
+{% block panel_heading %}
+<div class="row">
+    <div class="col-sm-1 col-xs-1">
+        <a href="{% url 'lecturers:team_list' selectedCourse.code %}" title="{% trans "Back to team list" %}" class="btn btn-default">
+            {% bootstrap_icon "chevron-left" %} {% trans "Back" %}
+        </a>
+    </div>
+    <div class="col-sm-11 col-xs-11">
+        <h3 class="panel-title" style="padding-top: 8px; padding-bottom: 8px;">{% trans "Modify team" %}</h3>
+    </div>
+</div>
+{% endblock %}
+
+
+{# Panel content #}
+
+{% block panel_content %}
+<div class="panel-body">
+    <form id="team_modify_form" action="{% url 'lecturers:modify_team' selectedCourse.code team.pk %}" method="post">
+        {% csrf_token %}
+        <table class="table table-hover">
+            <tr>
+                <th class="col-sm-1"></th>
+                <th class="col-sm-2"></th>
+                <th class="col-md-1"></th>
+                <th class="col-md-0"></th>
+                <th class="col-md-8 col-sm-8"></th>
+            </tr>
+            {{ form.display_member_1.errors }}
+            <tr>
+                <td>
+                    {{ form.display_member_1.label_tag }}
+                </td>
+                <td>
+                    {{ form.display_member_1 }}
+                </td>
+                <td>
+                    {{ form.change_member_1.label_tag }}
+                </td>
+                <td>
+                    {{ form.change_member_1 }}
+                </td>
+                <td>
+                    {{ form.member_1_select }}
+                </td>
+            </tr>
+            <tr>
+            {{ form.display_member_2.errors }}
+                <td>
+                    {{ form.display_member_2.label_tag }}
+                </td>
+                <td>
+                    {{ form.display_member_2 }}
+                </td>
+                <td>
+                    {{ form.change_member_2.label_tag }}
+                </td>
+                <td>
+                    {{ form.change_member_2 }}
+                </td>
+                <td style="width: 100%">
+                    {{ form.member_2_select }}
+                </td>
+            </tr>
+            <tr>
+            {{ form.display_preffered_project.errors }}
+                <td>
+                    {{ form.display_preffered_project.label_tag }}
+                </td>
+                <td>
+                    {{ form.display_preffered_project }}
+                </td>
+                <td>
+                    {{ form.change_preffered_project.label_tag }}
+                </td>
+                <td>
+                    {{ form.change_preffered_project }}
+                </td>
+                <td>
+                    {{ form.project_preffered_select }}
+                </td>
+            </tr>
+            <tr>
+            {{ form.display_project.errors }}
+                <td>
+                    {{ form.display_project.label_tag }}
+                </td>
+                <td>
+                    {{ form.display_project }}
+                </td>
+                <td>
+                    {{ form.change_project.label_tag }}
+                </td>
+                <td>
+                    {{ form.change_project }}
+                </td>
+                <td>
+                    {{ form.project_select }}
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+    function toggleDiv(divId) {
+        $("#"+divId).toggle();
+    }
+</script>
+{% endblock %}
+
+{# Panel footer #}
+
+{% block panel_footer %}
+<button type="submit" title="{% trans "Confirm changes" %}" class="btn btn-primary" form="team_modify_form">
+    {% trans "Submit" %}
+</button>
+<button type="reset" title="{% trans "Reset form" %}" class="btn btn-default" form="team_modify_form">
+    {% trans "Reset" %}
+</button>
+{% endblock %}
+
+

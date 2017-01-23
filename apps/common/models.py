@@ -16,6 +16,7 @@ class CAS_User(AbstractUser):
                                  choices=type_choices,
                                  default='N')
 
+
 class Course(models.Model):
     name = models.CharField(verbose_name=_('name'),
                             max_length=255,
@@ -36,7 +37,8 @@ class Course(models.Model):
 
 class Team(models.Model):
     project_preference = models.ForeignKey('common.Project',
-                                           verbose_name=_('project preference'),
+                                           verbose_name=_(
+                                               'project preference'),
                                            null=True,
                                            blank=True)
     course = models.ForeignKey('common.Course',
@@ -71,8 +73,7 @@ class Team(models.Model):
 
     @property
     def is_locked(self):
-        val = self.project_assigned is not None
-        return val
+        return self.project_assigned is not None
 
     @property
     def team_members(self):
@@ -123,13 +124,16 @@ class Project(models.Model):
         verbose_name_plural = _('projects')
 
     def teams_with_preference(self):
-        return Team.objects.filter(project_preference=self)
+        return self.team_set.all()
 
     def status(self):
         if self.team_assigned is None:
             return "free"
         else:
             return "occupied"
+
+    def assign_team(self, team):
+        self.team_assigned = team
 
     def assign_random_team(self):
         teams = list(self.teams_with_preference().filter(project=None))

@@ -1,0 +1,49 @@
+{% extends "lecturers/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{# Panel header #}
+
+{% block panel_heading %}
+<div class="row">
+    <div class="col-sm-1 col-xs-1">
+        <a href="{% url 'lecturers:team_list' selectedCourse.code %}" title="{% trans "Back to team list" %}" class="btn btn-default">
+            {% bootstrap_icon "chevron-left" %} {% trans "Back" %}
+        </a>
+    </div>
+    <div class="col-sm-11 col-xs-11">
+        <h3 class="panel-title" style="padding-top: 8px; padding-bottom: 8px;">{% trans "New team" %}</h3>
+    </div>
+</div>
+{% endblock %}
+
+
+{# Panel content #}
+
+{% block panel_content %}
+<div class="panel-body">
+    <form id="team_form" action="{% url 'lecturers:team_new' selectedCourse.code %}" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form layout="vertical" %}
+    </form>
+</div>
+
+<script>
+    function toggleDiv(divId) {
+        $("#"+divId).toggle();
+    }
+</script>
+{% endblock %}
+
+{# Panel footer #}
+
+{% block panel_footer %}
+<button type="submit" title="{% trans "Create team" %}" class="btn btn-primary" form="team_form">
+    {% trans "Submit" %}
+</button>
+<button type="reset" title="{% trans "Reset form" %}" class="btn btn-default" form="team_form">
+    {% trans "Reset" %}
+</button>
+{% endblock %}
+
+
