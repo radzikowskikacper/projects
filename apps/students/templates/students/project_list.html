@@ -31,7 +31,8 @@
     {% csrf_token %}
     <table class="table table-hover">
         <tr>
-            <th class="col-md-0">{% bootstrap_icon "ok" %}</th>
+            <th class="col-md-0">{% bootstrap_icon "ok"%}</th>
+            <th class="col-md-0">{% trans "Teams" %}</th>
             <th class="col-md-1">{% trans "Status" %}</th>
             <th class="col-md-9">{% trans "Title" %}</th>
             <th class="col-md-2">{% trans "Lecturer" %}</th>
@@ -46,6 +47,7 @@
                 {% else %}
                     <td></td>
                 {% endif %}
+                <td>{{ project.teams_with_preference.count }}</td>
                 <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
                 <td><a href="{% url 'students:project' selectedCourse.code project.pk %}">{{ project.title }}</a></td>
                 <td><a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer }}</a></td>
