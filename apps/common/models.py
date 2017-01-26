@@ -19,14 +19,14 @@ class CAS_User(AbstractUser):
 
 class Course(models.Model):
     name = models.CharField(verbose_name=_('name'),
-                            max_length=255,
-                            primary_key=True)
+                            max_length=255)
     code = models.CharField(verbose_name=_('code'),
                             default='',
                             max_length=6,
                             blank=False)
 
     class Meta:
+        unique_together = ('name', 'code',)
         ordering = ['name']
         verbose_name = _('course')
         verbose_name_plural = _('courses')

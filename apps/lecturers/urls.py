@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^teams/del/$', views.team_delete, name="team_delete"),
     url(r'^(?P<course_code>[a-zA-Z]+)/teams/new/$', views.team_new, name="team_new"),
     url(r'^(?P<course_code>[a-zA-Z]+)/teams/(?P<team_pk>\d+)/modify/$', views.modify_team, name="modify_team"),
+    url(r'^(?P<course_code>[a-zA-Z]+)/courses_manage/$', views.course_manage, name="course_manage"),
 ]

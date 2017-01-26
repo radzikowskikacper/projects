@@ -1,7 +1,7 @@
 from django.core.exceptions import NON_FIELD_ERRORS
 from django import forms
 from django.db.models import Count
-from projects_helper.apps.common.models import Project, Team
+from projects_helper.apps.common.models import Project, Team, Course
 from projects_helper.apps.students.models import Student
 from django.utils.translation import ugettext_lazy as _
 
@@ -105,6 +105,7 @@ class TeamModifyForm(forms.Form):
     member_1_select = forms.ModelChoiceField(
         queryset=None,
         label="",
+        empty_label=_("None"),
         required=False
     )
 
@@ -116,6 +117,7 @@ class TeamModifyForm(forms.Form):
     member_2_select = forms.ModelChoiceField(
         queryset=None,
         label="",
+        empty_label=_("None"),
         required=False,
     )
 
@@ -137,6 +139,7 @@ class TeamModifyForm(forms.Form):
     project_preffered_select = forms.ModelChoiceField(
         queryset=None,
         label="",
+        empty_label=_("None"),
         required=False,
     )
 
@@ -153,6 +156,7 @@ class TeamModifyForm(forms.Form):
     project_select = forms.ModelChoiceField(
         queryset=None,
         label="",
+        empty_label=_("None"),
         required=False,
     )
 

@@ -24,21 +24,21 @@
 <div class="panel-body">
     <form id="team_modify_form" action="{% url 'lecturers:modify_team' selectedCourse.code team.pk %}" method="post">
         {% csrf_token %}
-        <table class="table table-hover">
-            <tr>
-                <th class="col-sm-1"></th>
+        <table class="table table-hover display:none">
+            <thead>
                 <th class="col-sm-2"></th>
-                <th class="col-md-1"></th>
+                <th class="col-sm-3"></th>
                 <th class="col-md-0"></th>
-                <th class="col-md-8 col-sm-8"></th>
-            </tr>
+                <th class="col-md-0"></th>
+                <th class="col-md-7 col-sm-7"></th>
+            </thead>
             {{ form.display_member_1.errors }}
             <tr>
                 <td>
-                    {{ form.display_member_1.label_tag }}
+                    {% bootstrap_label form.display_member_1.label_tag %}
                 </td>
                 <td>
-                    {{ form.display_member_1 }}
+                    {% bootstrap_field form.display_member_1 disabled=True show_label=False %}
                 </td>
                 <td>
                     {{ form.change_member_1.label_tag }}
@@ -47,7 +47,7 @@
                     {{ form.change_member_1 }}
                 </td>
                 <td>
-                    {{ form.member_1_select }}
+                    {% bootstrap_field form.member_1_select show_label=False %}
                 </td>
             </tr>
             <tr>
@@ -56,7 +56,7 @@
                     {{ form.display_member_2.label_tag }}
                 </td>
                 <td>
-                    {{ form.display_member_2 }}
+                    {% bootstrap_field form.display_member_2 disabled=True show_label=False %}
                 </td>
                 <td>
                     {{ form.change_member_2.label_tag }}
@@ -64,44 +64,44 @@
                 <td>
                     {{ form.change_member_2 }}
                 </td>
-                <td style="width: 100%">
-                    {{ form.member_2_select }}
+                <td>
+                    {% bootstrap_field form.member_2_select show_label=False %}
                 </td>
             </tr>
             <tr>
             {{ form.display_preffered_project.errors }}
                 <td>
-                    {{ form.display_preffered_project.label_tag }}
+                    {% bootstrap_label form.display_preffered_project.label_tag %}
                 </td>
                 <td>
-                    {{ form.display_preffered_project }}
+                    {% bootstrap_field form.display_preffered_project disabled=True show_label=False %}
                 </td>
                 <td>
-                    {{ form.change_preffered_project.label_tag }}
+                    {% bootstrap_label form.change_preffered_project.label_tag %}
                 </td>
                 <td>
                     {{ form.change_preffered_project }}
                 </td>
                 <td>
-                    {{ form.project_preffered_select }}
+                    {% bootstrap_field form.project_preffered_select %}
                 </td>
             </tr>
             <tr>
             {{ form.display_project.errors }}
                 <td>
-                    {{ form.display_project.label_tag }}
+                    {% bootstrap_label form.display_project.label_tag %}
                 </td>
                 <td>
-                    {{ form.display_project }}
+                    {% bootstrap_field form.display_project disabled=True show_label=False %}
                 </td>
                 <td>
-                    {{ form.change_project.label_tag }}
+                    {% bootstrap_label form.change_project.label_tag %}
                 </td>
                 <td>
                     {{ form.change_project }}
                 </td>
                 <td>
-                    {{ form.project_select }}
+                    {% bootstrap_field form.project_select show_label=False %}
                 </td>
             </tr>
         </table>

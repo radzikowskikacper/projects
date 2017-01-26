@@ -26,4 +26,7 @@
     <a href="{% url "lecturers:project_new" selectedCourse.code %}" title="{% trans "Create new project" %}" class="btn btn-default" role="button">
         {% bootstrap_icon "file" %} {% trans "New project" %}
     </a>
+    <a href="{% url "lecturers:course_manage" selectedCourse.code %}" title="{% trans "Add, edit or delete courses" %}" class="btn btn-default" role="button">
+        {% bootstrap_icon "cog" %} {% trans "Manage courses" %}
+    </a>
 {% endblock %}

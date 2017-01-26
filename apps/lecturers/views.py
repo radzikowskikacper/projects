@@ -6,8 +6,8 @@ from django.db import IntegrityError, transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 
+from django.forms import modelformset_factory
 from projects_helper.apps.common.models import Project, Course, Team
-from projects_helper.apps.students.models import Student
 from projects_helper.apps.lecturers.forms import ProjectForm, TeamForm, TeamModifyForm
 
 
@@ -18,6 +18,8 @@ def is_lecturer(user):
 @login_required
 @user_passes_test(is_lecturer)
 def profile(request):
+    if 'selectedCourse' not in request.session:
+        return redirect(reverse('common:select_course'))
     course = get_object_or_404(
         Course, code__iexact=request.session['selectedCourse'])
     return render(request,
@@ -124,7 +126,7 @@ def modify_project(request, project_pk, course_code=None):
             form.save()
         except IntegrityError:
             messages.error(request, _(
-                "\n You must provide unique project name"))
+                "You must provide unique project name"))
             return redirect(reverse("lecturers:modify_project",
                                     kwargs={'project_pk': proj.pk,
                                             'course_code': course_code}))
@@ -173,9 +175,11 @@ def project_copy(request, project_pk, course_code=None):
 @user_passes_test(is_lecturer)
 def team_list(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
-    my_teams = Team.objects.filter(project_preference__lecturer=request.user.lecturer).filter(
-        course=course).exclude(project_preference__isnull=True)
-    teams_with_no_project = Team.objects.filter(project_preference__isnull=True)
+    my_teams = Team.objects \
+        .filter(course=course,
+                project_preference__lecturer=request.user.lecturer) \
+        .exclude(project_preference__isnull=True)
+    teams_with_no_project = Team.objects.filter(course=course, project_preference__isnull=True)
     return render(request,
                   template_name="lecturers/team_list.html",
                   context={"teams": my_teams,
@@ -240,9 +244,8 @@ def team_new(request, course_code=None):
 @user_passes_test(is_lecturer)
 def modify_team(request, team_pk, course_code=None):
     team = get_object_or_404(Team, pk=team_pk)
-    team_str = str(team)
     course = get_object_or_404(Course, code__iexact=course_code)
-    members = team.team_members
+    team_str = str(team)
 
     if request.method == 'POST':
         form = TeamModifyForm(request.POST, lecturer=request.user.lecturer, team=team)
@@ -258,6 +261,7 @@ def modify_team(request, team_pk, course_code=None):
         change_member_2 = form.cleaned_data['change_member_2']
         change_project_pref = form.cleaned_data['change_preffered_project']
         change_project = form.cleaned_data['change_project']
+        members = team.team_members
 
         try:
             deleted_count = 0
@@ -266,7 +270,7 @@ def modify_team(request, team_pk, course_code=None):
                     team.course = course
                     team.save()
                 if change_member_1:
-                    if members and stud_1 not in members:
+                    if members and (stud_1 not in members):
                         members[0].team = None
                         members[0].save()
                         if stud_1:
@@ -288,7 +292,7 @@ def modify_team(request, team_pk, course_code=None):
                             stud_2.save()
                         else:
                             deleted_count += 1
-                if len(members) == deleted_count:
+                if len(members) <= deleted_count:
                     if deleted_count == 2:
                         messages.success(request, _(
                             "You have successfully deleted team: ") + team_str)
@@ -319,11 +323,7 @@ def modify_team(request, team_pk, course_code=None):
                                     kwargs={'course_code': course_code}))
                         team.project_preference = proj_pref
                         team.save()
-        except IntegrityError as e:
-            import sys, traceback
-            import os
-            print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno) +
-                  os.linesep + str(e))
+        except IntegrityError:
             messages.error(request, _(
                 "Something went wrong. Try again."))
             return redirect(reverse('lecturers:team_list',
@@ -347,7 +347,8 @@ def team_delete(request):
         pk__in=request.POST.getlist('to_delete'))
 
     for team in teams_to_delete:
-        if team.project_preference is None or team.project_preference.lecturer.user == request.user:
+        if team.project_preference is None \
+                or (team.project_preference.lecturer.user == request.user):
             messages.success(request, _(
                 "You have succesfully deleted team: ") + str(team))
             team.delete()
@@ -355,7 +356,8 @@ def team_delete(request):
             messages.error(request, _("Cannot delete team: " +
                                       str(team) + " - access denied"))
     return redirect(reverse('lecturers:team_list',
-                            kwargs={'course_code': request.session['selectedCourse']}))
+                            kwargs={'course_code':
+                                    request.session['selectedCourse']}))
 
 
 @login_required
@@ -382,7 +384,8 @@ def assign_selected_team(request, project_pk, team_pk):
 
     return redirect(reverse_lazy('lecturers:project',
                                  kwargs={'project_pk': project.pk,
-                                         'course_code': request.session['selectedCourse']}))
+                                         'course_code':
+                                         request.session['selectedCourse']}))
 
 
 @login_required
@@ -403,7 +406,8 @@ def assign_team(request, project_pk):
 
     return redirect(reverse_lazy('lecturers:project',
                                  kwargs={'project_pk': proj.pk,
-                                         'course_code': request.session['selectedCourse']}))
+                                         'course_code':
+                                         request.session['selectedCourse']}))
 
 
 @login_required
@@ -431,7 +435,65 @@ def unassign_team(request, project_pk):
         proj.team_assigned = None
         proj.save()
         messages.success(request, _(
-            "You have successfully unassigned team from project: ") + str(proj))
+            "You have successfully unassigned team from project: ") +
+            str(proj))
     return redirect(reverse_lazy('lecturers:project',
                                  kwargs={'project_pk': proj.pk,
-                                         'course_code': request.session['selectedCourse']}))
+                                         'course_code':
+                                         request.session['selectedCourse']}))
+
+
+@login_required
+@user_passes_test(is_lecturer)
+def course_manage(request, course_code=None):
+    course = get_object_or_404(Course, code__iexact=course_code)
+    CourseFormSet = modelformset_factory(Course,
+                                         fields=('name', 'code',),
+                                         extra=1,
+                                         can_delete=True)
+    formset = CourseFormSet(request.POST or None,
+                            queryset=Course.objects.all())
+    context = {
+        'formset': formset,
+        'selectedCourse': course
+    }
+
+    if request.method == 'POST':
+        if formset.is_valid():
+            try:
+                instances = formset.save(commit=False)
+                for instance in instances:
+                    instance.save()
+                del_count = 0
+                for instance in formset.deleted_objects:
+                    if request.user.is_superuser \
+                        or [(instance.project_set.all().count() == 0)
+                            and (instance.team_set.all().count() == 0)]:
+                        instance.delete()
+                        del_count += 1
+            except IntegrityError:
+                messages.error(request, _(
+                    "You must provide unique course name and course code"))
+                return render(request, "lecturers/course_manage.html", context)
+
+            ch_count = len(formset.changed_objects)
+            new_count = len(formset.new_objects)
+            if del_count > 0:
+                messages.success(request, _(
+                    "You have succesfully deleted " +
+                    str(del_count) + " courses"))
+            if ch_count > 0:
+                messages.success(request, _(
+                    "You have succesfully modified " +
+                    str(del_count + ch_count) + " courses"))
+            if new_count > 0:
+                messages.success(request, _(
+                    "You have succesfully added new course."))
+            if del_count != len(formset.deleted_objects):
+                messages.info(request, _(
+                    "You don't have permission to delete course which" +
+                    " has related projects/teams: ") + course.name)
+
+        return redirect('lecturers:profile')
+
+    return render(request, "lecturers/course_manage.html", context)

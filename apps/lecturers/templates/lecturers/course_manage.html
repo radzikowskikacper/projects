@@ -1,0 +1,99 @@
+{% extends "lecturers/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{# Panel header #}
+
+{% block panel_heading %}
+<div class="row">
+    <div class="col-sm-1 col-xs-1">
+        <a href="{% url 'lecturers:profile' %}" title="{% trans "Back to profile" %}" class="btn btn-default">
+            {% bootstrap_icon "chevron-left" %} {% trans "Back" %}
+        </a>
+    </div>
+    <div class="col-sm-10 col-xs-10">
+        <h3 class="panel-title" style="padding-top: 8px; padding-bottom: 8px;">{% trans "Manage courses" %}</h3>
+    </div>
+    {% if not user.is_superuser %}
+    <span class="pull-right col-sm-1 col-xs-1">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#infoModal" title="{% trans "Show info" %}">
+            {% bootstrap_icon "question-sign" %}
+        </button>
+    </span>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+{# Panel content #}
+
+{% block panel_content %}
+<div class="panel-body">
+    <form id="team_form" action="{% url 'lecturers:course_manage' selectedCourse.code %}" method="post">
+        {% csrf_token %}
+        <table class="table table-hover">
+            <thead>
+                <th class="col-md-4">{% bootstrap_label _("Name")%}</th>
+                <th class="col-md-1">{% bootstrap_label _("Code")%}</th>
+                <th class="col-md-1"></th>
+                <th class="col-md-1">{% bootstrap_label _("Delete")%}</th>
+            </thead>
+            <tbody>
+                {% for form in formset.forms %}
+                    {% bootstrap_formset_errors formset %}
+                    <tr>
+                        {% for field in form %}
+                            <td>{% bootstrap_field field show_label=False %}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {{ formset.management_form }}
+    </form>
+</div>
+{% endblock %}
+
+{# Panel footer #}
+
+{% block panel_footer %}
+<button type="submit" title="{% trans "Add course" %}" class="btn btn-primary" form="team_form" onclick="sumbitBtnClicked(event)">
+    {% trans "Submit" %}
+</button>
+<button type="reset" title="{% trans "Reset form" %}" class="btn btn-default" form="team_form">
+    {% trans "Reset" %}
+</button>
+
+{% if not user.is_superuser %}
+<!-- infoModal -->
+<div id="infoModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">{% bootstrap_icon "info-sign" %} {% trans "Info" %}</h4>
+      </div>
+      <div class="modal-body">
+        <p><b>{% trans "You are not the admin. You can edit courses and create new ones, but you can't delete a course if it has any projects/teams." %}</b></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endif %}
+<script>
+function sumbitBtnClicked(e)
+{
+    var isAnyChecked =  $('input:checkbox').is(':checked');
+    if(isAnyChecked) {
+        if(!confirm("{% trans "You are going to delete a course and everything that is related to this course. Are you sure?" %}"))e.preventDefault();
+    }
+}
+</script>
+{% endblock %}
+
+

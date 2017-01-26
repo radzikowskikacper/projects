@@ -48,7 +48,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Course',
             fields=[
-                ('name', models.CharField(max_length=255, primary_key=True, serialize=False, verbose_name='name')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(max_length=255, serialize=False, verbose_name='name')),
                 ('code', models.CharField(default='', max_length=6, verbose_name='code')),
             ],
             options={
@@ -56,6 +57,10 @@ class Migration(migrations.Migration):
                 'verbose_name': 'course',
                 'verbose_name_plural': 'courses',
             },
+        ),
+        migrations.AlterUniqueTogether(
+            name='course',
+            unique_together=set([('name', 'code')]),
         ),
 
     ]
