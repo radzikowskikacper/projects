@@ -29,4 +29,15 @@
     <a href="{% url "lecturers:course_manage" selectedCourse.code %}" title="{% trans "Add, edit or delete courses" %}" class="btn btn-default" role="button">
         {% bootstrap_icon "cog" %} {% trans "Manage courses" %}
     </a>
+    <a href="{% url "lecturers:clean_up" selectedCourse.code %}" title="{% trans "Removes all teams from current course" %}" class="btn btn-default" role="button" onclick="sumbitBtnClicked(event)">
+        {% bootstrap_icon "trash" %} {% trans "Cleaning up" %}
+    </a>
+
+<script>
+function sumbitBtnClicked(e)
+{
+    if(!confirm("{% trans "You are going to perform a clean-up for current course" %}" + " (" + "{{ selectedCourse.code }}" + "). " +
+        "{% trans "All teams related to this course will be deleted. Existing projects related to this course will not be deleted. Are you sure?" %}"))e.preventDefault();
+}
+</script>
 {% endblock %}

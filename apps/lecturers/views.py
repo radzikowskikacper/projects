@@ -497,3 +497,19 @@ def course_manage(request, course_code=None):
         return redirect('lecturers:profile')
 
     return render(request, "lecturers/course_manage.html", context)
+
+
+@login_required
+@user_passes_test(is_lecturer)
+def clean_up(request, course_code=None):
+    course = get_object_or_404(Course, code__iexact=course_code)
+    try:
+        for team in course.team_set.filter(project_preference__lecturer=request.user.lecturer):
+            team.delete()
+    except Exception as e:
+        print("Exception: " + str(e))
+
+    messages.success(request, _(
+        "You have succesfully performed clean-up for current course."))
+
+    return redirect('lecturers:profile')
