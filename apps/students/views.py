@@ -2,10 +2,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Count
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.utils.translation import ugettext_lazy as _
 from projects_helper.apps.common.models import Project, Team, Course
 from django.core.exceptions import ObjectDoesNotExist
+from django.template.loader import render_to_string
 
 
 def is_student(user):
@@ -15,6 +16,8 @@ def is_student(user):
 @login_required
 @user_passes_test(is_student)
 def profile(request):
+    if 'selectedCourse' not in request.session:
+        return redirect(reverse('common:select_course'))
     course = get_object_or_404(
         Course, code__iexact=request.session['selectedCourse'])
     return render(request,
@@ -124,11 +127,20 @@ def filtered_project_list(request, course_code=None):
             Q(lecturer__user__last_name__icontains=query)
         )
 
-    return render(request,
-                  template_name="students/project_list.html",
-                  context={"projects": filtered_projects,
-                           "student_team": request.user.student.team,
-                           "selectedCourse": course})
+    context = {
+        "projects": filtered_projects,
+        "team": request.user.student.team,
+        "project_picked": request.user.student.project_preference,
+        "selectedCourse": course
+    }
+
+    if request.is_ajax():
+        return HttpResponse(render_to_string("students/project_table.html",
+                                             context=context))
+    else:
+        return render(request,
+                      template_name="students/project_list.html",
+                      context=context)
 
 
 @login_required

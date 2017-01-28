@@ -39,5 +39,3 @@ def course_selection(request):
             return redirect_user(request, request.user, course_code)
 
     return render(request, 'common/course_selection_form.html', {'form': form})
-
-

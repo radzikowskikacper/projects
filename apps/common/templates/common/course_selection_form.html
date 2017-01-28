@@ -2,6 +2,10 @@
 {% load i18n %}
 {% load bootstrap3 %}
 
+{% block navbar_left%}
+{# overridde this block to prevent drawing login button #}
+{% endblock %}
+
 {% block content %}
 {% include "common/messages.html" %}
 

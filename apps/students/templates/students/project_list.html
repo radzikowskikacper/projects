@@ -1,6 +1,7 @@
 {% extends "students/base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
+{% load static %}
 
 {# Panel header #}
 
@@ -11,9 +12,9 @@
     </div>
     <div class="col-sm-4 col-xs-6">
         <span class="pull-right">
-            <form role="search" method="get" action="{% url 'students:filtered_project_list' selectedCourse.code %}">
+            <form id="searchForm" role="search" method="get" action="{% url 'students:filtered_project_list' selectedCourse.code %}">
                 <div class="input-group">
-                    <input type="text" name="title" class="form-control" placeholder={% trans "Project title..." %}>
+                    <input type="text" id="searchInput" name="title" class="form-control" placeholder={% trans "Project title..." %}>
                     <div class="input-group-btn">
                         <button class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
@@ -29,33 +30,11 @@
 {% block panel_content %}
 <form id='pick_project_form' action="{% url 'students:pick_project' %}" method="post">
     {% csrf_token %}
-    <table class="table table-hover">
-        <tr>
-            <th class="col-md-0">{% bootstrap_icon "ok"%}</th>
-            <th class="col-md-0">{% trans "Teams" %}</th>
-            <th class="col-md-1">{% trans "Status" %}</th>
-            <th class="col-md-9">{% trans "Title" %}</th>
-            <th class="col-md-2">{% trans "Lecturer" %}</th>
-        </tr>
-        {% for project in projects %}
-            <tr>
-                {% if project == project_picked %}
-                    <td>{% bootstrap_icon "user" %}</td>
-                {% elif project.status == "free" and not team.is_locked %}
-                    <td><input type="radio" name="to_pick" id="{{ project.pk }}"
-                               value="{{ project.pk }}"/></td>
-                {% else %}
-                    <td></td>
-                {% endif %}
-                <td>{{ project.teams_with_preference.count }}</td>
-                <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
-                <td><a href="{% url 'students:project' selectedCourse.code project.pk %}">{{ project.title }}</a></td>
-                <td><a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer }}</a></td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div id="tableContainer">
+    {% include "students/project_table.html" %}
+    </div>
 </form>
-{% endblock %}
+{% endblock %}}
 
 {# Panel footer #}
 
@@ -65,4 +44,8 @@
         {% trans "Pick" %}
     </button>
 {% endif %}
+{% endblock %}
+
+{% block additional_js %}
+    <script src="{% static "js/searchfilter.js" %}"></script>
 {% endblock %}

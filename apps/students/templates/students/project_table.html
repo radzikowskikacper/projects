@@ -1,0 +1,28 @@
+{% load i18n %}
+{% load bootstrap3 %}
+
+<table id="projectTable" class="table table-hover">
+<tr>
+    <th class="col-md-0">{% bootstrap_icon "ok"%}</th>
+    <th class="col-md-0">{% trans "Teams" %}</th>
+    <th class="col-md-1">{% trans "Status" %}</th>
+    <th class="col-md-9">{% trans "Title" %}</th>
+    <th class="col-md-2">{% trans "Lecturer" %}</th>
+</tr>
+{% for project in projects %}
+    <tr>
+        {% if project == project_picked %}
+            <td>{% bootstrap_icon "user" %}</td>
+        {% elif project.status == "free" and not team.is_locked %}
+            <td><input type="radio" name="to_pick" id="{{ project.pk }}"
+                       value="{{ project.pk }}"/></td>
+        {% else %}
+            <td></td>
+        {% endif %}
+        <td>{{ project.teams_with_preference.count }}</td>
+        <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
+        <td><a href="{% url 'students:project' selectedCourse.code project.pk %}">{{ project.title }}</a></td>
+        <td><a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer }}</a></td>
+    </tr>
+{% endfor %}
+ </table>

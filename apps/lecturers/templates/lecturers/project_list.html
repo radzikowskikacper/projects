@@ -1,6 +1,7 @@
 {% extends "lecturers/base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
+{% load static %}
 
 {# Panel header #}
 
@@ -11,9 +12,9 @@
     </div>
     <div class="col-sm-4 col-xs-6">
         <span class="pull-right">
-            <form role="search" method="get" action="{% url 'lecturers:filtered_project_list' selectedCourse.code %}">
+            <form id="searchForm" role="search" method="get" action="{% url 'lecturers:filtered_project_list' selectedCourse.code %}">
                 <div class="input-group">
-                    <input type="text" name="title" class="form-control" placeholder={% trans "Project title..." %}>
+                    <input id="searchInput" type="text" name="title" class="form-control" placeholder={% trans "Project title..." %}>
                     <div class="input-group-btn">
                         <button class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
@@ -29,27 +30,9 @@
 {% block panel_content %}
 <form id="delete_form" action="{% url 'lecturers:project_delete' %}" method="post">
     {% csrf_token %}
-    <table class="table table-hover">
-        <thead>
-            <th class="col-md-0">{% bootstrap_icon "ok" %}</th>
-            <th class="col-md-10">{% trans "Title" %}</th>
-            <th class="col-md-1">{% trans "Teams" %}</th>
-            <th class="col-md-1">{% trans "Status" %}</th>
-        </thead>
-        {% for project in projects %}
-            <tr>
-                <td>
-                    {% if project.lecturer == user.lecturer and project.status == "free" %}
-                        <input type="checkbox" name="to_delete" id="{{ project.pk }}"
-                               value="{{ project.pk }}"/>
-                    {% endif %}
-                </td>
-                <td><a href="{% url 'lecturers:project' selectedCourse.code project.pk %}" title="{% trans "Show project details" %}">{{ project.title }}</a></td>
-                <td>{% if project.teams_with_preference %} {% trans "yes" %} {% else %} {% trans "no" %} {% endif %}</td>
-                <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div id="tableContainer">
+    {% include "lecturers/project_table.html" %}
+    </div>
 </form>
 <form id="assign_all_form" action="{% url 'lecturers:assign_teams_to_projects' selectedCourse.code %}" method="post">
     {% csrf_token %}
@@ -70,4 +53,8 @@
         {% bootstrap_icon "pencil" %} {% trans "Auto assign" %}
         </button>
     </span>
+{% endblock %}
+
+{% block additional_js %}
+    <script src="{% static "js/searchfilter.js" %}"></script>
 {% endblock %}

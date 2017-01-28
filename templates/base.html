@@ -1,6 +1,7 @@
-{% load staticfiles %}
+{% load static %}
 {% load bootstrap3 %}
 {% load i18n %}
+
 <!DOCTYPE html>
 <html lang="en" ng-app>
 <head>
@@ -44,6 +45,8 @@
 {% block javascript %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     {% bootstrap_javascript %}
+    {% block additional_js %}
+    {% endblock %}
 {% endblock javascript %}
 </body>
 </html>

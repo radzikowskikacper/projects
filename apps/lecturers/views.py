@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.db import IntegrityError, transaction
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
 
 from django.forms import modelformset_factory
@@ -48,10 +49,18 @@ def filtered_project_list(request, course_code=None):
         lecturer=request.user.lecturer).filter(course=course)
     filtered_projects = projects.filter(title__icontains=title)
 
-    return render(request,
-                  template_name="lecturers/project_list.html",
-                  context={"projects": filtered_projects,
-                           "selectedCourse": course})
+    context = {
+        "projects": filtered_projects,
+        "selectedCourse": course
+    }
+
+    if request.is_ajax():
+        return HttpResponse(render_to_string("lecturers/project_table.html",
+                                             context=context))
+    else:
+        return render(request,
+                      template_name="lecturers/project_list.html",
+                      context=context)
 
 
 @login_required

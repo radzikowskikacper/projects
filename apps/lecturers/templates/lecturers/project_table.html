@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load bootstrap3 %}
+
+<table class="table table-hover">
+    <thead>
+        <th class="col-md-0">{% bootstrap_icon "ok" %}</th>
+        <th class="col-md-10">{% trans "Title" %}</th>
+        <th class="col-md-1">{% trans "Teams" %}</th>
+        <th class="col-md-1">{% trans "Status" %}</th>
+    </thead>
+    {% for project in projects %}
+        <tr>
+            <td>
+                {% if project.lecturer == user.lecturer and project.status == "free" %}
+                    <input type="checkbox" name="to_delete" id="{{ project.pk }}"
+                           value="{{ project.pk }}"/>
+                {% endif %}
+            </td>
+            <td><a href="{% url 'lecturers:project' selectedCourse.code project.pk %}" title="{% trans "Show project details" %}">{{ project.title }}</a></td>
+            <td>{% if project.teams_with_preference %} {% trans "yes" %} {% else %} {% trans "no" %} {% endif %}</td>
+            <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
+        </tr>
+    {% endfor %}
+</table>
