@@ -11,7 +11,7 @@ SITE_ROOT = dirname(dirname(abspath(__file__)))
 path.append(SITE_ROOT)
 
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "projects_helper.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "projects_helper.settings.local")
 
 
 from django.core.wsgi import get_wsgi_application
