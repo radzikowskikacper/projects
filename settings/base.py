@@ -116,16 +116,11 @@ LOCALE_PATHS = (
 )
 
 
-
 # Static files (CSS, JavaScript, Images)
+
 STATIC_URL = '/static/'
 
-# Additional locations of static files
-STATICFILES_DIRS = (
-    root('static'),
-)
-
-STATIC_ROOT = root('staticfiles')
+STATIC_ROOT = root('static')
 
 TEMPLATES = [
     {

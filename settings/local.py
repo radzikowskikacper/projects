@@ -13,7 +13,7 @@ except Exception as e:
 
 DEBUG = True
 
-ALLOWED_HOSTS += ('127.0.0.1', config_custom.WEB_SRV_HOST)
+ALLOWED_HOSTS += ('127.0.0.1', config_custom.ALLOWED_HOST)
 
 DATABASES = {
     'default': {
