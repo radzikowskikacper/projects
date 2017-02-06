@@ -1,9 +1,15 @@
 {% extends basetemplate %}
 {% load version %}
+{% load static %}
 
 {% block content %}
 <div class="jumbotron">
-    <p>Copyright by {% contributors %}.</p>
-    <p>Server info: version: {% version_number %}, Django version: {% django_version %}, debug: {% if debug %} True {% else %} False {% endif %}</p>
+    <video width="320" height="240" controls>
+        <source src="{% static "films/helpmv.mp4" %}" type="video/mp4">
+    <p>Your browser does not support the video tag.</p>
+    </video>
+
+    <p><h4>Copyright by {% contributors %}.</h4></p>
+    <p><h4>Server info: version: {% version_number %}, Django version: {% django_version %}, debug: {% if debug %} True {% else %} False {% endif %}</h4></p>
 </div>
 {% endblock %}
