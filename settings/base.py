@@ -120,7 +120,11 @@ LOCALE_PATHS = (
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = root('static')
+STATICFILES_DIRS = (
+    root('static'),
+)
+
+STATIC_ROOT = root('staticfiles')
 
 TEMPLATES = [
     {
