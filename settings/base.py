@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'projects_helper.apps.students',
     'projects_helper.apps.lecturers',
     'projects_helper.apps.about',
-    'registration',
+    # 'registration',
     'django.contrib.admin.apps.SimpleAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,6 +55,8 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'projects_helper.settings.middleware.LoggingMiddleware',
+    'projects_helper.settings.middleware.StandardExceptionMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -62,7 +64,6 @@ AUTHENTICATION_BACKENDS = (
     #'django_cas_ng.backends.CASBackend',
     'common.backends.ExtendedCASBackend'
 )
-
 
 ROOT_URLCONF = 'projects_helper.urls'
 
@@ -188,3 +189,55 @@ AUTH_USER_MODEL = 'common.CAS_User'
 # importing test settings file if necessary
 if IN_TESTING:
     from .testing import *  # noqa
+
+# Logging settings
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'main_log': {
+            'format': '%(asctime)s %(levelname)s %(name)s [%(lineno)s] - %(message)s'
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+
+        },
+        'request_handler': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': root('requests.log'),
+            'maxBytes': 1024 * 1024 * 5,  # 5MB
+            'backupCount': 5,
+        },
+        'main_handler': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': root('projects_helper.log'),
+            'maxBytes': 1024 * 1024 * 5,  # 5MB
+            'backupCount': 5,
+            'formatter': 'main_log',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['request_handler'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'projects_helper': {
+            'handlers': ['main_handler'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}

@@ -1,15 +1,22 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.db import IntegrityError, transaction
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.http import Http404
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
 
 from django.forms import modelformset_factory
 from projects_helper.apps.common.models import Project, Course, Team
 from projects_helper.apps.lecturers.forms import ProjectForm, TeamForm, TeamModifyForm
+import logging
+
+
+## Instantiating module's logger.
+logger = logging.getLogger('projects_helper.apps.lecturers.views')
 
 
 def is_lecturer(user):
@@ -18,6 +25,7 @@ def is_lecturer(user):
 
 @login_required
 @user_passes_test(is_lecturer)
+@ensure_csrf_cookie
 def profile(request):
     if 'selectedCourse' not in request.session:
         return redirect(reverse('common:select_course'))
@@ -42,29 +50,37 @@ def project_list(request, course_code=None):
 
 @login_required
 @user_passes_test(is_lecturer)
+@ensure_csrf_cookie
 def filtered_project_list(request, course_code=None):
-    title = request.GET.get('title')
-    course = get_object_or_404(Course, code__iexact=course_code)
-    projects = Project.objects.filter(
-        lecturer=request.user.lecturer).filter(course=course)
-    filtered_projects = projects.filter(title__icontains=title)
+    if request.method == 'GET' and 'title' in request.GET:
+        title = request.GET.get('title')
+        course = get_object_or_404(Course, code__iexact=course_code)
+        projects = Project.objects.filter(
+            lecturer=request.user.lecturer).filter(course=course)
+        filtered_projects = projects.filter(title__icontains=title)
 
-    context = {
-        "projects": filtered_projects,
-        "selectedCourse": course
-    }
+        context = {
+            "projects": filtered_projects,
+            "selectedCourse": course,
+            "user": request.user
+        }
 
-    if request.is_ajax():
-        return HttpResponse(render_to_string("lecturers/project_table.html",
-                                             context=context))
+        if request.is_ajax():
+            return HttpResponse(render_to_string("lecturers/project_table.html",
+                                                 context=context))
+        else:
+            return render(request,
+                          template_name="lecturers/project_list.html",
+                          context=context)
     else:
-        return render(request,
-                      template_name="lecturers/project_list.html",
-                      context=context)
+        logger.error('Bad request: Only GET requests are allowed. %s' %
+                     request.build_absolute_uri())
+        raise Http404
 
 
 @login_required
 @user_passes_test(is_lecturer)
+@ensure_csrf_cookie
 def project(request, project_pk, course_code=None):
     proj = Project.objects.get(pk=project_pk)
     course = get_object_or_404(Course, code__iexact=course_code)
@@ -75,22 +91,28 @@ def project(request, project_pk, course_code=None):
 
 @login_required
 @user_passes_test(is_lecturer)
+@ensure_csrf_cookie
 def project_delete(request):
-    projects_to_delete = Project.objects.filter(
-        pk__in=request.POST.getlist('to_delete'))
+    if request.method == 'POST':
+        projects_to_delete = Project.objects.filter(
+            pk__in=request.POST.getlist('to_delete'))
 
-    for proj in projects_to_delete:
-        if proj.lecturer.user == request.user:
-            if proj.status() == 'free':
-                proj.delete()
+        for proj in projects_to_delete:
+            if proj.lecturer.user == request.user:
+                if proj.status() == 'free':
+                    proj.delete()
+                else:
+                    messages.info(request, _(
+                        "Cannot delete occupied project: ") + proj.title)
             else:
-                messages.info(request, _(
-                    "Cannot delete occupied project: ") + proj.title)
-        else:
-            messages.error(request,
-                           _("Cannot delete project: " + proj.title + " - access denied"))
-    return redirect(reverse('lecturers:project_list',
-                            kwargs={'course_code': request.session['selectedCourse']}))
+                msg = _("Cannot delete project: " + proj.title + " - access denied")
+                messages.error(request, msg)
+                logger.error(msg)
+        return redirect(reverse('lecturers:project_list',
+                                kwargs={'course_code': request.session['selectedCourse']}))
+    else:
+        logger.error('Bad request: Only POST requests are allowed.')
+        raise Http404
 
 
 @login_required
@@ -184,11 +206,14 @@ def project_copy(request, project_pk, course_code=None):
 @user_passes_test(is_lecturer)
 def team_list(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
-    my_teams = Team.objects \
-        .filter(course=course,
-                project_preference__lecturer=request.user.lecturer) \
-        .exclude(project_preference__isnull=True)
-    teams_with_no_project = Team.objects.filter(course=course, project_preference__isnull=True)
+    try:
+        my_teams = Team.objects \
+            .filter(course=course,
+                    project_preference__lecturer=request.user.lecturer) \
+            .exclude(project_preference__isnull=True)
+        teams_with_no_project = Team.objects.filter(course=course, project_preference__isnull=True)
+    except Exception as e:
+        logger.error(str(e))
     return render(request,
                   template_name="lecturers/team_list.html",
                   context={"teams": my_teams,
@@ -234,8 +259,8 @@ def team_new(request, course_code=None):
                     stud_2.team = new_team
                     stud_2.save()
 
-        except IntegrityError as e:
-            print("Exception: " + str(e))
+        except Exception as e:
+            logger.error("Exception: " + str(e))
             messages.error(request, _(
                 "Something went wrong. Try again."))
             return render(request, "lecturers/team_new.html", context)
@@ -332,7 +357,8 @@ def modify_team(request, team_pk, course_code=None):
                                     kwargs={'course_code': course_code}))
                         team.project_preference = proj_pref
                         team.save()
-        except IntegrityError:
+        except Exception as e:
+            logger.error("Exception: " + str(e))
             messages.error(request, _(
                 "Something went wrong. Try again."))
             return redirect(reverse('lecturers:team_list',
@@ -351,45 +377,57 @@ def modify_team(request, team_pk, course_code=None):
 
 @login_required
 @user_passes_test(is_lecturer)
+@ensure_csrf_cookie
 def team_delete(request):
-    teams_to_delete = Team.objects.filter(
-        pk__in=request.POST.getlist('to_delete'))
+    if request.method == 'POST':
+        teams_to_delete = Team.objects.filter(
+            pk__in=request.POST.getlist('to_delete'))
 
-    for team in teams_to_delete:
-        if team.project_preference is None \
-                or (team.project_preference.lecturer.user == request.user):
-            messages.success(request, _(
-                "You have succesfully deleted team: ") + str(team))
-            team.delete()
-        else:
-            messages.error(request, _("Cannot delete team: " +
-                                      str(team) + " - access denied"))
-    return redirect(reverse('lecturers:team_list',
-                            kwargs={'course_code':
-                                    request.session['selectedCourse']}))
+        for team in teams_to_delete:
+            if team.project_preference is None \
+                    or (team.project_preference.lecturer.user == request.user):
+                messages.success(request, _(
+                    "You have succesfully deleted team: ") + str(team))
+                team.delete()
+            else:
+                msg = _("Cannot delete team: " + str(team) + " - access denied")
+                messages.error(request, msg)
+                logger.error(msg)
+        return redirect(reverse('lecturers:team_list',
+                                kwargs={'course_code':
+                                        request.session['selectedCourse']}))
+    else:
+        logger.error('Bad request: Only POST requests are allowed.')
+        raise Http404
 
 
 @login_required
 @user_passes_test(is_lecturer)
+@ensure_csrf_cookie
 def assign_selected_team(request, project_pk, team_pk):
     if request.method == 'POST':
         try:
             project = Project.objects.get(pk=project_pk)
             team = Team.objects.get(pk=team_pk)
         except ObjectDoesNotExist as e:
-            print(str(e))
+            logger.error(str(e))
             messages.error(request, _(
                 "Cannot assign team. Team or project not found!"))
 
         if project.lecturer.user == request.user:
             if team and project:
-                project.assign_team(team)
-                project.save()
+                try:
+                    project.assign_team(team)
+                    project.save()
+                except Exception as e:
+                    logger.error(str(e))
                 messages.success(request, _(
                     "You have successfully assigned team: " +
                     str(team) + " to project: " + str(project)))
         else:
-            messages.error(request, _("Cannot assign: access denied"))
+            msg = _("Cannot assign: access denied")
+            messages.error(request, msg)
+            logger.error(msg)
 
     return redirect(reverse_lazy('lecturers:project',
                                  kwargs={'project_pk': project.pk,
@@ -399,8 +437,9 @@ def assign_selected_team(request, project_pk, team_pk):
 
 @login_required
 @user_passes_test(is_lecturer)
+@ensure_csrf_cookie
 def assign_team(request, project_pk):
-    proj = Project.objects.get(pk=project_pk)
+    proj = get_object_or_404(Project, pk=project_pk)
     if proj.lecturer.user == request.user:
         if proj.teams_with_preference().count() == 0:
             messages.error(request, _(
@@ -411,7 +450,9 @@ def assign_team(request, project_pk):
                 "You have successfully assigned team: " +
                 str(proj.team_assigned) + " to project: " + str(proj)))
     else:
-        messages.error(request, _("Cannot assign: access denied"))
+        msg = _("Cannot assign: access denied")
+        messages.error(request, msg)
+        logger.error(msg)
 
     return redirect(reverse_lazy('lecturers:project',
                                  kwargs={'project_pk': proj.pk,
@@ -421,6 +462,7 @@ def assign_team(request, project_pk):
 
 @login_required
 @user_passes_test(is_lecturer)
+@ensure_csrf_cookie
 def assign_teams_to_projects(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
     projects = Project.objects.filter(
@@ -438,8 +480,9 @@ def assign_teams_to_projects(request, course_code=None):
 
 @login_required
 @user_passes_test(is_lecturer)
+@ensure_csrf_cookie
 def unassign_team(request, project_pk):
-    proj = Project.objects.get(pk=project_pk)
+    proj = get_object_or_404(Project, pk=project_pk)
     if proj.lecturer.user == request.user:
         proj.team_assigned = None
         proj.save()
@@ -480,7 +523,8 @@ def course_manage(request, course_code=None):
                             and (instance.team_set.all().count() == 0)]:
                         instance.delete()
                         del_count += 1
-            except IntegrityError:
+            except IntegrityError as e:
+                logger.error("Cannot save Course. " + str(e))
                 messages.error(request, _(
                     "You must provide unique course name and course code"))
                 return render(request, "lecturers/course_manage.html", context)
@@ -510,13 +554,14 @@ def course_manage(request, course_code=None):
 
 @login_required
 @user_passes_test(is_lecturer)
+@ensure_csrf_cookie
 def clean_up(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
     try:
         for team in course.team_set.filter(project_preference__lecturer=request.user.lecturer):
             team.delete()
     except Exception as e:
-        print("Exception: " + str(e))
+        logger.error("Exception: " + str(e))
 
     messages.success(request, _(
         "You have succesfully performed clean-up for current course."))

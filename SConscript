@@ -54,3 +54,6 @@ env.SideEffect('lighttpd.develop', config)
 env.SideEffect('lighttpd.log', config)
 env.SideEffect('lighttpd.pid', config)
 env.SideEffect('config.pyc', config)
+
+env.Clean('.', 'requests.log')
+env.Clean('.', 'projects_helper.log')

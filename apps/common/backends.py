@@ -1,18 +1,24 @@
 from django_cas_ng.backends import CASBackend
-#from common.models import Student, Lecturer
 from django.apps import apps
 from django.conf import settings
-#from django.core.exceptions import ObjectDoesNotExist
+import logging
+
+
+## Instantiating module's logger.
+logger = logging.getLogger('projects_helper.apps.common.backends')
 
 
 def new_user_created_info(attr):
-    print("New user created:")
+    info_msg = "New user created:"
     for arg, val in attr.items():
-        print(arg + ": " + val)
+        attr_msg = "\n" + arg + ": " + val
+        info_msg += attr_msg
+    logger.info(info_msg)
+
 
 def arg_not_found_info(user, arg_name):
-    print("Exception: CAS attribute '" + arg_name + "' not found!" +
-    " (username: " + user.username + ").")
+    logger.error("Exception: CAS attribute '%s' not found! (username: %s)." % (arg_name, str(user)))
+
 
 class ExtendedCASBackend(CASBackend):
 
@@ -62,8 +68,10 @@ class ExtendedCASBackend(CASBackend):
 
                 user.save()
                 new_user_created_info(attributes)
+            else:
+                logger.error("CAS did not return attributes for user %s" % str(user.username))
 
         elif user.user_type == 'S' or user.user_type == 'L':
-            print("User logged in: email: " + user.email)
+            logger.info("User %s logged in" % str(user.email))
 
         return user

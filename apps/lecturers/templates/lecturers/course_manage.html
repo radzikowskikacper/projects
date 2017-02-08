@@ -42,6 +42,7 @@
                 {% for form in formset.forms %}
                     {% bootstrap_formset_errors formset %}
                     <tr>
+                        {% bootstrap_form_errors form %}
                         {% for field in form %}
                             <td>{% bootstrap_field field show_label=False %}</td>
                         {% endfor %}

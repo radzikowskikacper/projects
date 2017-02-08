@@ -2,6 +2,11 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from random import randint
 from django.utils.translation import ugettext_lazy as _
+import logging
+
+
+## Instantiating module's logger.
+logger = logging.getLogger('projects_helper.apps.common.models')
 
 
 class CAS_User(AbstractUser):
@@ -19,14 +24,15 @@ class CAS_User(AbstractUser):
 
 class Course(models.Model):
     name = models.CharField(verbose_name=_('name'),
-                            max_length=255)
+                            max_length=255,
+                            unique=True)
     code = models.CharField(verbose_name=_('code'),
                             default='',
                             max_length=6,
-                            blank=False)
+                            blank=False,
+                            unique=True)
 
     class Meta:
-        unique_together = ('name', 'code',)
         ordering = ['name']
         verbose_name = _('course')
         verbose_name_plural = _('courses')
@@ -143,7 +149,10 @@ class Project(models.Model):
         if len(teams) > 0:
             random_idx = randint(0, len(teams) - 1)
             self.team_assigned = teams[random_idx]
-            self.save()
+            try:
+                self.save()
+            except Exception as e:
+                logger.error("Project cannot be saved. " + str(e))
 
     def __str__(self):
         return self.title

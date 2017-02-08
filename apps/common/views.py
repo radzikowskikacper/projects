@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 from projects_helper.apps.students.views import is_student
@@ -7,8 +8,14 @@ from projects_helper.apps.common.forms import CourseSelectorForm
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
+import logging
 
 
+## Instantiating module's logger.
+logger = logging.getLogger('projects_helper.apps.common.views')
+
+
+@ensure_csrf_cookie
 def redirect_user(request, user, course_code=None):
     if is_student(user):
         return redirect(reverse('students:project_list', kwargs={'course_code': course_code}))
@@ -21,6 +28,7 @@ def redirect_user(request, user, course_code=None):
         messages.error(request,
             _('Error: Your account type cannot be recognized by the service. Please contact administrator.'))
         return redirect(reverse('common:welcome'))
+
 
 @csrf_protect
 @login_required

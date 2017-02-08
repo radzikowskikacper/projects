@@ -1,14 +1,21 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.urls import reverse
 from projects_helper.apps.students.views import is_student
 from projects_helper.apps.lecturers.views import is_lecturer
 from projects_helper.apps.common.models import Course
+import logging
 
 
+## Instantiating module's logger.
+logger = logging.getLogger('projects_helper.apps.about.views')
+
+
+@ensure_csrf_cookie
 def info(request):
     context = {
-        "basetemplate" : "common/base.html",
-        "selectedCourse" : None
+        "basetemplate": "common/base.html",
+        "selectedCourse": None
     }
 
     if request.user.is_authenticated():
