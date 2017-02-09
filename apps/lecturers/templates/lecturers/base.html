@@ -21,9 +21,6 @@
         <a class="nav-link" href="{% url 'common:select_course' %}">{% trans "Change course" %}</a>
     </li>
     {{ block.super }}
-    <li>
-        <a class="nav-link" href="{% url 'common:cas_ng_logout' %}">{% trans "Logout" %}</a>
-    </li>
 {% endblock %}
 
 {% block course_label %}

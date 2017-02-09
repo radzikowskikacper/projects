@@ -26,7 +26,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     {% block navbar_right %}
                     <li>
-                        <a class="nav-link" href="{% url 'about:info' %}">{% trans "About" %}</a>
+                        <a class="nav-link" href="{% url 'about:info' %}">{% trans "Help" %}</a>
                     </li>
                     <li class="dropdown">
                       {% get_language_info for LANGUAGE_CODE as current %}
@@ -51,6 +51,9 @@
                         {% endfor %}
                       </ul>
                     </li><!-- /.dropdown -->
+                    <li>
+                        <a class="nav-link" href="{% url 'common:cas_ng_logout' %}">{% trans "Logout" %}</a>
+                    </li>
                     {% endblock %}
                 </ul>
             </div><!-- /.navbar-collapse -->

@@ -69,16 +69,20 @@
 
 {% block panel_footer %}
 {% if not student_team.is_locked %}
-    <button type="submit" class="btn btn-primary" form="join_team_form">
+    <button type="submit" class="btn btn-primary" form="join_team_form" title="{% trans "Join selected team." %}">
         {% trans "Join" %}
     </button>
 {% endif %}
-{% if not student_team.is_locked  and student_team.project_preference is not None %}
-    <button type="submit" class="btn btn-default" form="new_team_form">
+{% if not student_team.is_locked  and student_team.project_preference is not None and student_team.student_set.count > 1 %}
+    <button type="submit" class="btn btn-default" form="new_team_form" title="{% trans "Leave current team." %}">
         {% trans "Leave team" %}
     </button>
     <form id="new_team_form" action="{% url 'students:new_team' %}" method="post">
     {% csrf_token %}
     </form>
+{% else %}
+    <button type="submit" class="btn btn-default disabled">
+        {% trans "Leave team" %}
+    </button>
 {% endif %}
 {% endblock %}

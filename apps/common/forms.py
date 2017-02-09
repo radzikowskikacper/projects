@@ -19,4 +19,4 @@ class CourseSelectorForm(Form):
     def __init__(self, *args, **kwargs):
         super(CourseSelectorForm, self).__init__(*args, **kwargs)
         self.fields['selection'].choices = \
-            [(c.code, c.name) for c in get_course_set()]
+            [(c.code, '[' + c.code + '] ' + c.name) for c in get_course_set()]

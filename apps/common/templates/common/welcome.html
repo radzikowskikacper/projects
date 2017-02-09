@@ -1,10 +1,10 @@
-{% extends "common/base.html" %}
+{% extends basetemplate %}
 {% load i18n %}
 {% load bootstrap3 %}
 
 {% block content %}
 {% include "common/messages.html" %}
 <div class="jumbotron">
-    <h2>{% trans "Welcome on Projects Helper main page. Login to continue." %}</h2>
+    <h2>{% trans "Welcome on Projects Helper main page." %} {% if not user.is_authenticated %} {% trans "Login to continue." %} {% endif %}</h2>
 </div>
 {% endblock %}
