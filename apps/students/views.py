@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
 from projects_helper.apps.common.models import Project, Team, Course
+from projects_helper.apps.common.forms import ProjectFilterForm
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 import logging
@@ -28,8 +29,6 @@ def profile(request):
         return redirect(reverse('common:select_course'))
     course = get_object_or_404(
         Course, code__iexact=request.session['selectedCourse'])
-    if 'HTTP_X_FORWARDED_FOR' in request.META:
-        print(request.META.get('HTTP_X_FORWARDED_FOR'))
     return render(request,
                   "students/profile.html",
                   {'selectedCourse': course})
@@ -113,9 +112,11 @@ def project_list(request, course_code=None):
     projects = Project.objects.select_related('lecturer') \
                       .prefetch_related('team_set') \
                       .filter(course=course)
+    filter_form = ProjectFilterForm()
     return render(request,
                   template_name="students/project_list.html",
                   context={"projects": projects,
+                           "filterForm": filter_form,
                            "team": request.user.student.team,
                            "project_picked": request.user.student
                                                     .project_preference,
@@ -142,18 +143,33 @@ def team_list(request, course_code=None):
 @user_passes_test(is_student)
 @ensure_csrf_cookie
 def filtered_project_list(request, course_code=None):
-    if request.method == 'GET' and 'title' in request.GET:
+    if (request.method == 'GET') and ('title' in request.GET or 'filter' in request.GET):
+        query = request.GET.get('title', None)
+        filter_type = request.GET.get('filter', None)
         course = get_object_or_404(Course, code__iexact=course_code)
-        query = request.GET.get('title')
-        filtered_projects = Project.objects \
-            .select_related('lecturer') \
-            .complex_filter(
-                Q(title__icontains=query) |
-                Q(lecturer__user__last_name__icontains=query)
-            )
+        projects = Project.objects.filter(course=course)
+        filter_form = ProjectFilterForm(request.GET)
+
+        filtered_projects = projects
+        if filter_type:
+            if filter_type == 'free':
+                filtered_projects = projects.filter(team_assigned__isnull=True)
+            elif filter_type == 'occupied':
+                filtered_projects = projects.filter(team_assigned__isnull=False)
+            elif filter_type == 'has_teams':
+                filtered_projects = projects.filter(team__isnull=False)
+        if query:
+          filtered_projects = Project.objects \
+              .select_related('lecturer') \
+              .filter(course=course) \
+              .complex_filter(
+                  Q(title__icontains=query) |
+                  Q(lecturer__user__last_name__icontains=query)
+              )
 
         context = {
             "projects": filtered_projects,
+            "filterForm": filter_form,
             "team": request.user.student.team,
             "project_picked": request.user.student.project_preference,
             "selectedCourse": course

@@ -7,14 +7,17 @@
 
 {% block panel_heading %}
 <div class="row">
-    <div class="col-sm-8 col-xs-6">
+    <div class="col-sm-6 col-xs-6">
         <h3 class="panel-title" style="padding-top: 8px;">{% trans "Projects" %}</h3>
     </div>
-    <div class="col-sm-4 col-xs-6">
+    <div class="col-sm-6 col-xs-6">
         <span class="pull-right">
-            <form id="searchForm" role="search" method="get" action="{% url 'students:filtered_project_list' selectedCourse.code %}">
+            <form id="searchForm" class="form-inline" role="search" method="get" action="{% url 'students:filtered_project_list' selectedCourse.code %}">
                 <div class="input-group">
-                    <input type="text" id="searchInput" name="title" class="form-control" placeholder={% trans "Project title..." %}>
+                    <input id="searchInput" type="text" name="title" class="form-control" placeholder="{% trans "Project title..." %}">
+                    <div class="input-group-btn">
+                    {% bootstrap_form filterForm %}
+                    </div>
                     <div class="input-group-btn">
                         <button class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
                     </div>

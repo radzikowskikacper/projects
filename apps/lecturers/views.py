@@ -11,6 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from django.forms import modelformset_factory
 from projects_helper.apps.common.models import Project, Course, Team
+from projects_helper.apps.common.forms import ProjectFilterForm
 from projects_helper.apps.lecturers.forms import ProjectForm, TeamForm, TeamModifyForm
 import logging
 
@@ -42,9 +43,11 @@ def project_list(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
     projects = Project.objects.filter(
         lecturer=request.user.lecturer).filter(course=course)
+    filter_form = ProjectFilterForm()
     return render(request,
                   template_name="lecturers/project_list.html",
                   context={"projects": projects,
+                           "filterForm": filter_form,
                            "selectedCourse": course})
 
 
@@ -52,15 +55,28 @@ def project_list(request, course_code=None):
 @user_passes_test(is_lecturer)
 @ensure_csrf_cookie
 def filtered_project_list(request, course_code=None):
-    if request.method == 'GET' and 'title' in request.GET:
-        title = request.GET.get('title')
+    if (request.method == 'GET') and ('title' in request.GET or 'filter' in request.GET):
+        title = request.GET.get('title', None)
+        filter_type = request.GET.get('filter', None)
         course = get_object_or_404(Course, code__iexact=course_code)
         projects = Project.objects.filter(
             lecturer=request.user.lecturer).filter(course=course)
-        filtered_projects = projects.filter(title__icontains=title)
+        filter_form = ProjectFilterForm(request.GET)
+
+        filtered_projects = projects
+        if filter_type:
+            if filter_type == 'free':
+                filtered_projects = projects.filter(team_assigned__isnull=True)
+            elif filter_type == 'occupied':
+                filtered_projects = projects.filter(team_assigned__isnull=False)
+            elif filter_type == 'has_teams':
+                filtered_projects = projects.filter(team__isnull=False)
+        if title:
+            filtered_projects = filtered_projects.filter(title__icontains=title)
 
         context = {
             "projects": filtered_projects,
+            "filterForm": filter_form,
             "selectedCourse": course,
             "user": request.user
         }
