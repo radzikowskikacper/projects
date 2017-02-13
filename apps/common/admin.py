@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import *
 from django.contrib.auth.admin import UserAdmin
+from django.db.models import Count
 from .models import *
 from projects_helper.apps.students.models import *
 from projects_helper.apps.lecturers.models import *
@@ -32,7 +33,8 @@ class TeamAdmin(admin.ModelAdmin):
     search_fields = ['project_preference__title', 'course__name', 'course__code']
 
     def get_lecturer(self, obj):
-        return obj.project_preference.lecturer
+        if obj.project_preference:
+            return obj.project_preference.lecturer
     get_lecturer.short_description = _("Lecturer")
 
 
@@ -50,7 +52,7 @@ class CourseAdmin(admin.ModelAdmin):
     team_count.short_description = _("Teams")
 
     def lecturer_count(self, obj):
-        return obj.team_set.count()
+        return obj.project_set.order_by('lecturer__user_id').distinct('lecturer').count()
     lecturer_count.short_description = _("Lecturers")
 
 
