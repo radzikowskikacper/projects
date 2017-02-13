@@ -519,8 +519,8 @@ def course_manage(request, course_code=None):
                                          fields=('name', 'code',),
                                          extra=1,
                                          can_delete=True)
-    formset = CourseFormSet(request.POST or None,
-                            queryset=Course.objects.all())
+    formset = CourseFormSet(request.POST or None,)
+                            #queryset=Course.objects.all())
     context = {
         'formset': formset,
         'selectedCourse': course
@@ -535,8 +535,8 @@ def course_manage(request, course_code=None):
                 del_count = 0
                 for instance in formset.deleted_objects:
                     if request.user.is_superuser \
-                        or [(instance.project_set.all().count() == 0)
-                            and (instance.team_set.all().count() == 0)]:
+                        or ((instance.project_set.all().count() == 0)
+                            and (instance.team_set.all().count() == 0)):
                         instance.delete()
                         del_count += 1
             except IntegrityError as e:
@@ -549,12 +549,12 @@ def course_manage(request, course_code=None):
             new_count = len(formset.new_objects)
             if del_count > 0:
                 messages.success(request, _(
-                    "You have succesfully deleted " +
-                    str(del_count) + " courses"))
+                    "You have succesfully deleted {} courses")
+                    .format(str(del_count)))
             if ch_count > 0:
                 messages.success(request, _(
-                    "You have succesfully modified " +
-                    str(del_count + ch_count) + " courses"))
+                    "You have succesfully modified {} courses")
+                    .format(str(del_count + ch_count)))
             if new_count > 0:
                 messages.success(request, _(
                     "You have succesfully added new course."))
@@ -562,6 +562,13 @@ def course_manage(request, course_code=None):
                 messages.info(request, _(
                     "You don't have permission to delete course which" +
                     " has related projects/teams: ") + course.name)
+
+        # if current course's code has been modified
+        # or whole course has been deleted, remove course from cookie
+        try:
+            Course.objects.get(code__iexact=request.session['selectedCourse'])
+        except ObjectDoesNotExist:
+            request.session.pop('selectedCourse')
 
         return redirect('lecturers:profile')
 
