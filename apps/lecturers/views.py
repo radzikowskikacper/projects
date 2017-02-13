@@ -243,9 +243,9 @@ def team_new(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
     form = None
     if request.method == 'POST':
-        form = TeamForm(request.POST, lecturer=request.user.lecturer)
+        form = TeamForm(request.POST, course=course, lecturer=request.user.lecturer)
     else:
-        form = TeamForm(lecturer=request.user.lecturer)
+        form = TeamForm(course=course, lecturer=request.user.lecturer)
     context = {
         'form': form,
         'selectedCourse': course
@@ -265,14 +265,18 @@ def team_new(request, course_code=None):
                     new_team.save()
                     proj.assign_team(new_team)
                     proj.save()
-                if stud_1.team and not stud_1.team.is_full:
-                    stud_1.team.delete()
-                stud_1.team = new_team
+                # Student's method 'leave_team' not used below
+                # because project assignment override is possible
+                stud_1_team = stud_1.team(course)
+                if stud_1_team and (stud_1_team.team_members.count() == 1):
+                    stud_1_team.delete()
+                stud_1.teams.add(new_team)
                 stud_1.save()
                 if next_stud and stud_2:
-                    if stud_2.team and not stud_2.team.is_full:
-                        stud_2.team.delete()
-                    stud_2.team = new_team
+                    stud_2_team = stud_2.team(course)
+                    if stud_2_team and (stud_2_team.team_members.count() == 1):
+                        stud_2_team.delete()
+                    stud_2.teams.add(new_team)
                     stud_2.save()
 
         except Exception as e:
@@ -298,9 +302,14 @@ def modify_team(request, team_pk, course_code=None):
     team_str = str(team)
 
     if request.method == 'POST':
-        form = TeamModifyForm(request.POST, lecturer=request.user.lecturer, team=team)
+        form = TeamModifyForm(request.POST,
+                              course=course,
+                              lecturer=request.user.lecturer,
+                              team=team)
     else:
-        form = TeamModifyForm(lecturer=request.user.lecturer, team=team)
+        form = TeamModifyForm(course=course,
+                              lecturer=request.user.lecturer,
+                              team=team)
 
     if form.is_valid():
         stud_1 = form.cleaned_data['member_1_select']
@@ -321,26 +330,26 @@ def modify_team(request, team_pk, course_code=None):
                     team.save()
                 if change_member_1:
                     if members and (stud_1 not in members):
-                        members[0].team = None
-                        members[0].save()
+                        team.student_set.remove(members[0])
                         if stud_1:
-                            if stud_1.team and not stud_1.team.is_full:
-                                stud_1.team.delete()
-                            stud_1.team = team
-                            stud_1.save()
+                            stud_1_team = stud_1.team(course)
+                            if stud_1_team and (stud_1_team.team_members.count() == 1):
+                                stud_1_team.delete()
+                            team.student_set.add(stud_1)
                         else:
+                            members[0].new_team(course)
                             deleted_count += 1
                 if change_member_2:
                     if stud_2 not in members:
                         if len(members) > 1:
-                            members[1].team = None
-                            members[1].save()
+                            team.student_set.remove(members[1])
                         if stud_2:
-                            if stud_2.team and not stud_2.team.is_full:
-                                stud_2.team.delete()
-                            stud_2.team = team
-                            stud_2.save()
+                            stud_2_team = stud_2.team(course)
+                            if stud_2_team and (stud_2_team.team_members.count() == 1):
+                                stud_2_team.delete()
+                            team.student_set.add(stud_2)
                         else:
+                            members[1].new_team(course)
                             deleted_count += 1
                 if len(members) <= deleted_count:
                     if deleted_count == 2:

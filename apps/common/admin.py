@@ -14,6 +14,7 @@ class CASUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('user_type',)}),
     ) + UserAdmin.fieldsets
+    list_display = ('username', 'email', 'first_name', 'last_name', 'user_type', 'is_superuser')
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -58,7 +59,7 @@ class CourseAdmin(admin.ModelAdmin):
 
 class LecturerAdmin(admin.ModelAdmin):
     model = Course
-    list_display = ('__str__', 'project_count', 'team_count')
+    list_display = ('__str__', 'project_count', 'team_count', 'is_superuser')
     search_fields = ['user__first_name', 'user__last_name']
 
     def project_count(self, obj):
@@ -69,11 +70,24 @@ class LecturerAdmin(admin.ModelAdmin):
         return Team.objects.filter(project_preference__lecturer=obj).count()
     team_count.short_description = _("Teams")
 
+    def is_superuser(self, obj):
+        if obj.user.is_superuser:
+            return _("Yes")
+    is_superuser.short_description = _("Administrator")
+
 
 class StudentAdmin(admin.ModelAdmin):
     model = Student
-    list_display = ('__str__', 'team')
+    list_display = ('__str__', 'teams_count', 'courses_count')
     search_fields = ['user__first_name', 'user__last_name']
+
+    def teams_count(self, obj):
+        return obj.teams.count()
+    teams_count.short_description = _("Teams")
+
+    def courses_count(self, obj):
+        return obj.teams.order_by('course_id').distinct('course').count()
+    courses_count.short_description = _("Courses")
 
 
 admin.site.register(CAS_User, CASUserAdmin)

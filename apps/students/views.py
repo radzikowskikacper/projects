@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
 from projects_helper.apps.common.models import Project, Team, Course
+from .models import Student
 from projects_helper.apps.common.forms import ProjectFilterForm
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
@@ -29,9 +30,16 @@ def profile(request):
         return redirect(reverse('common:select_course'))
     course = get_object_or_404(
         Course, code__iexact=request.session['selectedCourse'])
+    stud = Student.objects.get(pk=request.user.student.pk)
+    proj_preference = stud.project_preference(course)
+    proj_assigned = stud.project_assigned(course)
+    team = stud.team(course)
     return render(request,
                   "students/profile.html",
-                  {'selectedCourse': course})
+                  {'selectedCourse': course,
+                   'team': team,
+                   'project_preference': proj_preference,
+                   'project_assigned': proj_assigned})
 
 
 @login_required
@@ -42,14 +50,15 @@ def pick_project(request):
         course = get_object_or_404(
             Course, code__iexact=request.session['selectedCourse'])
         proj_pk = request.POST.get('to_pick', False)
-        if not request.user.student.team:
+        team = request.user.student.team(course)
+        if not team:
             try:
-                request.user.student.new_team(course)
+                team = request.user.student.new_team(course)
                 request.user.student.save()
             except Exception as e:
                 logger.error("Cannot set Student's team. " + str(e))
-        team = request.user.student.team
-        if proj_pk:
+
+        if team and proj_pk:
             try:
                 project_picked = Project.objects.get(pk=proj_pk)
             except ObjectDoesNotExist as e:
@@ -113,13 +122,13 @@ def project_list(request, course_code=None):
                       .prefetch_related('team_set') \
                       .filter(course=course)
     filter_form = ProjectFilterForm()
+    proj_preference = request.user.student.project_preference(course)
     return render(request,
                   template_name="students/project_list.html",
                   context={"projects": projects,
                            "filterForm": filter_form,
-                           "team": request.user.student.team,
-                           "project_picked": request.user.student
-                                                    .project_preference,
+                           "team": request.user.student.team(course),
+                           "project_picked": proj_preference,
                            "selectedCourse": course})
 
 
@@ -135,7 +144,7 @@ def team_list(request, course_code=None):
     return render(request,
                   template_name="students/team_list.html",
                   context={"teams": teams,
-                           "student_team": request.user.student.team,
+                           "student_team": request.user.student.team(course),
                            "selectedCourse": course})
 
 
@@ -170,9 +179,9 @@ def filtered_project_list(request, course_code=None):
         context = {
             "projects": filtered_projects,
             "filterForm": filter_form,
-            "team": request.user.student.team,
-            "project_picked": request.user.student.project_preference,
-            "selectedCourse": course
+            "team": request.user.student.team(course),
+            "project_picked": request.user.student.project_preference(course),
+            "selectedCourse": course,
         }
 
         if request.is_ajax():
@@ -203,7 +212,9 @@ def join_team(request):
                                 "to this lecturer has been reached. " +
                                 "Choose project from another lecturer."))
             else:
-                student.leave_team()
+                course = get_object_or_404(
+                    Course, code__iexact=request.session['selectedCourse'])
+                student.leave_team(student.team(course))
                 student.join_team(team)
                 student.save()
                 messages.success(request,
@@ -223,15 +234,15 @@ def new_team(request):
     course = get_object_or_404(
         Course, code__iexact=request.session['selectedCourse'])
     student = request.user.student
-    old_team = student.team
+    old_team = student.team(course)
     old_preference = None
     if old_team:
         old_preference = old_team.project_preference
     try:
-        student.leave_team()
-        student.new_team(course)
-        student.team.select_preference(old_preference)
-        student.team.save()
+        student.leave_team(old_team)
+        new_team = student.new_team(course)
+        new_team.select_preference(old_preference)
+        new_team.save()
         student.save()
     except Exception as e:
         logger.error('Exception: ' + str(e))

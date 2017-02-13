@@ -18,11 +18,11 @@
     <div class="panel-body">
         {% include "common/profile.html" %}
         <div><h4>{% trans "Team" %}</h4>
-            {% if user.student.team.team_members == None %}
+            {% if team.team_members == None %}
             <div>{% trans "You don't belong to any team" %}</div>
             {% else %}
             <ul>
-            {% for member in user.student.team.team_members %}
+            {% for member in team.team_members %}
                 <li>{{ member.user.get_full_name }}, email: <a href="mailto:{{ member.user.email }}">{{ member.user.email }}</a>
                     {% if member.user == user %} ({% trans "You" %}) {% endif %}
                 </li>
@@ -31,7 +31,6 @@
             {% endif %}
         </div>
         <div><h4>{% trans "Project preference " %}</h4>
-            {% with project_preference=user.student.project_preference %}
                 {% if project_preference == None %}
                     <div>{% trans "You have not picked project" %}</div>
                 {% else %}
@@ -41,10 +40,8 @@
                         </a>
                     </div>
                 {% endif %}
-            {% endwith %}
         </div>
         <div><h4>{% trans "Status" %}</h4>
-            {% with project_assigned=user.student.project_assigned %}
                 {% if project_assigned == None %}
                     <div>{% trans "You are not assigned to project" %}</div>
                 {% else %}
@@ -54,8 +51,6 @@
                         </a>
                     </div>
                 {% endif %}
-            {% endwith %}
-
         </div>
     </div>
 {% endblock %}

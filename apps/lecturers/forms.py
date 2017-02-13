@@ -25,18 +25,18 @@ class ProjectForm(forms.ModelForm):
 
 # this callables will be necessary to avoid executing queries
 # at the time this models.py is imported
-def get_Students_with_no_team_or_alone(team=None):
-    # Returns students that have no team
-    # OR students that have a team but are alone in that team
+def get_Students_with_no_team_or_alone(currCourse, team=None):
+    # Returns students that have no team on currCourse
+    # OR students that have such team but are alone in that team
     #    AND the team is NOT assigned to any project
     teams_with_up_to_one_stud = Team.objects.annotate(
-        num_Stud=Count('student')).filter(num_Stud__gte=2)
-    return Student.objects.filter(team__project=None) \
-        .exclude(team__in=teams_with_up_to_one_stud)
+        num_Stud=Count('student')).filter(course=currCourse, num_Stud__gte=2)
+    return Student.objects.filter(teams__course=currCourse, teams__project=None) \
+        .exclude(teams__in=teams_with_up_to_one_stud)
 
 
-def get_Projects_with_no_assigned_team(lecturer):
-    return Project.objects.filter(lecturer=lecturer, team_assigned=None)
+def get_Projects_with_no_assigned_team(currCourse, lecturer):
+    return Project.objects.filter(course=currCourse, lecturer=lecturer, team_assigned=None)
 
 
 class TeamForm(forms.Form):
@@ -72,14 +72,15 @@ class TeamForm(forms.Form):
     def __init__(self, *args, **kwargs):
         try:
             lecturer = kwargs.pop('lecturer')
+            course = kwargs.pop('course')
         except KeyError as e:
             print("Exception: TeamModifyForm: missing key argument: " + str(e))
 
         super(TeamForm, self).__init__(*args, **kwargs)
         self.fields['project'].queryset = \
-            get_Projects_with_no_assigned_team(lecturer)
-        self.fields['member_1'].queryset = get_Students_with_no_team_or_alone()
-        self.fields['member_2'].queryset = get_Students_with_no_team_or_alone()
+            get_Projects_with_no_assigned_team(course, lecturer)
+        self.fields['member_1'].queryset = get_Students_with_no_team_or_alone(course)
+        self.fields['member_2'].queryset = get_Students_with_no_team_or_alone(course)
         self.fields['member_2'].widget.attrs['style'] = 'display:none'
         self.fields['member_2'].widget.attrs['id'] = 'member_2_select'
         self.fields['project'].widget.attrs['style'] = 'display:none'
@@ -164,19 +165,20 @@ class TeamModifyForm(forms.Form):
         try:
             lecturer = kwargs.pop('lecturer')
             team = kwargs.pop('team')
+            course = kwargs.pop('course')
         except KeyError as e:
             print("Exception: TeamModifyForm: missing key argument: " + str(e))
 
         super(TeamModifyForm, self).__init__(*args, **kwargs)
 
         self.fields['project_preffered_select'].queryset = \
-            get_Projects_with_no_assigned_team(lecturer)
+            get_Projects_with_no_assigned_team(course, lecturer)
         self.fields['project_select'].queryset = \
-            get_Projects_with_no_assigned_team(lecturer)
+            get_Projects_with_no_assigned_team(course, lecturer)
         self.fields['member_1_select'].queryset = \
-            get_Students_with_no_team_or_alone()
+            get_Students_with_no_team_or_alone(course)
         self.fields['member_2_select'].queryset = \
-            get_Students_with_no_team_or_alone()
+            get_Students_with_no_team_or_alone(course)
 
         self.fields['display_member_1'].widget.attrs['readonly'] = 'true'
         self.fields['display_member_2'].widget.attrs['readonly'] = 'true'

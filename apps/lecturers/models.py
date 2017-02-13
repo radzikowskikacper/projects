@@ -24,7 +24,7 @@ class Lecturer(models.Model):
 
     def max_students_reached(self):
         assigned_students = Student.objects.filter(
-            team__project_preference__lecturer=self).count()
+            teams__project_preference__lecturer=self).count()
         return assigned_students >= self.max_students
 
     def delete(self, *args, **kwargs):

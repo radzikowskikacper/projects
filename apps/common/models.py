@@ -75,7 +75,7 @@ class Team(models.Model):
 
     @property
     def is_full(self):
-        return len(self.student_set.all()) == 2
+        return self.student_set.count() == 2
 
     @property
     def is_locked(self):
@@ -88,7 +88,7 @@ class Team(models.Model):
     @staticmethod
     def remove_empty():
         for team in Team.objects.all():
-            if len(team.team_members) == 0:
+            if team.student_set.count() == 0:
                 team.delete()
 
     def __str__(self):

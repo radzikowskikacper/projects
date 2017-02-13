@@ -9,48 +9,54 @@ class Student(models.Model):
     user = models.OneToOneField('common.CAS_User',
                                 verbose_name=_('user'),
                                 primary_key=True)
-    team = models.ForeignKey('common.Team',
-                             verbose_name=_('team'),
-                             on_delete=models.SET_NULL,
-                             null=True,
-                             blank=True)
+    teams = models.ManyToManyField('common.Team',
+                                   verbose_name=_('teams'),
+                                   blank=True)
 
     class Meta:
         ordering = ['user__username']
         verbose_name = _('student')
         verbose_name_plural = _('students')
 
-    @property
-    def project_assigned(self):
-        if not self.team:
+    def team(self, selectedCourse):
+        try:
+            return self.teams.get(course=selectedCourse)
+        except models.ObjectDoesNotExist:
             return None
-        return self.team.project_assigned
 
-    @property
-    def project_preference(self):
-        if not self.team:
+    def project_assigned(self, selectedCourse):
+        if (not self.teams) or (not self.teams.filter(course=selectedCourse).exists()):
             return None
-        return self.team.project_preference
+        return self.teams.get(course=selectedCourse).project_assigned
+
+    def project_preference(self, selectedCourse):
+        if (not self.teams) or (not self.teams.filter(course=selectedCourse).exists()):
+            return None
+        return self.teams.get(course=selectedCourse).project_preference
 
     def new_team(self, selectedCourse):
-        if (self.team_id is None) or (not self.team.is_locked):
+        if (not self.teams) or (not self.team(selectedCourse)) or (not self.team.is_locked):
             team = Team(course=selectedCourse)
             team.save()
             self.join_team(team)
+            return team
+        else:
+            return None
 
     def join_team(self, team):
-        if (self.team_id is None) or (not self.team.is_locked and not team.is_full):
-            self.team = team
+        if (not self.teams) or (not team.is_locked and not team.is_full):
+            self.teams.add(team)
 
-    def leave_team(self):
-        if (self.team_id is not None) and not self.team.is_locked:
-            if not self.team.is_full:
-                self.team.delete()
-            self.team = None
+    def leave_team(self, team):
+        if self.teams and team and (not team.is_locked):
+            if team.team_members.count() == 1:
+                team.delete()
+            else:
+                self.teams.remove(team)
 
     def save(self, *args, **kwargs):
-        if self.team_id is None:
-            self.team = Team.objects.create()
+        if self.teams is None:
+            self.teams.create()
         return super(Student, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
