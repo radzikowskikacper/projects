@@ -19,7 +19,7 @@
         {% else %}
             <td></td>
         {% endif %}
-        <td>{{ project.teams_with_preference.count }}</td>
+        <td id="teams_{{ project.pk }}">{{ project.teams_with_preference.count }}</td>
         <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
         <td><a href="{% url 'students:project' selectedCourse.code project.pk %}">{{ project.title }}</a></td>
         <td><a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer }}</a></td>

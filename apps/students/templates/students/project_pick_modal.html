@@ -1,0 +1,23 @@
+{% load i18n %}
+{% load bootstrap3 %}
+
+<!-- pickConfirmModal -->
+<div id="pickConfirmModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <center><h4 class="modal-title">{% trans "Info" %}</h4></center>
+      </div>
+      <div class="modal-body">
+        <p>{% trans "It seems that there are teams for selected project. Would you like to see team list first?" %}</p>
+        <p>{% trans "Tip: You can join another team in 'teams' tab." %}</p>
+      </div>
+      <div class="modal-footer">
+        <a href="{% url 'students:team_list' selectedCourse.code %}" class="btn btn-default" role="button">{% trans "Yes, go to team list" %}</a>
+        <button type="submit" class="btn btn-primary" form="pick_project_form">{% trans "No, create new team" %}</button>
+      </div>
+    </div>
+
+  </div>
+</div>

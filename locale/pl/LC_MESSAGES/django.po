@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-13 19:01+0100\n"
+"POT-Creation-Date: 2017-02-14 19:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -320,6 +320,7 @@ msgstr "Edytuj"
 
 #: projects_helper/apps/lecturers/templates/lecturers/course_list.html:63
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:75
+#: projects_helper/apps/students/templates/students/project_pick_modal.html:10
 msgid "Info"
 msgstr "Informacja"
 
@@ -818,18 +819,38 @@ msgstr "Jesteś przydzielony do projektu:"
 msgid "email"
 msgstr "email"
 
-#: projects_helper/apps/students/templates/students/project_list.html:46
+#: projects_helper/apps/students/templates/students/project_list.html:47
 msgid "Pick selected project."
 msgstr "Wybierz zaznaczony projekt."
 
-#: projects_helper/apps/students/templates/students/project_list.html:47
-#: projects_helper/apps/students/templates/students/project_list.html:51
+#: projects_helper/apps/students/templates/students/project_list.html:48
+#: projects_helper/apps/students/templates/students/project_list.html:52
 msgid "Pick"
 msgstr "Wybierz"
 
-#: projects_helper/apps/students/templates/students/project_list.html:50
+#: projects_helper/apps/students/templates/students/project_list.html:51
 msgid "Cannot pick another project, beacause you're already assigned."
 msgstr "Nie możesz zmienić projektu, ponieważ zostałeś już przypisany."
+
+#: projects_helper/apps/students/templates/students/project_pick_modal.html:13
+msgid ""
+"It seems that there are teams for selected project. Would you like to see "
+"team list first?"
+msgstr ""
+"Wygląda na to, że istnieją już zespoły dla wybranego projektu. Czy chcesz "
+"obejrzeć listę zespołów?"
+
+#: projects_helper/apps/students/templates/students/project_pick_modal.html:14
+msgid "Tip: You can join another team in 'teams' tab."
+msgstr "Wskazówka: Możesz dołączyć do innego zespołu w zakładce 'zespoły'"
+
+#: projects_helper/apps/students/templates/students/project_pick_modal.html:17
+msgid "Yes, go to team list"
+msgstr "Tak, przejdź do listy zespołów"
+
+#: projects_helper/apps/students/templates/students/project_pick_modal.html:18
+msgid "No, create new team"
+msgstr "Nie, utwórz nowy zespół"
 
 #: projects_helper/apps/students/templates/students/team_list.html:22
 #: projects_helper/apps/students/templates/students/team_list.html:73

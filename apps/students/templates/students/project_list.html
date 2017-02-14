@@ -37,13 +37,14 @@
     {% include "students/project_table.html" %}
     </div>
 </form>
+{% include "students/project_pick_modal.html" %}
 {% endblock %}}
 
 {# Panel footer #}
 
 {% block panel_footer %}
 {% if not team.is_locked %}
-    <button type="submit" class="btn btn-primary" form="pick_project_form" title="{% trans "Pick selected project." %}">
+    <button id="pickProjSubmitBtn" type="submit" class="btn btn-primary" form="pick_project_form" title="{% trans "Pick selected project." %}">
         {% trans "Pick" %}
     </button>
 {% else %}
@@ -55,4 +56,5 @@
 
 {% block additional_js %}
     <script src="{% static "js/searchfilter.js" %}"></script>
+    <script src="{% static "js/pickprojectmodal.js" %}"></script>
 {% endblock %}
