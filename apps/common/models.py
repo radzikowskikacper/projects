@@ -124,7 +124,7 @@ class Project(models.Model):
                                          blank=True)
 
     class Meta:
-        unique_together = ('lecturer', 'title',)
+        unique_together = ('lecturer', 'title', 'course')
         ordering = ['lecturer', 'course', 'title']
         verbose_name = _('project')
         verbose_name_plural = _('projects')
