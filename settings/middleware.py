@@ -33,14 +33,14 @@ class LoggingMiddleware(object):
         '^/i18n/',
         '^/about/$',
         '^/admin',
-        '^/login/$',
-        '^/logout',
+        '^/login/',
+        '^/logout/',
         '^/logged_out',
         '^/select_course',
-        '^/(lecturers|students)/[A-Za-z]+/projects/$',
-        '^/(lecturers|students)/[A-Za-z]+/projects/\d+/$',
-        '^/(lecturers|students)/[A-Za-z]+/projects/search[/?]?',
-        '^/(lecturers|students)/[A-Za-z]+/teams/$',
+        '^/(lecturers|students)/[A-Za-z0-9]+/projects/$',
+        '^/(lecturers|students)/[A-Za-z0-9]+/projects/\d+/$',
+        '^/(lecturers|students)/[A-Za-z0-9]+/projects/search[/?]?',
+        '^/(lecturers|students)/[A-Za-z0-9]+/teams/$',
         '^/(lecturers|students)/profile/',
     ]
 
@@ -63,11 +63,13 @@ class LoggingMiddleware(object):
         return response
 
     def cut_csrf_token(self, msg):
-        splitted = re.split('(csrfmiddlewaretoken=[A-za-z\d]+[&]?)', str(msg))
-        if splitted:
-            return str(splitted[0] + splitted[2])[2:-1]
-        else:
-            return str(msg)
+        try:
+            splitted = re.split('(csrfmiddlewaretoken=[A-za-z\d]+[&]?)', str(msg))
+            if splitted:
+                return str(splitted[0] + splitted[2])[2:-1]
+        except:
+            pass
+        return str(msg)
 
     def chunked_to_max(self, msg):
         if (len(msg) > MAX_BODY_LENGTH):
