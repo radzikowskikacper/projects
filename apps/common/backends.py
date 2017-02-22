@@ -50,7 +50,7 @@ class ExtendedCASBackend(CASBackend):
                     if is_admin:
                         user.is_staff = True
                         user.is_superuser = True
-                        lecturerModel.objects.create(user=user)
+                    lecturerModel.objects.create(user=user)
                 try:
                     user.email = attributes['mail']
                 except KeyError as e:
