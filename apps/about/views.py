@@ -18,11 +18,10 @@ def info(request):
         "selectedCourse": None
     }
 
-    if request.user.is_authenticated():
-        # redirect when user logged in but hasn't choosed course yet
-        if 'selectedCourse' not in request.session:
-            return redirect(reverse('common:select_course'))
-
+    # set proper base template (student's/lecturer's) containing
+    # label of selected course only if user already logged in
+    # AND chose any course from list
+    if request.user.is_authenticated() and ('selectedCourse' in request.session):
         if is_student(request.user):
             context["basetemplate"] = "students/base.html"
         elif is_lecturer(request.user):
