@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import smart_str
 from django.db import IntegrityError, transaction
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.http import Http404
@@ -11,9 +12,15 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from django.forms import modelformset_factory
 from projects_helper.apps.common.models import Project, Course, Team
+from projects_helper.apps.students.models import Student
 from projects_helper.apps.common.forms import ProjectFilterForm
 from projects_helper.apps.lecturers.forms import ProjectForm, TeamForm, TeamModifyForm
+
+from wsgiref.util import FileWrapper
+import os
+import csv
 import logging
+
 
 
 ## Instantiating module's logger.
@@ -599,3 +606,90 @@ def clean_up(request, course_code=None):
         "You have succesfully performed clean-up for current course."))
 
     return redirect('lecturers:profile')
+
+
+@login_required
+@user_passes_test(is_lecturer)
+@ensure_csrf_cookie
+def export_teams_to_file(request, course_code=None):
+    course = get_object_or_404(Course, code__iexact=course_code)
+    file_name = 'zapisy_zespoly_{}_{}.csv'.format(course.code, request.user.last_name)
+
+    # file will be created in media directory at the same level as apps, settings, etc.
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    path_to_file = os.path.join(base_dir, 'media', file_name)
+
+    try:
+        with open(path_to_file, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            headers = ['L.p.', 'Nazwisko', 'Imię', 'e-mail', 'Przypisany projekt', 'Zespół']
+            writer.writerow(headers)
+            students = Student.objects \
+                .filter(teams__course=course,
+                        teams__project_preference__lecturer=request.user.lecturer) \
+                .order_by('user__last_name', 'user__first_name')
+
+            for i, s in enumerate(students):
+                stud_team = None
+                proj_title = ""
+                stud_teams = s.teams.filter(course=course)
+                if len(stud_teams) > 0:
+                    stud_team = stud_teams[0]
+                    if stud_team.project_assigned:
+                        proj_title = stud_team.project_assigned.title
+                row = [i+1, s.user.last_name, s.user.first_name, s.user.email, proj_title, str(stud_team)]
+                writer.writerow(row)
+    except Exception as e:
+        logger.error("Exception: " + str(e))
+        messages.info(request, _("There was an error while generating csv file."))
+        return redirect('lecturers:profile')
+
+    wrapper = FileWrapper(open(path_to_file, 'rb'))
+    response = HttpResponse(wrapper, content_type='application/force-download')
+    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file_name)
+    response['X-LIGHTTPD-send-file'] = smart_str(file_name)
+
+    return response
+
+
+@login_required
+@user_passes_test(is_lecturer)
+@ensure_csrf_cookie
+def export_projects_to_file(request, course_code=None):
+    course = get_object_or_404(Course, code__iexact=course_code)
+    lecturer = request.user.lecturer
+    file_name = 'zapisy_projekty_{}_{}.csv'.format(course.code, request.user.last_name)
+
+    # file will be created in media directory at the same level as apps, settings, etc.
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    path_to_file = os.path.join(base_dir, 'media', file_name)
+
+    try:
+        with open(path_to_file, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            headers = ['L.p.', 'Temat projektu', 'Przypisany zespół']
+            writer.writerow(headers)
+            projects = Project.objects \
+                .filter(course=course,
+                        lecturer=lecturer) \
+                .order_by('title')
+
+            for i, p in enumerate(projects):
+                stud_names = ""
+                if p.team_assigned:
+                    team = p.team_assigned
+                    stud_names = ', ' \
+                        .join(['{} {}'.format(s.user.last_name, s.user.first_name) for s in team.team_members])
+                row = [i+1, p.title, stud_names]
+                writer.writerow(row)
+    except Exception as e:
+        logger.error("Exception: " + str(e))
+        messages.info(request, _("There was an error while generating csv file."))
+        return redirect('lecturers:profile')
+
+    wrapper = FileWrapper(open(path_to_file, 'rb'))
+    response = HttpResponse(wrapper, content_type='application/force-download')
+    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file_name)
+    response['X-LIGHTTPD-send-file'] = smart_str(file_name)
+
+    return response
