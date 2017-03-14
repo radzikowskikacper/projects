@@ -57,7 +57,12 @@ class ExtendedCASBackend(CASBackend):
                     arg_not_found_info(user, str(e))
                     user.email = 'user@mail.com'
                 try:
-                    user.first_name = attributes['givenName'].split()[0]
+                    # save both first names if both are present and together are
+                    # shorter than 30 chars, otherwise save only first first name
+                    if len(attributes['givenName']) > 30:
+                        user.first_name = attributes['givenName'].split()[0]
+                    else:
+                        user.first_name = attributes['givenName']
                 except KeyError as e:
                     arg_not_found_info(user, str(e))
                     user.first_name = user.username
