@@ -20,6 +20,6 @@ urlpatterns = [
     url(r'^(?P<course_code>[a-zA-Z0-9]+)/teams/(?P<team_pk>\d+)/modify/$', views.modify_team, name="modify_team"),
     url(r'^(?P<course_code>[a-zA-Z0-9]+)/courses_manage/$', views.course_manage, name="course_manage"),
     url(r'^(?P<course_code>[a-zA-Z0-9]+)/clean_up/$', views.clean_up, name="clean_up"),
+    url(r'^(?P<course_code>[a-zA-Z0-9]+)/export_students/$', views.export_students_to_file, name="export_students"),
     url(r'^(?P<course_code>[a-zA-Z0-9]+)/export_teams/$', views.export_teams_to_file, name="export_teams"),
-    url(r'^(?P<course_code>[a-zA-Z0-9]+)/export_projects/$', views.export_projects_to_file, name="export_projects"),
 ]

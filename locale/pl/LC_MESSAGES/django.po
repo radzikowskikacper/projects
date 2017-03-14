@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-14 19:54+0100\n"
+"POT-Creation-Date: 2017-03-14 19:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -141,15 +141,19 @@ msgstr "projekty"
 msgid "Project Helper"
 msgstr "Zapisy na projekty"
 
-#: projects_helper/apps/common/templates/common/base.html:22
+#: projects_helper/apps/common/templates/common/base.html:23
 msgid "LOGIN"
 msgstr "ZALOGUJ SIĘ"
 
-#: projects_helper/apps/common/templates/common/base.html:29
+#: projects_helper/apps/common/templates/common/base.html:32
+msgid "Change course"
+msgstr "Wybierz przedmiot"
+
+#: projects_helper/apps/common/templates/common/base.html:36
 msgid "Help"
 msgstr "Pomoc"
 
-#: projects_helper/apps/common/templates/common/base.html:55
+#: projects_helper/apps/common/templates/common/base.html:63
 msgid "Logout"
 msgstr "Wyloguj"
 
@@ -263,20 +267,11 @@ msgstr "MOJE ZESPOŁY"
 msgid "MY PROJECTS"
 msgstr "MOJE PROJEKTY"
 
-#: projects_helper/apps/lecturers/templates/lecturers/base.html:21
-#: projects_helper/apps/students/templates/students/base.html:21
-msgid "Change course"
-msgstr "Wybierz przedmiot"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:10
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:10
 msgid "Back to profile"
 msgstr "Powrót do profilu"
 
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:11
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:11
-#: projects_helper/apps/lecturers/templates/lecturers/course_modify.html:11
-#: projects_helper/apps/lecturers/templates/lecturers/course_new.html:11
 #: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:11
 #: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:11
 #: projects_helper/apps/lecturers/templates/lecturers/project_new.html:11
@@ -286,45 +281,62 @@ msgstr "Powrót do profilu"
 msgid "Back"
 msgstr "Powrót"
 
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:15
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:15
 #: projects_helper/apps/lecturers/templates/lecturers/profile.html:30
 msgid "Manage courses"
 msgstr "Zarządzaj przedmiotami"
 
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:18
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:19
 msgid "Show info"
 msgstr "Pokaż szczegóły"
 
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:33
-#: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:37
-msgid "Code"
-msgstr "Kod"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:34
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:36
 msgid "Name"
 msgstr "Nazwa"
 
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:47
-msgid "Edit this course"
-msgstr "Edytuj ten przedmiot"
+#: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:37
+msgid "Code"
+msgstr "Kod"
 
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:48
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:24
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:65
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:117
-msgid "Edit"
-msgstr "Edytuj"
+#: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:39
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:49
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:128
+msgid "Delete"
+msgstr "Usuń"
 
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:63
+#: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:61
+msgid "Add course"
+msgstr "Dodaj przedmiot"
+
+#: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:62
+#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:36
+#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:36
+#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:122
+#: projects_helper/apps/lecturers/templates/lecturers/team_new.html:42
+msgid "Submit"
+msgstr "Zatwierdź"
+
+#: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:64
+#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:38
+#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:38
+#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:124
+#: projects_helper/apps/lecturers/templates/lecturers/team_new.html:44
+msgid "Reset form"
+msgstr "Resetuj formularz"
+
+#: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:65
+#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:39
+#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:39
+#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:125
+#: projects_helper/apps/lecturers/templates/lecturers/team_new.html:45
+msgid "Reset"
+msgstr "Resetuj"
+
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:75
 #: projects_helper/apps/students/templates/students/project_pick_modal.html:10
 msgid "Info"
 msgstr "Informacja"
 
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:66
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:78
 msgid ""
 "You are not the admin. You can edit courses and create new ones, but you "
@@ -334,94 +346,16 @@ msgstr ""
 "nie możesz usuwać przedmiotów, do których przypisane są jakieś projekty/"
 "zespoły."
 
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:69
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:81
 msgid "Close"
 msgstr "Zamknij"
 
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:81
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:94
 msgid ""
 "You are going to delete a course and everything that is related to this "
 "course. Are you sure?"
 msgstr ""
 "Zamierzasz usunąć przedmiot i wszystko co jest z nim związane. Jesteś pewny?"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:90
-msgid "Delete selected courses"
-msgstr "Usuń wybrane przedmioty"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:91
-#: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:39
-#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:49
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:128
-msgid "Delete"
-msgstr "Usuń"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:93
-msgid "Create new course"
-msgstr "Utwórz nowy przedmiot"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_list.html:94
-msgid "Add"
-msgstr "Dodaj"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:61
-msgid "Add course"
-msgstr "Dodaj przedmiot"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:62
-#: projects_helper/apps/lecturers/templates/lecturers/course_modify.html:36
-#: projects_helper/apps/lecturers/templates/lecturers/course_new.html:36
-#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:36
-#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:36
-#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:122
-#: projects_helper/apps/lecturers/templates/lecturers/team_new.html:42
-msgid "Submit"
-msgstr "Zatwierdź"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:64
-#: projects_helper/apps/lecturers/templates/lecturers/course_modify.html:38
-#: projects_helper/apps/lecturers/templates/lecturers/course_new.html:38
-#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:38
-#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:38
-#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:124
-#: projects_helper/apps/lecturers/templates/lecturers/team_new.html:44
-msgid "Reset form"
-msgstr "Resetuj formularz"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:65
-#: projects_helper/apps/lecturers/templates/lecturers/course_modify.html:39
-#: projects_helper/apps/lecturers/templates/lecturers/course_new.html:39
-#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:39
-#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:39
-#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:125
-#: projects_helper/apps/lecturers/templates/lecturers/team_new.html:45
-msgid "Reset"
-msgstr "Resetuj"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_modify.html:10
-#: projects_helper/apps/lecturers/templates/lecturers/course_new.html:10
-msgid "Back to course list"
-msgstr "Powrót do listy przedmiotów"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_modify.html:15
-msgid "Modify course"
-msgstr "Modyfikuj przedmiot"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_modify.html:35
-#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:35
-#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:121
-msgid "Confirm changes"
-msgstr "Potwierdź zmiany"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_new.html:15
-msgid "New course"
-msgstr "Nowy przedmiot"
-
-#: projects_helper/apps/lecturers/templates/lecturers/course_new.html:35
-msgid "Create course"
-msgstr "Utwórz przedmiot"
 
 #: projects_helper/apps/lecturers/templates/lecturers/profile.html:10
 #: projects_helper/apps/students/templates/students/profile.html:10
@@ -484,6 +418,12 @@ msgstr "Kopiuj"
 #: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:23
 msgid "Edit this project"
 msgstr "Edytuj ten projekt"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:24
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:65
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:117
+msgid "Edit"
+msgstr "Edytuj"
 
 #: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:37
 #: projects_helper/apps/lecturers/templates/lecturers/project_table.html:7
@@ -558,6 +498,11 @@ msgstr "Automatycznie przypisz zespoły do projektów"
 msgid "Modify project"
 msgstr "Modyfikuj projekt"
 
+#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:35
+#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:121
+msgid "Confirm changes"
+msgstr "Potwierdź zmiany"
+
 #: projects_helper/apps/lecturers/templates/lecturers/project_new.html:35
 msgid "Create project"
 msgstr "Utwórz projekt"
@@ -625,7 +570,23 @@ msgstr "Usuń wybrane zespoły"
 msgid "Create new team"
 msgstr "Utwórz nowy zespół"
 
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:142
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:134
+msgid "Export student list to csv file"
+msgstr "Eksportuj listę studentów do pliku csv"
+
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:135
+msgid "Export CSV students"
+msgstr "Eksportuj CSV studenci"
+
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:137
+msgid "Export team list to csv file"
+msgstr "Eksportuj listę zespołów do pliku csv"
+
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:138
+msgid "Export CSV teams"
+msgstr "Eksportuj CSV zespoły"
+
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:150
 msgid "Are you sure?"
 msgstr "Czy jesteś pewien?"
 
@@ -646,16 +607,16 @@ msgstr "Nowy zespół"
 msgid "Create team"
 msgstr "Utwórz zespół"
 
-#: projects_helper/apps/lecturers/views.py:122
+#: projects_helper/apps/lecturers/views.py:129
 msgid "Cannot delete occupied project: "
 msgstr "Nie można usunąć projektu, który został wybrany przez jakiś zespół: "
 
-#: projects_helper/apps/lecturers/views.py:124
+#: projects_helper/apps/lecturers/views.py:131
 msgid "Cannot delete project: "
 msgstr "Nie można usunąć projektu: "
 
-#: projects_helper/apps/lecturers/views.py:152
-#: projects_helper/apps/lecturers/views.py:210
+#: projects_helper/apps/lecturers/views.py:159
+#: projects_helper/apps/lecturers/views.py:217
 msgid ""
 "\n"
 " You must provide unique project name"
@@ -663,37 +624,37 @@ msgstr ""
 "\n"
 " Musisz wprowadzić unikalną nazwę projektu"
 
-#: projects_helper/apps/lecturers/views.py:156
-#: projects_helper/apps/lecturers/views.py:214
+#: projects_helper/apps/lecturers/views.py:163
+#: projects_helper/apps/lecturers/views.py:221
 msgid "You have succesfully added new project: "
 msgstr "Udało ci się dodać projekt: "
 
-#: projects_helper/apps/lecturers/views.py:176
+#: projects_helper/apps/lecturers/views.py:183
 msgid "You must provide unique project name"
 msgstr "Musisz wprowadzić unikalną nazwę projektu"
 
-#: projects_helper/apps/lecturers/views.py:182
+#: projects_helper/apps/lecturers/views.py:189
 msgid "You have successfully updated project: "
 msgstr "Udało ci się zaaktualizować projekt: "
 
-#: projects_helper/apps/lecturers/views.py:197
+#: projects_helper/apps/lecturers/views.py:204
 msgid "copy"
 msgstr "kopia"
 
-#: projects_helper/apps/lecturers/views.py:285
-#: projects_helper/apps/lecturers/views.py:388
+#: projects_helper/apps/lecturers/views.py:292
+#: projects_helper/apps/lecturers/views.py:395
 msgid "Something went wrong. Try again."
 msgstr "Coś poszło nie tak. Spróbuj ponownie."
 
-#: projects_helper/apps/lecturers/views.py:289
+#: projects_helper/apps/lecturers/views.py:296
 msgid "You have succesfully added new team: "
 msgstr "Udało ci się dodać nowy zespół: "
 
-#: projects_helper/apps/lecturers/views.py:357
+#: projects_helper/apps/lecturers/views.py:364
 msgid "You have successfully deleted team: "
 msgstr "Pomyślnie usunąłeś zespół: "
 
-#: projects_helper/apps/lecturers/views.py:378
+#: projects_helper/apps/lecturers/views.py:385
 msgid ""
 "Cannot change project preference,  because this team is assigned. Unassign "
 "team first."
@@ -701,74 +662,79 @@ msgstr ""
 "Nie można zmienić preferowanego projektu,  ponieważ ten zespół jest "
 "przypisany. Najpierw wypisz zespół."
 
-#: projects_helper/apps/lecturers/views.py:393
+#: projects_helper/apps/lecturers/views.py:400
 msgid "You have successfully updated team: "
 msgstr "Udało ci się zaaktualizować zespół:"
 
-#: projects_helper/apps/lecturers/views.py:415
+#: projects_helper/apps/lecturers/views.py:422
 msgid "You have succesfully deleted team: "
 msgstr "Pomyślnie usunąłeś zespół: "
 
-#: projects_helper/apps/lecturers/views.py:418
+#: projects_helper/apps/lecturers/views.py:425
 msgid "Cannot delete team: "
 msgstr "Nie można usunąć zespołu: "
 
-#: projects_helper/apps/lecturers/views.py:440
+#: projects_helper/apps/lecturers/views.py:447
 msgid "Cannot assign team. Team or project not found!"
 msgstr "Nie można przydzielić zespołu. Nie znaleziono projektu lub zespołu!"
 
-#: projects_helper/apps/lecturers/views.py:450
-#: projects_helper/apps/lecturers/views.py:475
+#: projects_helper/apps/lecturers/views.py:457
+#: projects_helper/apps/lecturers/views.py:482
 msgid "You have successfully assigned team: "
 msgstr "Pomyślnie przypisałeś zespół: "
 
-#: projects_helper/apps/lecturers/views.py:453
-#: projects_helper/apps/lecturers/views.py:478
+#: projects_helper/apps/lecturers/views.py:460
+#: projects_helper/apps/lecturers/views.py:485
 msgid "Cannot assign: access denied"
 msgstr "Nie można przydzielić: odmowa dostępu"
 
-#: projects_helper/apps/lecturers/views.py:471
+#: projects_helper/apps/lecturers/views.py:478
 msgid "Cannot assign: No teams waiting for project"
 msgstr "Nie można przydzielić: Żaden zespół nie wybrał projektu"
 
-#: projects_helper/apps/lecturers/views.py:499
+#: projects_helper/apps/lecturers/views.py:506
 msgid "You have successfully assigned teams to projects"
 msgstr "Pomyślnie przypisałeś zespoły do projektów"
 
-#: projects_helper/apps/lecturers/views.py:501
+#: projects_helper/apps/lecturers/views.py:508
 msgid "You don't have any projects"
 msgstr "Nie masz żadnych projektów"
 
-#: projects_helper/apps/lecturers/views.py:515
+#: projects_helper/apps/lecturers/views.py:522
 msgid "You have successfully unassigned team from project: "
 msgstr "Pomyślnie wypisałeś zespół z projektu: "
 
-#: projects_helper/apps/lecturers/views.py:554
+#: projects_helper/apps/lecturers/views.py:561
 msgid "You must provide unique course name and course code"
 msgstr "Musisz wprowadzić unikalną nazwę i kod przedmiotu"
 
-#: projects_helper/apps/lecturers/views.py:561
+#: projects_helper/apps/lecturers/views.py:568
 msgid "You have succesfully deleted {} courses"
 msgstr "Pomyślnie usunąłeś {} przedmiotów"
 
-#: projects_helper/apps/lecturers/views.py:565
+#: projects_helper/apps/lecturers/views.py:572
 msgid "You have succesfully modified {} courses"
 msgstr "Pomyślnie zmodyfikowałeś {} przedmiotów"
 
-#: projects_helper/apps/lecturers/views.py:569
+#: projects_helper/apps/lecturers/views.py:576
 msgid "You have succesfully added new course."
 msgstr "Udało ci się dodać nowy przedmiot."
 
-#: projects_helper/apps/lecturers/views.py:572
+#: projects_helper/apps/lecturers/views.py:579
 msgid ""
 "You don't have permission to delete course which has related projects/teams: "
 msgstr ""
 "Nie masz uprawnień do usunięcia przedmiotu, z którym powiązane są projekty/"
 "zespoły: "
 
-#: projects_helper/apps/lecturers/views.py:599
+#: projects_helper/apps/lecturers/views.py:606
 msgid "You have succesfully performed clean-up for current course."
 msgstr "Pomyślnie wykonałeś czyszczenie dla aktualnego przedmiotu."
+
+#: projects_helper/apps/lecturers/views.py:648
+#: projects_helper/apps/lecturers/views.py:692
+msgid "There was an error while generating csv file."
+msgstr "Wystąpił błąd podczas generowania pliku csv."
 
 #: projects_helper/apps/students/models.py:18
 msgid "student"
@@ -955,3 +921,27 @@ msgstr ""
 #: projects_helper/templates/base.html:14
 msgid "Student Projects Helper"
 msgstr "Zapisy na projekty"
+
+#~ msgid "Edit this course"
+#~ msgstr "Edytuj ten przedmiot"
+
+#~ msgid "Delete selected courses"
+#~ msgstr "Usuń wybrane przedmioty"
+
+#~ msgid "Create new course"
+#~ msgstr "Utwórz nowy przedmiot"
+
+#~ msgid "Add"
+#~ msgstr "Dodaj"
+
+#~ msgid "Back to course list"
+#~ msgstr "Powrót do listy przedmiotów"
+
+#~ msgid "Modify course"
+#~ msgstr "Modyfikuj przedmiot"
+
+#~ msgid "New course"
+#~ msgstr "Nowy przedmiot"
+
+#~ msgid "Create course"
+#~ msgstr "Utwórz przedmiot"

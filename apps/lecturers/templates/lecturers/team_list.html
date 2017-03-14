@@ -131,8 +131,11 @@
             {% bootstrap_icon "plus" %} {% trans "New" %}
         </a>
         <span class="pull-right">
+            <a href="{% url 'lecturers:export_students' selectedCourse.code %}" title="{% trans "Export student list to csv file" %}" class="btn btn-default">
+                {% trans "Export CSV students" %}
+            </a>
             <a href="{% url 'lecturers:export_teams' selectedCourse.code %}" title="{% trans "Export team list to csv file" %}" class="btn btn-default">
-                {% trans "Export to CSV" %}
+                {% trans "Export CSV teams" %}
             </a>
         </span>
     </div>

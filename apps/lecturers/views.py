@@ -611,9 +611,9 @@ def clean_up(request, course_code=None):
 @login_required
 @user_passes_test(is_lecturer)
 @ensure_csrf_cookie
-def export_teams_to_file(request, course_code=None):
+def export_students_to_file(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
-    file_name = 'zapisy_zespoly_{}_{}.csv'.format(course.code, request.user.last_name)
+    file_name = 'studenci_{}.csv'.format(course.code)
 
     # file will be created in media directory at the same level as apps, settings, etc.
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -622,22 +622,26 @@ def export_teams_to_file(request, course_code=None):
     try:
         with open(path_to_file, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            headers = ['L.p.', 'Nazwisko', 'Imię', 'e-mail', 'Przypisany projekt', 'Zespół']
+            course_info = [course.code, course.name]
+            writer.writerow(course_info)
+            writer.writerow([])
+            headers = ['L.p.', 'Nazwisko', 'Imiona', 'Adres e-mail',
+                       'Tytuł przypisanego projektu', 'Prowadzący']
             writer.writerow(headers)
             students = Student.objects \
-                .filter(teams__course=course,
-                        teams__project_preference__lecturer=request.user.lecturer) \
+                .filter(teams__course=course) \
                 .order_by('user__last_name', 'user__first_name')
 
             for i, s in enumerate(students):
                 stud_team = None
-                proj_title = ""
+                proj_title = lect_name = ""
                 stud_teams = s.teams.filter(course=course)
                 if len(stud_teams) > 0:
                     stud_team = stud_teams[0]
                     if stud_team.project_assigned:
                         proj_title = stud_team.project_assigned.title
-                row = [i+1, s.user.last_name, s.user.first_name, s.user.email, proj_title, str(stud_team)]
+                        lect_name = str(stud_team.project_assigned.lecturer)
+                row = [i + 1, s.user.last_name, s.user.first_name, s.user.email, proj_title, lect_name]
                 writer.writerow(row)
     except Exception as e:
         logger.error("Exception: " + str(e))
@@ -655,10 +659,9 @@ def export_teams_to_file(request, course_code=None):
 @login_required
 @user_passes_test(is_lecturer)
 @ensure_csrf_cookie
-def export_projects_to_file(request, course_code=None):
+def export_teams_to_file(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
-    lecturer = request.user.lecturer
-    file_name = 'zapisy_projekty_{}_{}.csv'.format(course.code, request.user.last_name)
+    file_name = 'zespoly_{}.csv'.format(course.code)
 
     # file will be created in media directory at the same level as apps, settings, etc.
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -667,20 +670,22 @@ def export_projects_to_file(request, course_code=None):
     try:
         with open(path_to_file, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            headers = ['L.p.', 'Temat projektu', 'Przypisany zespół']
+            course_info = [course.code, course.name]
+            writer.writerow(course_info)
+            writer.writerow([])
+            headers = ['L.p.', 'Temat projektu', 'Prowadzący', 'Przypisany zespół']
             writer.writerow(headers)
             projects = Project.objects \
-                .filter(course=course,
-                        lecturer=lecturer) \
-                .order_by('title')
+                .filter(course=course) \
+                .order_by('lecturer__user__last_name', 'title')
 
             for i, p in enumerate(projects):
                 stud_names = ""
                 if p.team_assigned:
                     team = p.team_assigned
-                    stud_names = ', ' \
-                        .join(['{} {}'.format(s.user.last_name, s.user.first_name) for s in team.team_members])
-                row = [i+1, p.title, stud_names]
+                    stud_names = ', '.join(['{} {} ({})'
+                            .format(s.user.last_name, s.user.first_name, s.user.email) for s in team.team_members])
+                row = [i + 1, p.title, p.lecturer.user.get_full_name(), stud_names]
                 writer.writerow(row)
     except Exception as e:
         logger.error("Exception: " + str(e))
