@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-14 19:39+0100\n"
+"POT-Creation-Date: 2017-03-30 22:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,56 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
+
+#: projects_helper/apps/about/templates/about.html:8
+msgid "How to use Project Helper app"
+msgstr "Sposób użycia aplikacji do zapisów"
+
+#: projects_helper/apps/about/templates/about.html:11
+msgid ""
+"1. <b>LOGIN</b> with your Institute of Computer Science credentials and "
+"choose your course."
+msgstr ""
+"1. <b>ZALOGUJ SIĘ</b> używając loginu i hasła Instytutu Informatyki a "
+"następnie wybierz swój przedmiot."
+
+#: projects_helper/apps/about/templates/about.html:19
+msgid ""
+"2. Browse through projects, which you can find under <b>PROJECTS</b> tab."
+msgstr "2. Projekty do wyboru możesz znaleźć pod zakładką <b>PROJEKTY</b>."
+
+#: projects_helper/apps/about/templates/about.html:20
+msgid "Together with your team choose which one suits you best."
+msgstr "Wspólnie z zespołem wybierzcie najbardziej odpowiadający wam projekt."
+
+#: projects_helper/apps/about/templates/about.html:21
+msgid "Every project has a description available by clicking on title."
+msgstr "Każdy z nich ma opis, dostępny po kliknięciu w tytuł."
+
+#: projects_helper/apps/about/templates/about.html:30
+msgid "3. Your team leader should now pick a project from list"
+msgstr "3. Następnie lider zespołu wybiera projekt z listy"
+
+#: projects_helper/apps/about/templates/about.html:31
+msgid "by marking it and clicking the <i>Pick</i> button."
+msgstr "poprzez zaznaczenie go i kliknięcie przycisku <i>Wybierz</i>."
+
+#: projects_helper/apps/about/templates/about.html:40
+msgid ""
+"4. The rest of your group can join leader's team in <b>TEAMS</b> section."
+msgstr ""
+"4. Teraz reszta grupy może dołączyć do zespołu lidera w zakładce <b>ZESPOŁY</"
+"b>."
+
+#: projects_helper/apps/about/templates/about.html:41
+msgid "You can check if everything's ok by clicking on <b>PROFILE</b> tab."
+msgstr ""
+"Możesz sprawdzić czy wszystko jest ok klikając w zakładkę <b>PROFIL</b>."
+
+#: projects_helper/apps/about/templates/about.html:42
+msgid "Remember there is only a place for one team in every project."
+msgstr ""
+"Pamiętaj, do każdego projektu może zostać przypisany tylko jeden zespoł."
 
 #: projects_helper/apps/common/admin.py:27
 msgid "Teams with preference"

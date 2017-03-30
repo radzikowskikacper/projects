@@ -13,7 +13,7 @@ except Exception as e:
 
 DEBUG = True
 
-ALLOWED_HOSTS += ('127.0.0.1', config_custom.ALLOWED_HOST)
+ALLOWED_HOSTS += ('127.0.0.1','localhost', config_custom.ALLOWED_HOST)
 
 DATABASES = {
     'default': {
@@ -29,4 +29,3 @@ DATABASES = {
 ADMIN_LOGIN = config_custom.ADMIN_LOGIN
 
 CAS_SERVER_URL = config_custom.CAS_URL
-

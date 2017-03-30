@@ -1,15 +1,57 @@
 {% extends basetemplate %}
 {% load version %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
-<div class="jumbotron">
-    <video width="320" height="240" controls>
+<div class="jumbotron about-jumbotron">
+    <h2 class="about-header"> {% trans "How to use Project Helper app" %}</h2>
+        <div class="row about-row">
+            <div class="col-md-6">
+                <p>{% trans "1. <b>LOGIN</b> with your Institute of Computer Science credentials and choose your course." %}</p>
+            </div>
+            <div class="col-md-6">
+                <img src="{% static "images/about1.png" %}"/>
+            </div>
+        </div>
+        <div class="row about-row">
+            <div class="col-md-6">
+                <p>{% trans "2. Browse through projects, which you can find under <b>PROJECTS</b> tab." %}
+                   {% trans "Together with your team choose which one suits you best." %}
+                   {% trans "Every project has a description available by clicking on title." %}
+                </p>
+            </div>
+            <div class="col-md-6">
+                <img src="{% static "images/about2.png" %}"/>
+            </div>
+        </div>
+        <div class="row about-row">
+            <div class="col-md-6">
+                <p>{% trans "3. Your team leader should now pick a project from list" %}
+                   {% trans "by marking it and clicking the <i>Pick</i> button." %}
+                </p>
+            </div>
+            <div class="col-md-6">
+                <img style="max-width: 100%; border: 2px solid white" src="{% static "images/about3.png" %}"/>
+            </div>
+        </div>
+        <div class="row about-row">
+            <div class="col-md-6">
+                <p>{% trans "4. The rest of your group can join leader's team in <b>TEAMS</b> section." %}
+                   {% trans "You can check if everything's ok by clicking on <b>PROFILE</b> tab." %}
+                   {% trans "Remember there is only a place for one team in every project." %}
+                </p>
+            </div>
+            <div class="col-md-6">
+              <img style="max-width: 100%; border: 2px solid white" src="{% static "images/about4.png" %}"/>
+            </div>
+        </div>
+    <!--<video width="320" height="240" controls>
         <source src="{% static "films/helpmv.mp4" %}" type="video/mp4">
     <p>Your browser does not support the video tag.</p>
-    </video>
+  </video>-->
 
-    <p><h4>Copyright by {% contributors %}.</h4></p>
-    <p><h4>Server info: version: {% version_number %}, Django version: {% django_version %}, debug: {% if debug %} True {% else %} False {% endif %}</h4></p>
+    <h6>Copyright by {% contributors %}.</h6>
+    <h6>Server info: version: {% version_number %}, Django version: {% django_version %}, debug: {% if debug %} True {% else %} False {% endif %}</h4>
 </div>
 {% endblock %}
