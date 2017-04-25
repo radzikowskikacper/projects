@@ -183,9 +183,6 @@ LOGIN_URL = '/login/'
 # Logout page
 LOGOUT_URL = '/logout/'
 
-# User model
-AUTH_USER_MODEL = 'common.CAS_User'
-
 # importing test settings file if necessary
 if IN_TESTING:
     from .testing import *  # noqa

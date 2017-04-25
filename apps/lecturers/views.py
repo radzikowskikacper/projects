@@ -15,6 +15,7 @@ from projects_helper.apps.common.models import Project, Course, Team
 from projects_helper.apps.students.models import Student
 from projects_helper.apps.common.forms import ProjectFilterForm
 from projects_helper.apps.lecturers.forms import ProjectForm, TeamForm, TeamModifyForm
+from .models import Lecturer
 
 from wsgiref.util import FileWrapper
 import os
@@ -28,7 +29,7 @@ logger = logging.getLogger('projects_helper.apps.lecturers.views')
 
 
 def is_lecturer(user):
-    return user.user_type == "L" or user.is_superuser
+    return hasattr(user, 'lecturer')
 
 
 @login_required

@@ -6,14 +6,14 @@ from ..models import Project, Lecturer, Course
 
 
 def create_student(name):
-    custom_user = CustomUser.objects.create(username=name, user_type='S')
+    custom_user = CustomUser.objects.create(username=name)
     return Student.objects.create(user=custom_user)
 
 
 class ProjectTest(TestCase):
 
     def setUp(self):
-        custom_user = CustomUser.objects.create(username="Wiktor", user_type='L')
+        custom_user = CustomUser.objects.create(username="Wiktor")
         self.lecturer = Lecturer.objects.create(user=custom_user)
         self.course = Course.objects.create(name="kurs")
         self.project = Project.objects.create(lecturer=self.lecturer)
@@ -45,7 +45,7 @@ class ProjectTest(TestCase):
 class TeamTest(TestCase):
 
     def setUp(self):
-        custom_user = CustomUser.objects.create(username="Wiktor", user_type='L')
+        custom_user = CustomUser.objects.create(username="Wiktor")
         self.lecturer = Lecturer.objects.create(user=custom_user)
         self.course = Course.objects.create(name="kurs")
         self.project = Project.objects.create(lecturer=self.lecturer, course=self.course)
@@ -100,4 +100,3 @@ class TeamTest(TestCase):
         Team.remove_empty()
         teams_count_after = Team.objects.all().count()
         self.assertEqual(teams_count_after, 0)
-

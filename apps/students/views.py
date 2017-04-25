@@ -19,7 +19,7 @@ logger = logging.getLogger('projects_helper.apps.lecturers.views')
 
 
 def is_student(user):
-    return user.user_type == 'S'
+    return hasattr(user, 'student')
 
 
 @login_required

@@ -7,11 +7,11 @@ from projects_helper.apps.common.models import CustomUser, Student, Lecturer, Pr
 
 class StudentTest(WebTest):
     def create_student(self, name):
-        custom_user = CustomUser.objects.create(username=name, user_type='S')
+        custom_user = CustomUser.objects.create(username=name)
         return Student.objects.create(user=custom_user)
 
     def create_lecturer(self, name):
-        custom_user = CustomUser.objects.create(username=name, user_type='L')
+        custom_user = CustomUser.objects.create(username=name)
         return Lecturer.objects.create(user=custom_user)
 
     def setUp(self):

@@ -27,10 +27,7 @@ class ExtendedCASBackend(CASBackend):
         user = super(ExtendedCASBackend, self).authenticate(
             ticket, service, request)
 
-        lecturerModel = apps.get_model('lecturers', 'Lecturer')
-        studentModel = apps.get_model('students', 'Student')
-
-        if user.user_type == 'N':
+        if not (hasattr(user, 'student') or hasattr(user, 'lecturer')):
             attributes = request.session.get('attributes', None)
             if attributes:
                 try:
@@ -42,14 +39,14 @@ class ExtendedCASBackend(CASBackend):
                     new_user_created_info(attributes)
                     return user
                 if attributes['employeeType'] == 'S':
-                    user.user_type = 'S'
+                    studentModel = apps.get_model('students', 'Student')
                     studentModel.objects.create(user=user)
                 elif attributes['employeeType'] == 'P':
-                    user.user_type = 'L'
                     is_admin = (settings.ADMIN_LOGIN == user.username)
                     if is_admin:
                         user.is_staff = True
                         user.is_superuser = True
+                    lecturerModel = apps.get_model('lecturers', 'Lecturer')
                     lecturerModel.objects.create(user=user)
                 try:
                     user.email = attributes['mail']
@@ -76,7 +73,7 @@ class ExtendedCASBackend(CASBackend):
             else:
                 logger.error("CAS did not return attributes for user %s" % str(user.username))
 
-        elif user.user_type == 'S' or user.user_type == 'L':
+        else:
             logger.info("User %s logged in" % str(user.email))
 
         return user

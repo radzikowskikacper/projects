@@ -6,14 +6,14 @@ from django.core.urlresolvers import reverse
 class LecturerTest(WebTest):
 
     def create_student(self, name):
-        custom_user = CustomUser.objects.create(username=name, user_type='S')
+        custom_user = CustomUser.objects.create(username=name)
         return Student.objects.create(user=custom_user)
 
     def setUp(self):
-        custom_user = CustomUser.objects.create(username="Wiktor", user_type='L')
+        custom_user = CustomUser.objects.create(username="Wiktor")
         self.lecturer = Lecturer.objects.create(user=custom_user)
 
-        custom_user = CustomUser.objects.create(username="Bogdan", user_type='L')
+        custom_user = CustomUser.objects.create(username="Bogdan")
         self.other_lecturer = Lecturer.objects.create(user=custom_user)
 
     def test_new_project(self):
@@ -95,6 +95,3 @@ class LecturerTest(WebTest):
                                 user='Wiktor')
         proj = Project.objects.get(pk=proj.pk)
         #self.assertEqual(proj.team_assigned, team1)
-
-
-

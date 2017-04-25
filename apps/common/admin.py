@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.contrib.auth.models import *
-from django.contrib.auth.admin import UserAdmin
 from django.db.models import Count
 from .models import *
 from projects_helper.apps.students.models import *
@@ -8,14 +7,18 @@ from projects_helper.apps.lecturers.models import *
 from django.utils.translation import ugettext_lazy as _
 
 
-class CASUserAdmin(UserAdmin):
-    model = CAS_User
+class UserAdmin(admin.ModelAdmin):
+    model = User
+    list_display = ('name', 'user_type', 'is_superuser')
 
-    fieldsets = (
-        (None, {'fields': ('user_type',)}),
-    ) + UserAdmin.fieldsets
-    list_display = ('username', 'email', 'first_name', 'last_name', 'user_type', 'is_superuser')
+    def name(self,obj):
+        return obj.first_name + ' ' + obj.last_name
 
+    def user_type(self, obj):
+        if hasattr(obj, 'student'):
+            return "Student"
+        else:
+            return "Lecturer"
 
 class ProjectAdmin(admin.ModelAdmin):
     model = Project
@@ -89,11 +92,9 @@ class StudentAdmin(admin.ModelAdmin):
         return obj.teams.order_by('course_id').distinct('course').count()
     courses_count.short_description = _("Courses")
 
-
-admin.site.register(CAS_User, CASUserAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Lecturer, LecturerAdmin)
-admin.site.register(Group)
+admin.site.register(User, UserAdmin)

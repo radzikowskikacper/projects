@@ -8,20 +8,6 @@ import logging
 ## Instantiating module's logger.
 logger = logging.getLogger('projects_helper.apps.common.models')
 
-
-class CAS_User(AbstractUser):
-    type_choices = (
-        ('SU', 'SuperUser'),
-        ('S', 'Student'),
-        ('L', 'Lecturer'),
-        ('N', 'New'),
-    )
-    user_type = models.CharField(verbose_name=_('user type'),
-                                 max_length=2,
-                                 choices=type_choices,
-                                 default='N')
-
-
 class Course(models.Model):
     name = models.CharField(verbose_name=_('name'),
                             max_length=255,

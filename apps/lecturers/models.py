@@ -4,10 +4,10 @@ from django.db.models.signals import post_delete
 from django.utils.translation import ugettext_lazy as _
 from projects_helper.apps.common.models import *
 from projects_helper.apps.students.models import Student
-
+from django.contrib.auth.models import User
 
 class Lecturer(models.Model):
-    user = models.OneToOneField(CAS_User,
+    user = models.OneToOneField(User,
                                 verbose_name=_('user'),
                                 primary_key=True)
     max_students = models.IntegerField(verbose_name=_('students limit'),

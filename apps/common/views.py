@@ -54,7 +54,7 @@ def redirect_user(request, user, course_code=None):
 
     # when user was recognized by the CAS server,
     # BUT his account could not be created in backends.py
-    elif user.user_type=='N':
+    else:
         messages.error(request,
             _('Error: Your account type cannot be recognized by the service. Please contact administrator.'))
         return redirect(reverse('common:welcome'))
