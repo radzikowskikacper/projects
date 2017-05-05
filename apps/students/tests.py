@@ -1,8 +1,10 @@
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
 from model_mommy import mommy
-
-from projects_helper.apps.common.models import CustomUser, Student, Lecturer, Project, Team
+from ..students.models import Student
+from ..teams.models import Team
+from ..courses.models import Course
+from ..lecturers.models import Lecturer
 
 
 class StudentTest(WebTest):

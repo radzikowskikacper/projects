@@ -16,7 +16,7 @@
 
 {% block panel_content %}
     <div class="panel-body">
-        {% include "common/profile.html" %}
+        {% include "users/profile.html" %}
         <div><h4>{% trans "Team" %}</h4>
             {% if team.team_members == None %}
             <div>{% trans "You don't belong to any team" %}</div>
@@ -54,5 +54,3 @@
         </div>
     </div>
 {% endblock %}
-
-

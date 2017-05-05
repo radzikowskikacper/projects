@@ -5,7 +5,7 @@ import logging
 
 
 ## Instantiating module's logger.
-logger = logging.getLogger('projects_helper.apps.common.backends')
+logger = logging.getLogger('projects_helper.apps.users.backends')
 
 
 def new_user_created_info(attr):

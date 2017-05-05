@@ -1,5 +1,9 @@
 from django_webtest import WebTest
-from ..common.models import *
+from ..students.models import Student
+from ..teams.models import Team
+from ..courses.models import Course
+from ..lecturers.models import Lecturer
+
 from django.core.urlresolvers import reverse
 
 

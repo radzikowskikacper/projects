@@ -3,7 +3,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.urls import reverse
 from projects_helper.apps.students.views import is_student
 from projects_helper.apps.lecturers.views import is_lecturer
-from projects_helper.apps.common.models import Course
+from projects_helper.apps.courses.models import Course
 import logging
 
 
@@ -14,7 +14,7 @@ logger = logging.getLogger('projects_helper.apps.about.views')
 @ensure_csrf_cookie
 def info(request):
     context = {
-        "basetemplate": "common/base.html",
+        "basetemplate": "users/base.html",
         "selectedCourse": None
     }
 

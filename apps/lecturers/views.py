@@ -11,9 +11,11 @@ from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
 
 from django.forms import modelformset_factory
-from projects_helper.apps.common.models import Project, Course, Team
+from projects_helper.apps.courses.models import Course
+from projects_helper.apps.teams.models import Team
+from projects_helper.apps.projects.models import Project
 from projects_helper.apps.students.models import Student
-from projects_helper.apps.common.forms import ProjectFilterForm
+from projects_helper.apps.users.forms import ProjectFilterForm
 from projects_helper.apps.lecturers.forms import ProjectForm, TeamForm, TeamModifyForm
 from .models import Lecturer
 
@@ -37,7 +39,7 @@ def is_lecturer(user):
 @ensure_csrf_cookie
 def profile(request):
     if 'selectedCourse' not in request.session:
-        return redirect(reverse('common:select_course'))
+        return redirect(reverse('users:select_course'))
     course = get_object_or_404(
         Course, code__iexact=request.session['selectedCourse'])
     return render(request,
@@ -111,33 +113,6 @@ def project(request, project_pk, course_code=None):
     return render(request, "lecturers/project_detail.html",
                   context={'project': proj,
                            'selectedCourse': course})
-
-
-@login_required
-@user_passes_test(is_lecturer)
-@ensure_csrf_cookie
-def project_delete(request):
-    if request.method == 'POST':
-        projects_to_delete = Project.objects.filter(
-            pk__in=request.POST.getlist('to_delete'))
-
-        for proj in projects_to_delete:
-            if proj.lecturer.user == request.user:
-                if proj.status() == 'free':
-                    proj.delete()
-                else:
-                    messages.info(request, _(
-                        "Cannot delete occupied project: ") + proj.title)
-            else:
-                msg = _("Cannot delete project: " + proj.title + " - access denied")
-                messages.error(request, msg)
-                logger.error(msg)
-        return redirect(reverse('lecturers:project_list',
-                                kwargs={'course_code': request.session['selectedCourse']}))
-    else:
-        logger.error('Bad request: Only POST requests are allowed.')
-        raise Http404
-
 
 @login_required
 @user_passes_test(is_lecturer)
@@ -243,7 +218,105 @@ def team_list(request, course_code=None):
                   context={"teams": my_teams,
                            "teams_with_no_project": teams_with_no_project,
                            "selectedCourse": course})
+@login_required
+@user_passes_test(is_lecturer)
+@ensure_csrf_cookie
+def assign_selected_team(request, project_pk, team_pk):
+    if request.method == 'POST':
+        try:
+            project = Project.objects.get(pk=project_pk)
+            team = Team.objects.get(pk=team_pk)
+        except ObjectDoesNotExist as e:
+            logger.error(str(e))
+            messages.error(request, _(
+                "Cannot assign team. Team or project not found!"))
 
+        if project.lecturer.user == request.user:
+            if team and project:
+                try:
+                    project.assign_team(team)
+                    project.save()
+                except Exception as e:
+                    logger.error(str(e))
+                messages.success(request, _(
+                    "You have successfully assigned team: " +
+                    str(team) + " to project: " + str(project)))
+        else:
+            msg = _("Cannot assign: access denied")
+            messages.error(request, msg)
+            logger.error(msg)
+
+    return redirect(reverse_lazy('lecturers:project',
+                                 kwargs={'project_pk': project.pk,
+                                         'course_code':
+                                         request.session['selectedCourse']}))
+
+
+@login_required
+@user_passes_test(is_lecturer)
+@ensure_csrf_cookie
+def assign_team(request, project_pk):
+    proj = get_object_or_404(Project, pk=project_pk)
+    if proj.lecturer.user == request.user:
+        if proj.teams_with_preference().count() == 0:
+            messages.error(request, _(
+                "Cannot assign: No teams waiting for project"))
+        else:
+            proj.assign_random_team()
+            messages.success(request, _(
+                "You have successfully assigned team: " +
+                str(proj.team_assigned) + " to project: " + str(proj)))
+    else:
+        msg = _("Cannot assign: access denied")
+        messages.error(request, msg)
+        logger.error(msg)
+
+    return redirect(reverse_lazy('lecturers:project',
+                                 kwargs={'project_pk': proj.pk,
+                                         'course_code':
+                                         request.session['selectedCourse']}))
+
+
+@login_required
+@user_passes_test(is_lecturer)
+@ensure_csrf_cookie
+def unassign_team(request, project_pk):
+    proj = get_object_or_404(Project, pk=project_pk)
+    if proj.lecturer.user == request.user:
+        proj.team_assigned = None
+        proj.save()
+        messages.success(request, _(
+            "You have successfully unassigned team from project: ") +
+            str(proj))
+    return redirect(reverse_lazy('lecturers:project',
+                                 kwargs={'project_pk': proj.pk,
+                                         'course_code':
+                                         request.session['selectedCourse']}))
+
+@login_required
+@user_passes_test(is_lecturer)
+@ensure_csrf_cookie
+def project_delete(request):
+    if request.method == 'POST':
+        projects_to_delete = Project.objects.filter(
+            pk__in=request.POST.getlist('to_delete'))
+
+        for proj in projects_to_delete:
+            if proj.lecturer.user == request.user:
+                if proj.status() == 'free':
+                    proj.delete()
+                else:
+                    messages.info(request, _(
+                        "Cannot delete occupied project: ") + proj.title)
+            else:
+                msg = _("Cannot delete project: " + proj.title + " - access denied")
+                messages.error(request, msg)
+                logger.error(msg)
+        return redirect(reverse('lecturers:project_list',
+                                kwargs={'course_code': request.session['selectedCourse']}))
+    else:
+        logger.error('Bad request: Only POST requests are allowed.')
+        raise Http404
 
 @login_required
 @user_passes_test(is_lecturer)
@@ -437,65 +510,6 @@ def team_delete(request):
 @login_required
 @user_passes_test(is_lecturer)
 @ensure_csrf_cookie
-def assign_selected_team(request, project_pk, team_pk):
-    if request.method == 'POST':
-        try:
-            project = Project.objects.get(pk=project_pk)
-            team = Team.objects.get(pk=team_pk)
-        except ObjectDoesNotExist as e:
-            logger.error(str(e))
-            messages.error(request, _(
-                "Cannot assign team. Team or project not found!"))
-
-        if project.lecturer.user == request.user:
-            if team and project:
-                try:
-                    project.assign_team(team)
-                    project.save()
-                except Exception as e:
-                    logger.error(str(e))
-                messages.success(request, _(
-                    "You have successfully assigned team: " +
-                    str(team) + " to project: " + str(project)))
-        else:
-            msg = _("Cannot assign: access denied")
-            messages.error(request, msg)
-            logger.error(msg)
-
-    return redirect(reverse_lazy('lecturers:project',
-                                 kwargs={'project_pk': project.pk,
-                                         'course_code':
-                                         request.session['selectedCourse']}))
-
-
-@login_required
-@user_passes_test(is_lecturer)
-@ensure_csrf_cookie
-def assign_team(request, project_pk):
-    proj = get_object_or_404(Project, pk=project_pk)
-    if proj.lecturer.user == request.user:
-        if proj.teams_with_preference().count() == 0:
-            messages.error(request, _(
-                "Cannot assign: No teams waiting for project"))
-        else:
-            proj.assign_random_team()
-            messages.success(request, _(
-                "You have successfully assigned team: " +
-                str(proj.team_assigned) + " to project: " + str(proj)))
-    else:
-        msg = _("Cannot assign: access denied")
-        messages.error(request, msg)
-        logger.error(msg)
-
-    return redirect(reverse_lazy('lecturers:project',
-                                 kwargs={'project_pk': proj.pk,
-                                         'course_code':
-                                         request.session['selectedCourse']}))
-
-
-@login_required
-@user_passes_test(is_lecturer)
-@ensure_csrf_cookie
 def assign_teams_to_projects(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
     projects = Project.objects.filter(
@@ -509,23 +523,6 @@ def assign_teams_to_projects(request, course_code=None):
         messages.info(request, _("You don't have any projects"))
     return redirect(reverse('lecturers:project_list',
                             kwargs={'course_code': course_code}))
-
-
-@login_required
-@user_passes_test(is_lecturer)
-@ensure_csrf_cookie
-def unassign_team(request, project_pk):
-    proj = get_object_or_404(Project, pk=project_pk)
-    if proj.lecturer.user == request.user:
-        proj.team_assigned = None
-        proj.save()
-        messages.success(request, _(
-            "You have successfully unassigned team from project: ") +
-            str(proj))
-    return redirect(reverse_lazy('lecturers:project',
-                                 kwargs={'project_pk': proj.pk,
-                                         'course_code':
-                                         request.session['selectedCourse']}))
 
 
 @login_required

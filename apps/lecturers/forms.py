@@ -1,7 +1,9 @@
 from django.core.exceptions import NON_FIELD_ERRORS
 from django import forms
 from django.db.models import Count
-from projects_helper.apps.common.models import Project, Team, Course
+from projects_helper.apps.teams.models import Team
+from projects_helper.apps.courses.models import Course
+from projects_helper.apps.projects.models import Project
 from projects_helper.apps.students.models import Student
 from django.utils.translation import ugettext_lazy as _
 

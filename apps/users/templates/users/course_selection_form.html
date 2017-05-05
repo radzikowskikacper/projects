@@ -4,7 +4,7 @@
 
 
 {% block navbar_left %}
-    {% if basetemplate == "common/base.html" %}
+    {% if basetemplate == "users/base.html" %}
         {# overridde this block to prevent drawing login button #}
     {% else %}
         {{ block.super }}
@@ -13,7 +13,7 @@
 
 
 {% block content %}
-{% include "common/messages.html" %}
+{% include "users/messages.html" %}
 <div class="panel panel-default">
     <div class="panel-heading ">
         <div class="row">
@@ -23,7 +23,7 @@
         </div>
     </div>
     <div class="panel-body">
-        <form method="post" action="{% url 'common:select_course' %}">
+        <form method="post" action="{% url 'users:select_course' %}">
             {% csrf_token %}
             <h4>{% bootstrap_form form %}</h4>
         </form>

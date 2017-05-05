@@ -6,7 +6,7 @@ from projects_helper.settings.local import CAS_SERVER_URL
 
 # class RegistrationTest(WebTest):
 #     def test_custom_registration_view(self):
-#         response = self.app.get(reverse('common:register'))
+#         response = self.app.get(reverse('users:register'))
 #         username = 'matika'
 #         self.assertFalse(CustomUser.objects.filter(username=username).exists())
 
@@ -23,7 +23,7 @@ from projects_helper.settings.local import CAS_SERVER_URL
 
 
 #     def test_custom_registration_fail(self):
-#         response = self.app.get(reverse('common:register'))
+#         response = self.app.get(reverse('users:register'))
 #         username = 'matika'
 #         self.assertFalse(CustomUser.objects.filter(username=username).exists())
 

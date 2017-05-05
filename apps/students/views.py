@@ -6,9 +6,11 @@ from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
-from projects_helper.apps.common.models import Project, Team, Course
+from projects_helper.apps.courses.models import Course
+from projects_helper.apps.teams.models import Team
+from projects_helper.apps.projects.models import Project
 from .models import Student
-from projects_helper.apps.common.forms import ProjectFilterForm
+from projects_helper.apps.users.forms import ProjectFilterForm
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 import logging
@@ -16,7 +18,6 @@ import logging
 
 ## Instantiating module's logger.
 logger = logging.getLogger('projects_helper.apps.lecturers.views')
-
 
 def is_student(user):
     return hasattr(user, 'student')
@@ -27,7 +28,7 @@ def is_student(user):
 @ensure_csrf_cookie
 def profile(request):
     if 'selectedCourse' not in request.session:
-        return redirect(reverse('common:select_course'))
+        return redirect(reverse('users:select_course'))
     course = get_object_or_404(
         Course, code__iexact=request.session['selectedCourse'])
     stud = Student.objects.get(pk=request.user.student.pk)

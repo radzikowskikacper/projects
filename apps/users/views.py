@@ -4,8 +4,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from projects_helper.apps.students.views import is_student
 from projects_helper.apps.lecturers.views import is_lecturer
-from projects_helper.apps.common.forms import CourseSelectorForm
-from projects_helper.apps.common.models import Course
+from projects_helper.apps.users.forms import CourseSelectorForm
+from projects_helper.apps.courses.models import Course
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
@@ -13,12 +13,12 @@ import logging
 
 
 ## Instantiating module's logger.
-logger = logging.getLogger('projects_helper.apps.common.views')
+logger = logging.getLogger('projects_helper.apps.users.views')
 
 
 def generate_context(request):
     context = {
-        'basetemplate': "common/base.html",
+        'basetemplate': "users/base.html",
         'selectedCourse': None
     }
     if (request.user.is_authenticated()) and ('selectedCourse' in request.session):
@@ -36,13 +36,13 @@ def check_for_cookie(request):
     if request.user.is_authenticated():
         # redirect when user logged in but hasn't choosed course yet
         if 'selectedCourse' not in request.session:
-            redirect(reverse('common:select_course'))
+            redirect(reverse('users:select_course'))
 
 
 @ensure_csrf_cookie
 def home(request, course_code=None):
     check_for_cookie(request)
-    return render(request, 'common/welcome.html', context=generate_context(request))
+    return render(request, 'users/welcome.html', context=generate_context(request))
 
 
 @ensure_csrf_cookie
@@ -57,7 +57,7 @@ def redirect_user(request, user, course_code=None):
     else:
         messages.error(request,
             _('Error: Your account type cannot be recognized by the service. Please contact administrator.'))
-        return redirect(reverse('common:welcome'))
+        return redirect(reverse('users:welcome'))
 
 
 @csrf_protect
@@ -78,4 +78,4 @@ def course_selection(request):
             return redirect_user(request, request.user, course_code)
 
     context['form'] = form
-    return render(request, 'common/course_selection_form.html', context=context)
+    return render(request, 'users/course_selection_form.html', context=context)

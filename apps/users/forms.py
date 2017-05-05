@@ -1,6 +1,6 @@
 from django.forms import Form, RadioSelect
 from django.forms.fields import *  # NOQA
-from projects_helper.apps.common.models import Course
+from projects_helper.apps.courses.models import Course
 from django.utils.translation import ugettext_lazy as _
 
 

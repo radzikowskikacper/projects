@@ -2,14 +2,14 @@ from django.dispatch import receiver
 from django.db import models
 from django.db.models.signals import post_delete
 from django.utils.translation import ugettext_lazy as _
-from projects_helper.apps.common.models import *
 from django.contrib.auth.models import User
+
 
 class Student(models.Model):
     user = models.OneToOneField(User,
                                 verbose_name=_('user'),
                                 primary_key=True)
-    teams = models.ManyToManyField('common.Team',
+    teams = models.ManyToManyField('teams.Team',
                                    verbose_name=_('teams'),
                                    blank=True)
 

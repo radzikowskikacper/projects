@@ -31,7 +31,10 @@ ADMIN_LOGIN = ''
 INSTALLED_APPS = [
     'django_coverage',
     'bootstrap3',
-    'projects_helper.apps.common',
+    'projects_helper.apps.projects',
+    'projects_helper.apps.courses',
+    'projects_helper.apps.teams',
+    'projects_helper.apps.users',
     'projects_helper.apps.students',
     'projects_helper.apps.lecturers',
     'projects_helper.apps.about',
@@ -61,8 +64,7 @@ MIDDLEWARE_CLASSES = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    #'django_cas_ng.backends.CASBackend',
-    'common.backends.ExtendedCASBackend'
+    'users.backends.ExtendedCASBackend'
 )
 
 ROOT_URLCONF = 'projects_helper.urls'
@@ -176,7 +178,7 @@ CAS_RETRY_LOGIN = True
 CAS_LOGIN_MSG = None
 CAS_LOGGED_MSG = None
 #CAS_ADMIN_PREFIX = '/admin'
-#CAS_REDIRECT_URL = '/common/select_course/'
+#CAS_REDIRECT_URL = '/users/select_course/'
 
 # Login page
 LOGIN_URL = '/login/'

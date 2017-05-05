@@ -11,7 +11,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="{% url 'common:welcome' %}">{% trans "Project Helper" %}</a>
+              <a class="navbar-brand" href="{% url 'users:welcome' %}">{% trans "Project Helper" %}</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -20,7 +20,7 @@
                     {% block navbar_left %}
                     {% if not user.is_authenticated %}
                     <li class="navbar-left">
-                        <a class="nav-link" href="{% url 'common:cas_ng_login' %}">{% trans "LOGIN" %}</a>
+                        <a class="nav-link" href="{% url 'users:cas_ng_login' %}">{% trans "LOGIN" %}</a>
                     </li>
                     {% endif %}
                     {% endblock %}
@@ -29,7 +29,7 @@
                     {% block navbar_right %}
                     {% if user.is_authenticated %}
                     <li>
-                        <a class="nav-link" href="{% url 'common:select_course' %}">{% trans "Change course" %}</a>
+                        <a class="nav-link" href="{% url 'users:select_course' %}">{% trans "Change course" %}</a>
                     </li>
                     {% endif %}
                     <li>
@@ -60,7 +60,7 @@
                     </li><!-- /.dropdown -->
                     {% if user.is_authenticated %}
                     <li>
-                        <a class="nav-link" href="{% url 'common:cas_ng_logout' %}">{% trans "Logout" %}</a>
+                        <a class="nav-link" href="{% url 'users:cas_ng_logout' %}">{% trans "Logout" %}</a>
                     </li>
                     {% endif %}
                     {% endblock %}
