@@ -52,6 +52,7 @@ def pick_project(request):
             Course, code__iexact=request.session['selectedCourse'])
         proj_pk = request.POST.get('to_pick', False)
         team = request.user.student.team(course)
+
         if not team:
             try:
                 team = request.user.student.new_team(course)
@@ -139,9 +140,9 @@ def project_list(request, course_code=None):
 def team_list(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
     teams = Team.objects.filter(course=course) \
-                .exclude(project_preference__isnull=True) \
-                .annotate(num_stud=Count('student')) \
-                .order_by('-num_stud')
+                #.exclude(project_preference__isnull=True) \
+                #.annotate(num_stud=Count('student')) \
+                #.order_by('-num_stud')
     return render(request,
                   template_name="students/team_list.html",
                   context={"teams": teams,
@@ -226,7 +227,6 @@ def join_team(request):
     return redirect(reverse('students:team_list',
                             kwargs={'course_code':
                                     request.session['selectedCourse']}))
-
 
 @login_required
 @user_passes_test(is_student)

@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'projects_helper.apps.students',
     'projects_helper.apps.lecturers',
     'projects_helper.apps.about',
-    # 'registration',
     'django.contrib.admin.apps.SimpleAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -62,10 +61,10 @@ MIDDLEWARE_CLASSES = [
     'projects_helper.settings.middleware.StandardExceptionMiddleware',
 ]
 
-AUTHENTICATION_BACKENDS = (
+AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'users.backends.ExtendedCASBackend'
-)
+]
 
 ROOT_URLCONF = 'projects_helper.urls'
 
@@ -93,7 +92,9 @@ if IN_TESTING:
             'NAME': '/tmp/projects_helper_test.db',
         }
     }
-
+    AUTHENTICATION_BACKENDS = [
+        'django.contrib.auth.backends.ModelBackend'
+    ]
 
 
 # Internationalization and localization

@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Student
+from ..teams.models import Team
 from django.utils.translation import ugettext_lazy as _
 
 class StudentAdmin(admin.ModelAdmin):

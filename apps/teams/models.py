@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from ..projects.models import Project
 
 class Team(models.Model):
     project_preference = models.ForeignKey('projects.Project',

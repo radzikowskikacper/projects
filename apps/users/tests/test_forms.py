@@ -1,7 +1,5 @@
 from django.urls import reverse
-# Create your tests here.
 from django_webtest import WebTest
-from ..models import *
 from projects_helper.settings.local import CAS_SERVER_URL
 
 # class RegistrationTest(WebTest):
