@@ -1,32 +1,11 @@
-{% extends 'students/base.html' %}
 {% load i18n %}
 {% load bootstrap3 %}
-
-{# Panel header #}
-
-{% block panel_heading %}
-<div class="row">
-    <div class="col-sm-1 col-xs-1">
-        <a href="{% url 'students:project_list' selectedCourse.code %}" class="btn btn-default">
-            {% bootstrap_icon "chevron-left" %} {% trans "Back" %}
-        </a>
-    </div>
-    <div class="col-sm-11 col-xs-11">
-        <h3 class="panel-title" style="padding-top: 8px; padding-bottom: 8px;">{% trans "Project details" %}</h3>
-    </div>
-</div>
-{% endblock %}
 
 {# Panel content #}
 
 {% block panel_content %}
 <div class="panel-body">
     <div>
-        <h4>{% trans "Title" %}</h4>
-        {{ project.title }}
-    </div>
-    <div>
-        <h4>{% trans "Lecturer" %}</h4>
         {{ project.lecturer }},
         {% trans "email" %}: <a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer.user.email }}</a>
     </div>
@@ -34,7 +13,11 @@
         <h4>{% trans "Description" %}</h4>
         {{ project.description|linebreaks|urlize }}
     </div>
+
     <h4>{% trans "Team assigned" %}:</h4>
+    {% if project.team_assigned == None %}
+        {% trans "None" %}
+    {% else %}
     <ul>
         {% with members=project.team_assigned.team_members %}
             {% if members %}
@@ -48,25 +31,24 @@
             {% endif %}
         {% endwith %}
     </ul>
-
-    {% if project.status == "free" %}
-        <h4>{% trans "Teams preferring this project" %}:</h4>
-        <ol>
-            {% for team in project.teams_with_preference %}
-                <li>
-                {% for member in team.team_members %}
-                    <a href="mailto:{{ member.user.email }}">{{ member }}</a>,
-                {% endfor %}
-                </li>
-            {% empty %}
-                <br>
-            {% endfor %}
-        </ol>
     {% endif %}
+
+    <h4>{% trans "Teams preferring this project" %}:</h4>
+    {% if not project.teams_with_preference %}
+        {% trans "None" %}
+    {% else %}
+    <ol>
+        {% for team in project.teams_with_preference %}
+            <li>
+            {% for member in team.team_members %}
+                <a href="mailto:{{ member.user.email }}">{{ member }}</a>,
+            {% endfor %}
+            </li>
+        {% empty %}
+            <br>
+        {% endfor %}
+    </ol>
+    {% endif %}
+
 </div>
-{% endblock %}
-
-{# Panel footer #}
-
-{% block panel_footer %}
 {% endblock %}

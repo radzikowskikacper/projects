@@ -11,20 +11,16 @@ from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
 
 from django.forms import modelformset_factory
-from projects_helper.apps.courses.models import Course
-from projects_helper.apps.teams.models import Team
-from projects_helper.apps.projects.models import Project
-from projects_helper.apps.students.models import Student
-from projects_helper.apps.users.forms import ProjectFilterForm
-from projects_helper.apps.lecturers.forms import ProjectForm, TeamForm, TeamModifyForm
+from ..courses.models import Course
+from ..teams.models import Team
+from ..projects.models import Project
+from ..students.models import Student
+from ..users.forms import ProjectFilterForm
+from ..lecturers.forms import ProjectForm, TeamForm, TeamModifyForm
 from .models import Lecturer
 
 from wsgiref.util import FileWrapper
-import os
-import csv
-import logging
-
-
+import os, csv, logging
 
 ## Instantiating module's logger.
 logger = logging.getLogger('projects_helper.apps.lecturers.views')

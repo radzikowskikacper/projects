@@ -1,11 +1,18 @@
 .about-header {
-  margin-top: 0;
-  margin-bottom: 20px;
+    margin-top: 0;
+    margin-bottom: 20px;
 }
+
 .about-row {
-  margin-bottom: 30px;
+    margin-bottom: 30px;
 }
+
 .about-jumbotron img {
-  max-width: 100%;
-  border: 2px solid white;
+    max-width: 100%;
+    border: 2px solid white;
+}
+
+.project-dropdown {
+    display: block;
+    width: 100%;
 }

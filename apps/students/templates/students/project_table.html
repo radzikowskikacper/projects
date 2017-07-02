@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load bootstrap3 %}
+{% load static %}
 
 <table id="projectTable" class="table table-hover">
 <tr>
@@ -17,12 +18,22 @@
             <td><input type="radio" name="to_pick" id="{{ project.pk }}"
                        value="{{ project.pk }}"/></td>
         {% else %}
-            <td></td>
+            <td/>
         {% endif %}
         <td id="teams_{{ project.pk }}">{{ project.teams_with_preference.count }}</td>
         <td>{% if project.status == "free" %} {% trans "free" %} {% else %} {% trans "occupied" %} {% endif %}</td>
-        <td><a href="{% url 'students:project' selectedCourse.code project.pk %}">{{ project.title }}</a></td>
+        <td><a href="#" class="project-dropdown">{{ project.title }}</a></td>
         <td><a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer }}</a></td>
+    </tr>
+    <tr style="display:none">
+        <td colspan="5">
+            {% include "students/project_detail.html" %}
+        </td>
     </tr>
 {% endfor %}
  </table>
+
+ {% block additional_js %}
+     <script src="{% static "jquery/jquery.min.js" %}"></script>
+     <script src="{% static "js/projectdropdown.js" %}"></script>
+ {% endblock %}
