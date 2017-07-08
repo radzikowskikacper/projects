@@ -10,17 +10,14 @@ from django.core.urlresolvers import reverse
 class LecturerTest(TestCase):
 
     def setUp(self):
-        user = User.objects.create_user('test1', 'test1@test.pl', 'test')
-        lecturer = Lecturer.objects.create(user=user)
+        self.user = User.objects.create_user('test1', 'test1@test.pl', 'test')
+        self.lecturer = Lecturer.objects.create(user=self.user)
         self.client.login(username='test1', password='test')
 
         #course
         self.code = 'TC'
         self.course = Course.objects.create(name='Test Course', code=self.code)
         self.kwargs = {'course_code' : self.code}
-
-        #project
-        self.project = Project.objects.create(pk=2, title='Test Project', course=self.course, lecturer=lecturer)
 
     def set_session(self):
         session = self.client.session
@@ -41,6 +38,7 @@ class LecturerTest(TestCase):
         self.assertEqual(res.status_code, 200)
 
     def test_project(self):
+        Project.objects.create(pk=2, title='Test Project', course=self.course, lecturer=self.lecturer)
         res = self.client.get(reverse('lecturers:project', kwargs={'course_code' : self.code, 'project_pk' : 2}))
         self.assertEqual(res.context['project'].title, 'Test Project')
 
@@ -55,7 +53,7 @@ class LecturerTest(TestCase):
 
     def test_team_list(self):
         pass
-        
+
     def test_assign_selected_team(self):
         pass
 
@@ -78,7 +76,17 @@ class LecturerTest(TestCase):
         pass
 
     def test_assign_teams_to_projects(self):
-        pass
+        u = User.objects.create_user('test2', 'test2@test.pl', 'test')
+        project = Project.objects.create(pk=3, title='Test3', course=self.course, lecturer=self.lecturer)
+        team1 = Team.objects.create(course=self.course, project_preference=project)
+        team2 = Team.objects.create(course=self.course, project_preference=project)
+        s1 = Student.objects.create(user=self.user)
+        s2 = Student.objects.create(user=u)
+        s1.join_team(team1)
+        s2.join_team(team2)
+        res = self.client.get(reverse('lecturers:assign_teams_to_projects', kwargs=self.kwargs), follow=True)
+        m = list(res.context.get('messages'))[0]
+        self.assertTrue('Assigned 1 of 2 teams' in m.message)
 
     def test_course_manage(self):
         pass

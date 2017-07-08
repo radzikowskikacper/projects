@@ -511,10 +511,15 @@ def assign_teams_to_projects(request, course_code=None):
     projects = Project.objects.filter(
         lecturer=request.user.lecturer).filter(course=course)
     if projects:
+        count = 0
         for proj in projects:
-            proj.assign_random_team()
+            if proj.assign_random_team():
+                count += 1
+            else:
+                break
+
         messages.success(request, _(
-            "You have successfully assigned teams to projects"))
+            "Assigned {} of {} teams".format(count ,Team.objects.count())))
     else:
         messages.info(request, _("You don't have any projects"))
     return redirect(reverse('lecturers:project_list',

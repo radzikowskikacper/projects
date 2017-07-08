@@ -1,4 +1,5 @@
 from django.db import models
+from random import randint
 from django.utils.translation import ugettext_lazy as _
 
 class Project(models.Model):
@@ -48,8 +49,10 @@ class Project(models.Model):
             self.team_assigned = teams[random_idx]
             try:
                 self.save()
+                return True
             except Exception as e:
                 logger.error("Project cannot be saved. " + str(e))
+        return False
 
     def __str__(self):
         return self.title

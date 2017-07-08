@@ -55,7 +55,7 @@
                         {% if project_preference != None %}
                             <a href='{% url 'students:project' selectedCourse.code project_preference.pk %}'> {{ project_preference }} </a>
                         {% else %}
-                            {{ project_preference }}
+                            -
                         {% endif %}
                     {% endwith %}
                 </td>
