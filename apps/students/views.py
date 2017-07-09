@@ -13,6 +13,7 @@ from .models import Student
 from projects_helper.apps.users.forms import ProjectFilterForm
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
+from markdownx.utils import markdownify
 import logging
 
 
@@ -107,13 +108,13 @@ def pick_project(request):
 @user_passes_test(is_student)
 @ensure_csrf_cookie
 def project(request, project_pk, course_code=None):
-    proj = get_object_or_404(Project, pk=project_pk)
+    project = get_object_or_404(Project, pk=project_pk)
     course = get_object_or_404(Course, code__iexact=course_code)
+    project.description = markdownify(project.description)
     return render(request,
-                  context={'project': proj,
+                  context={'project': project,
                            'selectedCourse': course},
-                  template_name='students/project_detail.html')
-
+                  template_name='students/project.html')
 
 @login_required
 @user_passes_test(is_student)
@@ -123,6 +124,9 @@ def project_list(request, course_code=None):
     projects = Project.objects.select_related('lecturer') \
                       .prefetch_related('team_set') \
                       .filter(course=course)
+    for p in projects:
+        p.description = markdownify(p.description)
+
     filter_form = ProjectFilterForm()
     proj_preference = request.user.student.project_preference(course)
     return render(request,

@@ -38,15 +38,22 @@ class LecturerTest(TestCase):
         self.assertEqual(res.status_code, 200)
 
     def test_project(self):
-        Project.objects.create(pk=2, title='Test Project', course=self.course, lecturer=self.lecturer)
+        Project.objects.create(pk=2, title='Test Project', description='**sample text**', course=self.course, lecturer=self.lecturer)
         res = self.client.get(reverse('lecturers:project', kwargs={'course_code' : self.code, 'project_pk' : 2}))
         self.assertEqual(res.context['project'].title, 'Test Project')
+        self.assertInHTML('<strong>sample text</strong>', str(res.content))
 
     def test_project_new(self):
-        pass
+        res = self.client.post(reverse('lecturers:project_new', kwargs=self.kwargs), data={'title' : 'TestProject1','description':'123'})
+        self.assertEqual(res.status_code, 302)
+        self.assertTrue(Project.objects.filter(title='TestProject1', description='123').exists())
 
     def test_modify_project(self):
-        pass
+        Project.objects.create(pk=3, title='TestProject3', description='**sample text**', course=self.course, lecturer=self.lecturer)
+        res = self.client.get(reverse('lecturers:modify_project', kwargs={**self.kwargs, 'project_pk': 3}))
+        self.assertEqual(res.status_code, 200)
+        res = self.client.post(reverse('lecturers:modify_project', kwargs={**self.kwargs, 'project_pk': res.context['project'].pk}), data={'title' : 'abc','description':'111'})
+        self.assertTrue(Project.objects.filter(title='abc', description='111').exists())
 
     def test_project_copy(self):
         pass

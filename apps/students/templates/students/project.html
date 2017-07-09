@@ -1,0 +1,20 @@
+{% extends "students/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block panel_heading %}
+<div class="row">
+    <div class="col-sm-1 col-xs-1">
+        <a href="{% url 'students:team_list' selectedCourse.code %}" title="{% trans "Back to team list" %}" class="btn btn-default">
+            {% bootstrap_icon "chevron-left" %} {% trans "Back" %}
+        </a>
+    </div>
+    <div class="col-sm-6 col-xs-6">
+        <h3 class="panel-title" style="padding-top: 8px">{% trans "Project details" %}</h3>
+    </div>
+</div>
+{% endblock %}
+
+{% block panel_content %}
+    {% include "students/project_detail.html" %}
+{% endblock %}

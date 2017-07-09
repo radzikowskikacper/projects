@@ -31,6 +31,7 @@ class LoggingMiddleware(object):
     SKIPPED_URLS_REGEXP = [
         '^/$',
         '^/i18n/',
+        '^/markdownx/'
         '^/about/$',
         '^/admin',
         '^/login/',

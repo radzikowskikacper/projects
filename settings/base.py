@@ -29,6 +29,7 @@ ADMIN_LOGIN = ''
 # Application definition
 
 INSTALLED_APPS = [
+    'markdownx',
     'django_coverage',
     'bootstrap3',
     'projects_helper.apps.projects',
@@ -57,7 +58,6 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'projects_helper.settings.middleware.LoggingMiddleware',
     'projects_helper.settings.middleware.StandardExceptionMiddleware',
 ]
 
@@ -136,6 +136,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'DIRS': [
             root('templates'),
+            os.path.join(root(''), 'apps/lecturers/templates/lecturers/'),
         ],
         'OPTIONS': {
             'debug': DEBUG,
@@ -152,6 +153,9 @@ TEMPLATES = [
     }
 ]
 
+MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    'markdown.extensions.extra',
+]
 # Password validation
 
 AUTH_PASSWORD_VALIDATORS = [

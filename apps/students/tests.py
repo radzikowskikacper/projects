@@ -53,7 +53,7 @@ class StudentTest(TestCase):
 
     def test_pick_project_with_no_team(self):
         self.set_session()
-        res = self.client.post(reverse('students:pick_project'), data='to_pick=1', content_type='application/x-www-form-urlencoded')
+        res = self.client.post(reverse('students:pick_project'), data={'to_pick' : 1})
         self.assertEqual(res['Location'], reverse('students:project_list', kwargs=self.kwargs))
 
     def test_filtered_project_list(self):
@@ -63,11 +63,10 @@ class StudentTest(TestCase):
     def test_join_team(self):
         self.set_session()
         t = Team.objects.create(pk=2, course=self.course, project_preference=self.project)
-        res = self.client.post(reverse('students:join_team'), data='to_join=2', content_type='application/x-www-form-urlencoded')
+        res = self.client.post(reverse('students:join_team'), data={'to_join' : 2})
         self.assertEqual(res.status_code, 302)
 
     def test_new_team(self):
         self.set_session()
-        res = self.client.post(reverse('students:new_team'), content_type='application/x-www-form-urlencoded')
+        res = self.client.post(reverse('students:new_team'))
         self.assertEqual(res.status_code, 302)
-        

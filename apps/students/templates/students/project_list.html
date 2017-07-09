@@ -34,7 +34,7 @@
 <form id='pick_project_form' action="{% url 'students:pick_project' %}" method="post">
     {% csrf_token %}
     <div id="tableContainer">
-    {% include "students/project_table.html" %}
+        {% include "students/project_table.html" %}
     </div>
 </form>
 {% include "students/project_pick_modal.html" %}

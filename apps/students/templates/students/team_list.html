@@ -1,6 +1,7 @@
 {% extends "students/base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
+{% load static %}
 
 {# Panel header #}
 
@@ -85,4 +86,9 @@
         {% trans "Leave team" %}
     </button>
 {% endif %}
+{% endblock %}
+
+{% block additional_js %}
+    <script src="{% static "js/searchfilter.js" %}"></script>
+    <script src="{% static "js/projectdropdown.js" %}"></script>
 {% endblock %}

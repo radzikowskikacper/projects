@@ -15,4 +15,5 @@ urlpatterns = [
 
 urlpatterns += [
     url(r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^markdownx/', include('markdownx.urls')),
 ]

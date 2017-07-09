@@ -19,6 +19,7 @@ from ..users.forms import ProjectFilterForm
 from ..lecturers.forms import ProjectForm, TeamForm, TeamModifyForm
 from .models import Lecturer
 
+from markdownx.utils import markdownify
 from wsgiref.util import FileWrapper
 import os, csv, logging
 
@@ -106,6 +107,8 @@ def filtered_project_list(request, course_code=None):
 def project(request, project_pk, course_code=None):
     proj = Project.objects.get(pk=project_pk)
     course = get_object_or_404(Course, code__iexact=course_code)
+    proj.description = markdownify(proj.description)
+    
     return render(request, "lecturers/project_detail.html",
                   context={'project': proj,
                            'selectedCourse': course})

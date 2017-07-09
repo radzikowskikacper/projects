@@ -6,7 +6,10 @@ from projects_helper.apps.courses.models import Course
 from projects_helper.apps.projects.models import Project
 from projects_helper.apps.students.models import Student
 from django.utils.translation import ugettext_lazy as _
+from markdownx.widgets import MarkdownxWidget
 
+class CustomMarkdownxWidget(MarkdownxWidget):
+    template_name = 'lecturers/markdown-widget.html'
 
 class ProjectForm(forms.ModelForm):
 
@@ -16,6 +19,7 @@ class ProjectForm(forms.ModelForm):
         required_css_class = 'required'
         widgets = {
             'title': forms.TextInput(attrs={'autofocus': ''}),
+            'description' : CustomMarkdownxWidget()
         }
         error_messages = {
             NON_FIELD_ERRORS: {
@@ -23,7 +27,6 @@ class ProjectForm(forms.ModelForm):
                     _("%(model_name)s's %(field_labels)s are not unique."),
             }
         }
-
 
 # this callables will be necessary to avoid executing queries
 # at the time this models.py is imported

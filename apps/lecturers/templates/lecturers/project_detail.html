@@ -39,7 +39,7 @@
     </div>
     <div>
         <h4>{% trans "Description" %}</h4>
-        {{ project.description|linebreaks|urlize }}
+        {{ project.description|safe }}
     </div>
     <h4>{% trans "Team assigned" %}:</h4>
     <ul>

@@ -1,10 +1,12 @@
 from django.db import models
 from random import randint
 from django.utils.translation import ugettext_lazy as _
+from markdownx.models import MarkdownxField
 
 class Project(models.Model):
     title = models.CharField(verbose_name=_('title'), max_length=255)
-    description = models.TextField(verbose_name=_('desciption'))
+
+    description = MarkdownxField(verbose_name=_('desciption'))
 
     course = models.ForeignKey('courses.Course',
                                verbose_name=_('course'),

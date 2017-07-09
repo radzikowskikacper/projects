@@ -26,6 +26,7 @@
         {% csrf_token %}
         {% bootstrap_form form layout="vertical" %}
     </form>
+    {{ form.media }}
 </div>
 {% endblock %}
 
