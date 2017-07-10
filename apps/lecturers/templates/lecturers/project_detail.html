@@ -58,7 +58,7 @@
         <table class="table table-hover">
             {% for team in project.teams_with_preference %}
                 <tr>
-                    <form action="{% url 'lecturers:projects:assign_selected_team' project.pk team.pk %}" method="post">
+                    <form action="{% url 'lecturers:assign_selected_team' project.pk team.pk %}" method="post">
                         {% csrf_token %}
                         <td>
                             {% for member in team.team_members %}

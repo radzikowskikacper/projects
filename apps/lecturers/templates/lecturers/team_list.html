@@ -46,12 +46,14 @@
                     </td>
                     <td>
                         <a href="{% url 'lecturers:project' selectedCourse.code team.project_preference.pk %}">
-                        {{ team.project_preference.title }}</a>
+                            {{ team.project_preference.title }}
+                        </a>
                     </td>
                     <td>
                         {% if team.project_assigned %}
                             <a href="{% url 'lecturers:project' selectedCourse.code team.project_assigned.pk %}">
-                            {{ team.project_assigned.title }}</a>
+                                {{ team.project_assigned.title }}
+                            </a>
                         {% else %}
                             -
                         {% endif %}

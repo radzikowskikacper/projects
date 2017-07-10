@@ -85,7 +85,31 @@ class LecturerTest(TestCase):
         pass
 
     def test_modify_team(self):
-        pass
+        students = []
+        for i in range(4):
+            user = User.objects.create_user('aaaa'+str(i), 't'+str(i)+'@test.pl', 'test')
+            students.append(Student.objects.create(user=user))
+        pref_proj = Project.objects.create(pk=7, title='TestProject7', description='111', course=self.course, lecturer=self.lecturer)
+        chosen_proj = Project.objects.create(pk=8, title='TestProject8', description='111', course=self.course, lecturer=self.lecturer)
+        team1 = Team.objects.create(pk=1, course=self.course, project_preference=pref_proj)
+        team2 = Team.objects.create(pk=2, course=self.course, project_preference=pref_proj)
+        team3 = Team.objects.create(pk=3, course=self.course, project_preference=pref_proj)
+        students[0].join_team(team1)
+        students[1].join_team(team1)
+        students[2].join_team(team2)
+        students[3].join_team(team3)
+        chosen_proj.assign_team(team1)
+        res = self.client.get(reverse('lecturers:modify_team', kwargs={**self.kwargs, 'team_pk' : 1}))
+        self.assertTrue('value=\"TestProject8\"' in str(res.context['form']))
+
+        res = self.client.post(reverse('lecturers:modify_team', kwargs={**self.kwargs, 'team_pk' : 1}),
+                                    data={'display_member_1' : '', 'display_member_2' : '',
+                                          'change_member_1' : 'on', 'member_1_select' : students[2].pk,
+                                          'change_member_2' : 'on', 'member_2_select' : students[3].pk,
+                                          'display_project' : 'TestProject8',
+                                          'change_project' : 'on', 'project_select' : 7})
+
+        self.assertEqual(Project.objects.get(pk=7).team_assigned, team1)
 
     def test_team_delete(self):
         pass

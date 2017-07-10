@@ -10,11 +10,11 @@
         {% trans "email" %}: <a href="mailto:{{ project.lecturer.user.email }}">{{ project.lecturer.user.email }}</a>
     </div>
     <div>
-        <h4><u>{% trans "Description" %}</u></h4>
+        <h4>{% trans "Description" %}</h4>
         {{ project.description|safe }}
     </div>
 
-    <h4><u>{% trans "Team assigned" %}:</u></h4>
+    <h4>{% trans "Team assigned" %}:</h4>
     {% if project.team_assigned == None %}
         {% trans "None" %}
     {% else %}
@@ -33,7 +33,7 @@
     </ul>
     {% endif %}
 
-    <h4><u>{% trans "Teams preferring this project" %}:</u></h4>
+    <h4>{% trans "Teams preferring this project" %}:</h4>
     {% if not project.teams_with_preference %}
         {% trans "None" %}
     {% else %}

@@ -40,6 +40,7 @@ class Project(models.Model):
 
     def assign_team(self, team):
         self.team_assigned = team
+        self.save()
 
     def assign_random_team(self):
         teams = list(self.teams_with_preference().filter(project=None))

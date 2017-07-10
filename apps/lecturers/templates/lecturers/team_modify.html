@@ -69,24 +69,6 @@
                 </td>
             </tr>
             <tr>
-            {{ form.display_preffered_project.errors }}
-                <td>
-                    {% bootstrap_label form.display_preffered_project.label_tag %}
-                </td>
-                <td>
-                    {% bootstrap_field form.display_preffered_project disabled=True show_label=False %}
-                </td>
-                <td>
-                    {% bootstrap_label form.change_preffered_project.label_tag %}
-                </td>
-                <td>
-                    {{ form.change_preffered_project }}
-                </td>
-                <td>
-                    {% bootstrap_field form.project_preffered_select %}
-                </td>
-            </tr>
-            <tr>
             {{ form.display_project.errors }}
                 <td>
                     {% bootstrap_label form.display_project.label_tag %}
@@ -125,5 +107,3 @@
     {% trans "Reset" %}
 </button>
 {% endblock %}
-
-

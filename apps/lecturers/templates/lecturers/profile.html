@@ -23,13 +23,13 @@
 {# Panel footer #}
 
 {% block panel_footer %}
-    <a href="{% url "lecturers:project_new" selectedCourse.code %}" title="{% trans "Create new project" %}" class="btn btn-default" role="button">
+    <a href="{% url 'lecturers:project_new' selectedCourse.code %}" title="{% trans "Create new project" %}" class="btn btn-default" role="button">
         {% bootstrap_icon "file" %} {% trans "New project" %}
     </a>
-    <a href="{% url "lecturers:course_manage" selectedCourse.code %}" title="{% trans "Add, edit or delete courses" %}" class="btn btn-default" role="button">
+    <a href="{% url 'lecturers:course_manage' selectedCourse.code %}" title="{% trans "Add, edit or delete courses" %}" class="btn btn-default" role="button">
         {% bootstrap_icon "cog" %} {% trans "Manage courses" %}
     </a>
-    <a href="{% url "lecturers:clean_up" selectedCourse.code %}" title="{% trans "Remove all teams from current course" %}" class="btn btn-default" role="button" onclick="sumbitBtnClicked(event)">
+    <a href="{% url 'lecturers:clean_up' selectedCourse.code %}" title="{% trans "Remove all teams from current course" %}" class="btn btn-default" role="button" onclick="sumbitBtnClicked(event)">
         {% bootstrap_icon "trash" %} {% trans "Cleaning up" %}
     </a>
 

@@ -33,7 +33,7 @@ class ProjectForm(forms.ModelForm):
 def get_Students_with_no_team_or_alone(currCourse, team=None):
     # Returns students that have no team on currCourse
     # OR students that have such team but are alone in that team
-    #    AND the team is NOT assigned to any project
+    # AND the team is NOT assigned to any project
     teams_with_up_to_one_stud = Team.objects.annotate(
         num_Stud=Count('student')).filter(course=currCourse, num_Stud__gte=2)
     return Student.objects.filter(teams__course=currCourse, teams__project=None) \
@@ -132,23 +132,6 @@ class TeamModifyForm(forms.Form):
         required=False,
     )
 
-    display_preffered_project = forms.CharField(
-        label=_("Project preference"),
-        required=False,
-    )
-
-    change_preffered_project = forms.BooleanField(
-        label=_("Change"),
-        required=False,
-    )
-
-    project_preffered_select = forms.ModelChoiceField(
-        queryset=None,
-        label="",
-        empty_label=_("None"),
-        required=False,
-    )
-
     display_project = forms.CharField(
         label=_("Assigned project"),
         required=False,
@@ -176,8 +159,6 @@ class TeamModifyForm(forms.Form):
 
         super(TeamModifyForm, self).__init__(*args, **kwargs)
 
-        self.fields['project_preffered_select'].queryset = \
-            get_Projects_with_no_assigned_team(course, lecturer)
         self.fields['project_select'].queryset = \
             get_Projects_with_no_assigned_team(course, lecturer)
         self.fields['member_1_select'].queryset = \
@@ -187,17 +168,11 @@ class TeamModifyForm(forms.Form):
 
         self.fields['display_member_1'].widget.attrs['readonly'] = 'true'
         self.fields['display_member_2'].widget.attrs['readonly'] = 'true'
-        self.fields['display_preffered_project']. \
-            widget.attrs['readonly'] = 'true'
         self.fields['display_project'].widget.attrs['readonly'] = 'true'
         self.fields['display_member_1'].initial = _("None")
         self.fields['display_member_2'].initial = _("None")
-        self.fields['display_preffered_project'].initial = _("None")
         self.fields['display_project'].initial = _("None")
 
-        if team.project_preference:
-            self.fields['display_preffered_project'] \
-                .initial = team.project_preference
         if team.project_assigned:
             self.fields['display_project'].initial = team.project_assigned
 
@@ -212,14 +187,7 @@ class TeamModifyForm(forms.Form):
         # hide selects
         self.fields['member_1_select'].widget.attrs['style'] = 'display:none'
         self.fields['member_2_select'].widget.attrs['style'] = 'display:none'
-
-        # set style
-        self.fields['project_preffered_select'] \
-            .widget.attrs['style'] = "display:none;width:100%"
-        self.fields['project_preffered_select'] \
-            .widget.attrs['id'] = 'project_preffered_select'
-        self.fields['project_select'] \
-            .widget.attrs['style'] = "display:none;width:100%"
+        self.fields['project_select'].widget.attrs['style'] = "display:none;width:100%"
 
         # set ids
         self.fields['member_2_select'].widget.attrs['id'] = 'member_2_select'
@@ -231,7 +199,5 @@ class TeamModifyForm(forms.Form):
             'onclick'] = "javascript:toggleDiv('member_1_select');"
         self.fields['change_member_2'].widget.attrs[
             'onclick'] = "javascript:toggleDiv('member_2_select');"
-        self.fields['change_preffered_project'].widget.attrs[
-            'onclick'] = "javascript:toggleDiv('project_preffered_select');"
         self.fields['change_project'].widget.attrs[
             'onclick'] = "javascript:toggleDiv('project_select');"

@@ -108,10 +108,8 @@ def project(request, project_pk, course_code=None):
     proj = Project.objects.get(pk=project_pk)
     course = get_object_or_404(Course, code__iexact=course_code)
     proj.description = markdownify(proj.description)
-
-    return render(request, "lecturers/project_detail.html",
-                  context={'project': proj,
-                           'selectedCourse': course})
+    return render(request, 'lecturers/project_detail.html',
+                  context={'project': proj, 'selectedCourse': course})
 
 @login_required
 @user_passes_test(is_lecturer)
@@ -362,7 +360,6 @@ def team_new(request, course_code=None):
 def modify_team(request, team_pk, course_code=None):
     team = get_object_or_404(Team, pk=team_pk)
     course = get_object_or_404(Course, code__iexact=course_code)
-    team_str = str(team)
 
     if request.method == 'POST':
         form = TeamModifyForm(request.POST,
@@ -377,14 +374,11 @@ def modify_team(request, team_pk, course_code=None):
     if form.is_valid():
         stud_1 = form.cleaned_data['member_1_select']
         stud_2 = form.cleaned_data['member_2_select']
-        proj_pref = form.cleaned_data['project_preffered_select']
         proj = form.cleaned_data['project_select']
         change_member_1 = form.cleaned_data['change_member_1']
         change_member_2 = form.cleaned_data['change_member_2']
-        change_project_pref = form.cleaned_data['change_preffered_project']
         change_project = form.cleaned_data['change_project']
         members = team.team_members
-
         try:
             deleted_count = 0
             with transaction.atomic():
@@ -416,35 +410,19 @@ def modify_team(request, team_pk, course_code=None):
                             deleted_count += 1
                 if len(members) <= deleted_count:
                     if deleted_count == 2:
-                        messages.success(request, _(
-                            "You have successfully deleted team: ") + team_str)
+                        messages.success(request, 'You have successfully deleted team: ' + str(team))
                     team.delete()
                     return redirect(reverse('lecturers:team_list',
                                         kwargs={'course_code': course_code}))
 
                 if change_project:
                     if team.project_assigned != proj:
-                        team.project_preference = proj
-                        team.save()
                         if team.project_assigned:
                             project_to_unassign = team.project_assigned
                             project_to_unassign.assign_team(None)
-                            project_to_unassign.save()
                         if proj:
                             proj.assign_team(team)
-                            proj.save()
-                elif change_project_pref:
-                    if team.project_preference != proj_pref:
-                        if team.project_assigned \
-                                and proj_pref != team.project_assigned:
-                            messages.info(request,
-                                    _("Cannot change project preference, "
-                                    + " because this team is assigned."
-                                    + " Unassign team first."))
-                            return redirect(reverse('lecturers:team_list',
-                                    kwargs={'course_code': course_code}))
-                        team.project_preference = proj_pref
-                        team.save()
+
         except Exception as e:
             logger.error("Exception: " + str(e))
             messages.error(request, _(
@@ -452,8 +430,7 @@ def modify_team(request, team_pk, course_code=None):
             return redirect(reverse('lecturers:team_list',
                                     kwargs={'course_code': course_code}))
 
-        messages.success(request, _(
-            "You have successfully updated team: ") + team_str)
+        messages.success(request, 'You have successfully updated team: ' + str(team))
         return redirect(reverse('lecturers:team_list',
                                 kwargs={'course_code': course_code}))
 
