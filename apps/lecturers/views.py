@@ -108,7 +108,7 @@ def project(request, project_pk, course_code=None):
     proj = Project.objects.get(pk=project_pk)
     course = get_object_or_404(Course, code__iexact=course_code)
     proj.description = markdownify(proj.description)
-    
+
     return render(request, "lecturers/project_detail.html",
                   context={'project': proj,
                            'selectedCourse': course})
@@ -170,36 +170,6 @@ def modify_project(request, project_pk, course_code=None):
                            'project': proj,
                            'selectedCourse': course})
 
-
-@login_required
-@user_passes_test(is_lecturer)
-def project_copy(request, project_pk, course_code=None):
-    new_proj = get_object_or_404(Project, pk=project_pk)
-    new_proj.pk = None  # autogen a new pk
-    new_proj.title = new_proj.title + " - " + str(_("copy"))
-    form = ProjectForm(request.POST or None, instance=new_proj)
-    course = get_object_or_404(Course, code__iexact=course_code)
-    context = {
-        'form': form,
-        'selectedCourse': course
-    }
-
-    if form.is_valid():
-        try:
-            form.save()
-        except IntegrityError:
-            messages.error(request, _(
-                "\n You must provide unique project name"))
-            return render(request, "lecturers/project_new.html", context)
-
-        messages.success(request, _(
-            "You have succesfully added new project: ") + new_proj.title)
-        return redirect(reverse('lecturers:project_list',
-                                kwargs={'course_code': course_code}))
-
-    return render(request, "lecturers/project_new.html", context)
-
-
 @login_required
 @user_passes_test(is_lecturer)
 def team_list(request, course_code=None):
@@ -217,6 +187,7 @@ def team_list(request, course_code=None):
                   context={"teams": my_teams,
                            "teams_with_no_project": teams_with_no_project,
                            "selectedCourse": course})
+
 @login_required
 @user_passes_test(is_lecturer)
 @ensure_csrf_cookie
@@ -295,26 +266,38 @@ def unassign_team(request, project_pk):
 @login_required
 @user_passes_test(is_lecturer)
 @ensure_csrf_cookie
-def project_delete(request):
+def manage_projects(request):
     if request.method == 'POST':
-        projects_to_delete = Project.objects.filter(
-            pk__in=request.POST.getlist('to_delete'))
+        chosen_projects = Project.objects.filter(
+            pk__in=request.POST.getlist('to_change'))
 
-        for proj in projects_to_delete:
-            if proj.lecturer.user == request.user:
-                if proj.status() == 'free':
-                    proj.delete()
+        if 'duplicate' in request.POST:
+            for proj in chosen_projects:
+                if proj.lecturer.user == request.user:
+                    proj.title += ' - copy'
+                    proj.pk = None
+                    proj.team_assigned = None
+                    if not Project.objects.filter(title=proj.title).exists():
+                        proj.save()
+                    else:
+                        messages.error(request, 'Project ' + proj.title + ' already exists')
+
+        elif 'delete' in request.POST:
+            for proj in chosen_projects:
+                if proj.lecturer.user == request.user:
+                    if proj.status() == 'free':
+                        proj.delete()
+                    else:
+                        messages.info(request, _(
+                            "Cannot delete occupied project: ") + proj.title)
                 else:
-                    messages.info(request, _(
-                        "Cannot delete occupied project: ") + proj.title)
-            else:
-                msg = _("Cannot delete project: " + proj.title + " - access denied")
-                messages.error(request, msg)
-                logger.error(msg)
+                    msg = 'Cannot delete project: ' + proj.title + ' - access denied'
+                    messages.error(request, msg)
+                    logger.error(msg)
+
         return redirect(reverse('lecturers:project_list',
                                 kwargs={'course_code': request.session['selectedCourse']}))
     else:
-        logger.error('Bad request: Only POST requests are allowed.')
         raise Http404
 
 @login_required

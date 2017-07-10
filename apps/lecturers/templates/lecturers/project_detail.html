@@ -17,9 +17,6 @@
     <div class="col-sm-6 col-xs-6">
         <span class="pull-right">
         {% if project.lecturer == user.lecturer %}
-            <a href="{% url 'lecturers:project_copy' selectedCourse.code project.pk %}" title="{% trans "Create a copy of this project" %}" class="btn btn-default">
-                {% bootstrap_icon "duplicate" %} {% trans "Copy" %}
-            </a>
             <a href="{% url 'lecturers:modify_project' selectedCourse.code project.pk %}" title="{% trans "Edit this project" %}" class="btn btn-default">
                 {% bootstrap_icon "edit" %} {% trans "Edit" %}
             </a>

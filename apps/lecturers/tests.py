@@ -55,8 +55,13 @@ class LecturerTest(TestCase):
         res = self.client.post(reverse('lecturers:modify_project', kwargs={**self.kwargs, 'project_pk': res.context['project'].pk}), data={'title' : 'abc','description':'111'})
         self.assertTrue(Project.objects.filter(title='abc', description='111').exists())
 
-    def test_project_copy(self):
-        pass
+    def test_duplicate_projects(self):
+        self.set_session()
+        Project.objects.create(pk=4, title='TestProject4', description='111', course=self.course, lecturer=self.lecturer)
+        Project.objects.create(pk=5, title='TestProject5', description='111', course=self.course, lecturer=self.lecturer)
+        res = self.client.post(reverse('lecturers:manage_projects'), data={'to_change' : [4, 5], 'duplicate': 0})
+        self.assertTrue(Project.objects.filter(title='TestProject4 - copy', description='111').exists())
+        self.assertTrue(Project.objects.filter(title='TestProject5 - copy', description='111').exists())
 
     def test_team_list(self):
         pass
@@ -71,7 +76,10 @@ class LecturerTest(TestCase):
         pass
 
     def test_project_delete(self):
-        pass
+        self.set_session()
+        Project.objects.create(pk=6, title='TestProject6', description='111', course=self.course, lecturer=self.lecturer)
+        res = self.client.post(reverse('lecturers:manage_projects'), data={'to_change' : [6], 'delete': 0})
+        self.assertFalse(Project.objects.filter(title='TestProject6').exists())
 
     def test_team_new(self):
         pass

@@ -12,7 +12,7 @@
         <tr>
             <td>
                 {% if project.lecturer == user.lecturer and project.status == "free" %}
-                    <input type="checkbox" name="to_delete" id="{{ project.pk }}"
+                    <input type="checkbox" name="to_change" id="{{ project.pk }}"
                            value="{{ project.pk }}"/>
                 {% endif %}
             </td>
