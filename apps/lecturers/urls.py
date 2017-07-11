@@ -21,4 +21,6 @@ urlpatterns = [
     url(r'^(?P<course_code>[a-zA-Z0-9]+)/clean_up/$', views.clean_up, name="clean_up"),
     url(r'^(?P<course_code>[a-zA-Z0-9]+)/export_students/$', views.export_students_to_file, name="export_students"),
     url(r'^(?P<course_code>[a-zA-Z0-9]+)/export_teams/$', views.export_teams_to_file, name="export_teams"),
+    url(r'^(?P<course_code>[a-zA-Z0-9]+)/projects/save/$', views.save_projects_to_file, name="save_projects_to_file"),
+    url(r'^(?P<course_code>[a-zA-Z0-9]+)/projects/load/$', views.load_projects_from_file, name="load_projects_from_file")
 ]

@@ -45,9 +45,6 @@
 {# Panel footer #}
 
 {% block panel_footer %}
-    <button type="submit" name="duplicate" title="{% trans "Duplicate selected projects" %}" class="btn btn-default" form="manage_form">
-        {% bootstrap_icon "duplicate" %} {% trans "Duplicate" %}
-    </button>
     <button type="submit" name="delete" title="{% trans "Delete selected projects" %}" class="btn btn-default" form="manage_form">
         {% bootstrap_icon "remove" %} {% trans "Delete" %}
     </button>
@@ -55,6 +52,14 @@
         {% bootstrap_icon "file" %} {% trans "New" %}
     </a>
     <span class="pull-right">
+        <a href="{% url 'lecturers:save_projects_to_file' selectedCourse.code %}" class="btn btn-default" role="button">
+            {% bootstrap_icon "save" %} {% trans "Save projects to file" %}
+        </a>
+        <form style="display: inline-block" id="upload_form" action="{% url 'lecturers:load_projects_from_file' selectedCourse.code %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="id_file" class="btn btn-default">{% bootstrap_icon "send" %} {% trans "Upload project file" %}</label>
+            {{ fileUploadForm.file }}
+        </form>
         <button type="submit" title="{% trans "Automatically assign teams to projects" %}" class="btn btn-primary" form="assign_all_form">
         {% bootstrap_icon "pencil" %} {% trans "Auto assign" %}
         </button>

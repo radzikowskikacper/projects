@@ -16,7 +16,7 @@ from ..teams.models import Team
 from ..projects.models import Project
 from ..students.models import Student
 from ..users.forms import ProjectFilterForm
-from ..lecturers.forms import ProjectForm, TeamForm, TeamModifyForm
+from ..lecturers.forms import ProjectForm, TeamForm, TeamModifyForm, UploadFileForm
 from .models import Lecturer
 
 from markdownx.utils import markdownify
@@ -51,10 +51,12 @@ def project_list(request, course_code=None):
     projects = Project.objects.filter(
         lecturer=request.user.lecturer).filter(course=course)
     filter_form = ProjectFilterForm()
+    file_upload_form = UploadFileForm()
     return render(request,
                   template_name="lecturers/project_list.html",
                   context={"projects": projects,
                            "filterForm": filter_form,
+                           "fileUploadForm" : file_upload_form,
                            "selectedCourse": course})
 
 
@@ -660,3 +662,57 @@ def export_teams_to_file(request, course_code=None):
     response['X-LIGHTTPD-send-file'] = smart_str(file_name)
 
     return response
+
+@login_required
+@user_passes_test(is_lecturer)
+@ensure_csrf_cookie
+def save_projects_to_file(request, course_code=None):
+    course = get_object_or_404(Course, code__iexact=course_code)
+    response = HttpResponse(content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename="{}_{}.txt"' \
+                                        .format(request.user.last_name, course_code)
+
+    for p in Project.objects.filter(lecturer=request.user.lecturer)\
+                                .filter(course=course):
+        response.write('{' + p.title + '}\n{' + p.description + '}\n')
+
+    return response
+
+
+@login_required
+@user_passes_test(is_lecturer)
+@ensure_csrf_cookie
+def load_projects_from_file(request, course_code=None):
+    course = get_object_or_404(Course, code__iexact=course_code)
+
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            uploaded_file = iter(request.FILES['file'].readlines())
+            added_projects = 0
+            for line in uploaded_file:
+                title, description = b'', b''
+                if line.startswith(b'{') and line.endswith(b'}\n'):
+                    title = line
+                else:
+                    messages.error(request, 'Error reading file - uncorrect format.')
+                    break
+                line = next(uploaded_file)
+                if line.startswith(b'{'):
+                    while not line.endswith(b'}\n'):
+                        description += line
+                        line = next(uploaded_file)
+                    description += line
+                else:
+                    messages.error(request, 'Error reading file - uncorrect format.')
+                    break
+
+                if not Project.objects.filter(title=title[1:-2], course=course):
+                    Project.objects.create(title=title[1:-2], description=description[1:-2],
+                                       course=course, lecturer=request.user.lecturer)
+                    added_projects += 1
+
+            messages.success(request, 'Added ' + str(added_projects) + ' projects')
+
+    return redirect(reverse('lecturers:project_list',
+                            kwargs={'course_code': course_code}))

@@ -8,6 +8,12 @@ from projects_helper.apps.students.models import Student
 from django.utils.translation import ugettext_lazy as _
 from markdownx.widgets import MarkdownxWidget
 
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField(
+        widget=forms.FileInput(attrs={'style':'display:none'})
+    )
+
 class CustomMarkdownxWidget(MarkdownxWidget):
     template_name = 'lecturers/markdown-widget.html'
 

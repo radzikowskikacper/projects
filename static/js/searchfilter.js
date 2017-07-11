@@ -28,3 +28,7 @@ $('#searchForm').submit(function() {
     return false;
 });
 });
+
+$('#upload_form input').change(function() {
+   $('#upload_form').submit();
+});
