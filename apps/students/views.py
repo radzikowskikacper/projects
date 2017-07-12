@@ -6,10 +6,11 @@ from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
-from projects_helper.apps.courses.models import Course
-from projects_helper.apps.teams.models import Team
-from projects_helper.apps.projects.models import Project
+from ..courses.models import Course
+from ..teams.models import Team
+from ..projects.models import Project
 from .models import Student
+from .forms import MyDescriptionForm
 from projects_helper.apps.users.forms import ProjectFilterForm
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
@@ -41,17 +42,38 @@ def profile(request):
                   {'selectedCourse': course,
                    'team': team,
                    'project_preference': proj_preference,
-                   'project_assigned': proj_assigned})
+                   'project_assigned': proj_assigned,
+                   'description' : request.user.student.description})
 
+@login_required
+@user_passes_test(is_student)
+@ensure_csrf_cookie
+def profile_edit(request):
+    if 'selectedCourse' not in request.session:
+        return redirect(reverse('users:select_course'))
+    course = get_object_or_404(
+        Course, code__iexact=request.session['selectedCourse'])
+
+    if request.method == 'POST':
+        form = MyDescriptionForm(request.POST)
+        if form.is_valid():
+            student = Student.objects.get(pk=request.user.student.pk)
+            student.description = form.cleaned_data['description']
+            print(student.description)
+            student.save()
+            return redirect(reverse('students:profile'))
+
+    else:
+        form = MyDescriptionForm()
+
+    return render(request, "students/profile_edit.html", {'description_form': form,
+                                                          'selectedCourse' : course })
 
 @login_required
 @user_passes_test(is_student)
 @ensure_csrf_cookie
 def pick_project(request):
     if request.method == 'POST':
-        course = get_object_or_404(
-            Course, code__iexact=request.session['selectedCourse'])
-        proj_pk = request.POST.get('to_pick', False)
         team = request.user.student.team(course)
 
         if not team:

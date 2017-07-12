@@ -13,6 +13,9 @@ class Student(models.Model):
                                    verbose_name=_('teams'),
                                    blank=True)
 
+    description = models.CharField(max_length=1023,
+                                   verbose_name=_('description'))
+
     class Meta:
         ordering = ['user__username']
         verbose_name = _('student')

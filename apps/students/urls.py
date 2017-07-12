@@ -4,6 +4,7 @@ from projects_helper.apps.students import views
 
 urlpatterns = [
     url(r'^profile/$', views.profile, name="profile"),
+    url(r'^profile_edit/$', views.profile_edit, name="profile_edit"),
     url(r'^(?P<course_code>[a-zA-Z0-9]+)/teams/$', views.team_list, name="team_list"),
     url(r'^(?P<course_code>[a-zA-Z0-9]+)/projects/$', views.project_list, name="project_list"),
     url(r'^(?P<course_code>[a-zA-Z0-9]+)/projects/(?P<project_pk>\d+)/$', views.project, name="project"),

@@ -1,0 +1,25 @@
+{% extends 'students/base.html' %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{# Panel header #}
+
+{% block panel_heading %}
+<div class="row">
+    <div class="col-xs-12">
+        <h3 class="panel-title" style="padding-top: 8px; padding-bottom: 8px;">{% trans "Edit desctiption" %}</h3>
+    </div>
+</div>
+{% endblock %}
+
+{# Panel content #}
+
+{% block panel_content %}
+    <div class="panel-body">
+        <form action="{% url 'students:profile_edit' %}" method="post">
+            {% csrf_token %}
+            {% bootstrap_form description_form %}
+            <input class="btn btn-primary" type="submit" value="{% trans "Accept" %}" />
+        </form>
+    </div>
+{% endblock %}
