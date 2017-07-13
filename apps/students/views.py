@@ -74,8 +74,10 @@ def profile_edit(request):
 @ensure_csrf_cookie
 def pick_project(request):
     if request.method == 'POST':
+        course = get_object_or_404(
+            Course, code__iexact=request.session['selectedCourse'])
+        proj_pk = request.POST.get('to_pick', False)
         team = request.user.student.team(course)
-
         if not team:
             try:
                 team = request.user.student.new_team(course)

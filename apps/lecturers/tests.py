@@ -19,6 +19,10 @@ class LecturerTest(TestCase):
         self.course = Course.objects.create(name='Test Course', code=self.code)
         self.kwargs = {'course_code' : self.code}
 
+    def is_in_messages(self, text, response):
+        m = list(response.context.get('messages'))[0]
+        return text in m.message
+
     def set_session(self):
         session = self.client.session
         session['selectedCourse'] = self.code
@@ -64,16 +68,35 @@ class LecturerTest(TestCase):
         self.assertTrue(Project.objects.filter(title='TestProject5 - copy', description='111').exists())
 
     def test_team_list(self):
-        pass
+        proj = Project.objects.create(pk=9, title='TestProject9', description='111', course=self.course, lecturer=self.lecturer)
+        team1 = Team.objects.create(pk=4, course=self.course, project_preference=proj)
+        team2 = Team.objects.create(pk=5, course=self.course)
+        res = self.client.get(reverse('lecturers:team_list', kwargs=self.kwargs))
+        self.assertEqual(res.context['teams'][0], team1)
+        self.assertEqual(res.context['teams_with_no_project'][0], team2)
 
     def test_assign_selected_team(self):
-        pass
+        self.set_session()
+        proj = Project.objects.create(pk=10, title='TestProject10', course=self.course, lecturer=self.lecturer)
+        team = Team.objects.create(pk=6, course=self.course)
+        res = self.client.post(reverse('lecturers:assign_selected_team', args=[10, 6]))
+        self.assertTrue(team.project_assigned, proj)
 
     def test_assign_team(self):
-        pass
+        self.set_session()
+        proj = Project.objects.create(pk=11, title='TestProject11', course=self.course, lecturer=self.lecturer)
+        team = Team.objects.create(pk=7, course=self.course, project_preference=proj)
+        res = self.client.get(reverse('lecturers:assign_team', args=[11]))
+        self.assertTrue(team.project_assigned, proj)
 
     def test_unassign_team(self):
-        pass
+        self.set_session()
+        proj = Project.objects.create(pk=12, title='TestProject12', course=self.course, lecturer=self.lecturer)
+        team = Team.objects.create(pk=8, course=self.course, project_preference=proj)
+        proj.team_assigned = team
+        proj.save()
+        res = self.client.get(reverse('lecturers:unassign_team', args=[12]))
+        self.assertEqual(team.project_assigned, None)
 
     def test_project_delete(self):
         self.set_session()
@@ -125,7 +148,7 @@ class LecturerTest(TestCase):
         s2.join_team(team2)
         res = self.client.get(reverse('lecturers:assign_teams_to_projects', kwargs=self.kwargs), follow=True)
         m = list(res.context.get('messages'))[0]
-        self.assertTrue('Assigned 1 of 2 teams' in m.message)
+        self.assertTrue(self.is_in_messages('Assigned 1 of 2 teams', res))
 
     def test_course_manage(self):
         pass
@@ -138,103 +161,3 @@ class LecturerTest(TestCase):
 
     def test_export_teams_to_file(self):
         pass
-
-# from django_webtest import WebTest
-# from django.contrib.auth.models import User
-# from django.core.urlresolvers import reverse
-# from projects_helper.apps.lecturers.models import Lecturer
-
-#
-#
-# class LecturerTest(WebTest):
-#
-#     def create_student(self, name):
-#         user = User.objects.create(username=name)
-#         return Student.objects.create(user=user)
-#
-#     def setUp(self):
-#         user = User.objects.create(username="TestUser1")
-#         self.lecturer = Lecturer.objects.create(user=user)
-#
-#         user = User.objects.create(username="TestUser2")
-#         self.other_lecturer = Lecturer.objects.create(user=user)
-#
-#     def test_new_project(self):
-#         response = self.app.get(reverse('lecturers:project_new'), user='TestUser1')
-#         form = response.form
-#         form['title'] = "Best_project_ever"
-#         form['description'] = "Desc"
-#         form.submit()
-#         response = self.app.get(reverse('lecturers:project_list'), user='TestUser1')
-#         self.assertContains(response, "Best_project_ever")
-#
-#     def test_delete_project(self):
-#         proj = Project.objects.create(lecturer=self.lecturer,
-#                                       title="Test_project",
-#                                       description="Desc")
-#         response = self.app.get(reverse('lecturers:project_list'), user='TestUser1')
-#         form = response.forms[1]
-#         form['to_delete'] = proj.pk
-#         form.submit()
-#         self.assertEqual(len(Project.objects.all()), 0)
-#
-#     def test_list_projects(self):
-#         Project.objects.create(lecturer=self.lecturer,
-#                                title="Best_project_ever",
-#                                description="Desc")
-#         response = self.app.get(reverse('lecturers:project_list'), user='TestUser1')
-#         self.assertContains(response, "Best_project_ever")
-#
-#     def test_project_details(self):
-#         proj = Project.objects.create(lecturer=self.lecturer,
-#                                       title="Best_project_ever",
-#                                       description="Desc")
-#         response = self.app.get(reverse('lecturers:project',
-#                                         kwargs={'project_pk': proj.pk}),
-#                                 user='TestUser1')
-#         self.assertContains(response, "Best_project_ever")
-#
-#     def test_project_modify(self):
-#         proj = Project.objects.create(lecturer=self.lecturer,
-#                                       title="Best_project_ever",
-#                                       description="Desc")
-#         response = self.app.get(reverse('lecturers:modify_project',
-#                                         kwargs={'project_pk': proj.pk}),
-#                                 user='TestUser1')
-#         form = response.form
-#         form['title']="Best_modified_title_ever"
-#         form.submit()
-#         response = self.app.get(reverse('lecturers:project',
-#                                         kwargs={'project_pk': proj.pk}),
-#                                 user='TestUser1')
-#         self.assertContains(response, "Best_modified_title_ever")
-#
-#     def test_assign_two_person_team(self):
-#
-#         proj = Project.objects.create(lecturer=self.lecturer,
-#                                       title="Best_project_ever",
-#                                       description="Desc")
-#         team1 = Team.objects.create(project_preference=proj)
-#         team1.student_set.add(self.create_student("Henryk"))
-#         team1.student_set.add(self.create_student("Zygmunt"))
-#         team2 = Team.objects.create(project_preference=proj)
-#         team2.student_set.add(self.create_student("Bolesław"))
-#
-#         response = self.app.get(reverse('lecturers:assign_team',
-#                                         kwargs={'project_pk': proj.pk}),
-#                                         user='TestUser1')
-#         proj = Project.objects.get(pk=proj.pk)
-#         self.assertEqual(proj.team_assigned, team1)
-#
-#     def test_assign_one_person_team(self):
-#         proj = Project.objects.create(lecturer=self.lecturer,
-#                                       title="Best_project_ever2",
-#                                       description="Desc")
-#         team1 = Team.objects.create()
-#         team1.student_set.add(self.create_student("Wladyslaw"))
-#
-#         self.app.get(reverse('lecturers:assign_team',
-#                                         kwargs={'project_pk': proj.pk}),
-#                                         user='TestUser1')
-#         proj = Project.objects.get(pk=proj.pk)
-#         #self.assertEqual(proj.team_assigned, team1)

@@ -16,3 +16,20 @@
     display: block;
     width: 100%;
 }
+
+.panel-title-m {
+    padding: 8px;
+}
+
+.form-m {
+    margin-bottom: -20px;
+}
+
+.panel-m {
+    margin-bottom: 15px !important;
+}
+
+.navbar-m {
+    border-radius: 0px 0px 4px 4px;
+    margin-bottom: 15px;
+}

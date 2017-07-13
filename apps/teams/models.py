@@ -34,6 +34,10 @@ class Team(models.Model):
             return None
 
     @property
+    def member_count(self):
+        return self.student_set.count()
+
+    @property
     def is_full(self):
         return self.student_set.count() == 2
 

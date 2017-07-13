@@ -31,7 +31,7 @@
 {# Panel content (non-bordered table within this block will have seamless design with the panel) #}
 
 {% block panel_content %}
-<form id="manage_form" action="{% url 'lecturers:manage_projects' %}" method="post">
+<form id="manage_form" class="form-m" action="{% url 'lecturers:manage_projects' %}" method="post">
     {% csrf_token %}
     <div id="tableContainer">
     {% include "lecturers/project_table.html" %}
@@ -47,6 +47,9 @@
 {% block panel_footer %}
     <button type="submit" name="delete" title="{% trans "Delete selected projects" %}" class="btn btn-default" form="manage_form">
         {% bootstrap_icon "remove" %} {% trans "Delete" %}
+    </button>
+    <button type="submit" name="duplicate" title="{% trans "Duplicate selected projects" %}" class="btn btn-default" form="manage_form">
+        {% bootstrap_icon "copy" %} {% trans "Duplicate" %}
     </button>
     <a href="{% url "lecturers:project_new" selectedCourse.code %}" title="{% trans "Create new project" %}" class="btn btn-default" role="button">
         {% bootstrap_icon "file" %} {% trans "New" %}

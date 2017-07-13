@@ -31,7 +31,7 @@
 {# Panel content (non-bordered table within this block will have seamless design with the panel) #}
 
 {% block panel_content %}
-<form id='pick_project_form' action="{% url 'students:pick_project' %}" method="post">
+<form id='pick_project_form' class="form-m" action="{% url 'students:pick_project' %}" method="post">
     {% csrf_token %}
     <div id="tableContainer">
         {% include "students/project_table.html" %}

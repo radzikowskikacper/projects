@@ -49,7 +49,7 @@ def profile(request):
 def project_list(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
     projects = Project.objects.filter(
-        lecturer=request.user.lecturer).filter(course=course)
+        lecturer=request.user.lecturer, course=course)
     filter_form = ProjectFilterForm()
     file_upload_form = UploadFileForm()
     return render(request,
@@ -69,7 +69,7 @@ def filtered_project_list(request, course_code=None):
         filter_type = request.GET.get('filter', None)
         course = get_object_or_404(Course, code__iexact=course_code)
         projects = Project.objects.filter(
-            lecturer=request.user.lecturer).filter(course=course)
+            lecturer=request.user.lecturer, course=course)
         filter_form = ProjectFilterForm(request.GET)
 
         filtered_projects = projects
@@ -174,6 +174,8 @@ def modify_project(request, project_pk, course_code=None):
 @user_passes_test(is_lecturer)
 def team_list(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
+    vacancies = Project.objects.filter(course=course, lecturer=request.user.lecturer).count() * 2
+
     try:
         my_teams = Team.objects \
             .filter(course=course,
@@ -182,10 +184,17 @@ def team_list(request, course_code=None):
         teams_with_no_project = Team.objects.filter(course=course, project_preference__isnull=True)
     except Exception as e:
         logger.error(str(e))
+
+    student_count = 0
+    for t in my_teams:
+        student_count += t.member_count
+
     return render(request,
                   template_name="lecturers/team_list.html",
                   context={"teams": my_teams,
                            "teams_with_no_project": teams_with_no_project,
+                           "vacancies" : vacancies,
+                           "students" : student_count,
                            "selectedCourse": course})
 
 @login_required
@@ -193,75 +202,52 @@ def team_list(request, course_code=None):
 @ensure_csrf_cookie
 def assign_selected_team(request, project_pk, team_pk):
     if request.method == 'POST':
-        try:
-            project = Project.objects.get(pk=project_pk)
-            team = Team.objects.get(pk=team_pk)
-        except ObjectDoesNotExist as e:
-            logger.error(str(e))
-            messages.error(request, _(
-                "Cannot assign team. Team or project not found!"))
+        project = get_object_or_404(Project, pk=project_pk, lecturer=request.user.lecturer)
+        team = get_object_or_404(Team, pk=team_pk)
 
-        if project.lecturer.user == request.user:
-            if team and project:
-                try:
-                    project.assign_team(team)
-                    project.save()
-                except Exception as e:
-                    logger.error(str(e))
-                messages.success(request, _(
-                    "You have successfully assigned team: " +
-                    str(team) + " to project: " + str(project)))
-        else:
-            msg = _("Cannot assign: access denied")
-            messages.error(request, msg)
-            logger.error(msg)
+        project.assign_team(team)
+        project.save()
+        messages.success(request, _(
+            "You have successfully assigned team: " +
+            str(team) + " to project: " + str(project)))
 
-    return redirect(reverse_lazy('lecturers:project',
-                                 kwargs={'project_pk': project.pk,
-                                         'course_code':
-                                         request.session['selectedCourse']}))
+    return redirect('lecturers:project',
+                    project_pk=project.pk,
+                    course_code=request.session['selectedCourse'])
 
 
 @login_required
 @user_passes_test(is_lecturer)
 @ensure_csrf_cookie
 def assign_team(request, project_pk):
-    proj = get_object_or_404(Project, pk=project_pk)
-    if proj.lecturer.user == request.user:
-        if proj.teams_with_preference().count() == 0:
-            messages.error(request, _(
-                "Cannot assign: No teams waiting for project"))
-        else:
-            proj.assign_random_team()
-            messages.success(request, _(
-                "You have successfully assigned team: " +
-                str(proj.team_assigned) + " to project: " + str(proj)))
-    else:
-        msg = _("Cannot assign: access denied")
-        messages.error(request, msg)
-        logger.error(msg)
+    project = get_object_or_404(Project, pk=project_pk, lecturer=request.user.lecturer)
 
-    return redirect(reverse_lazy('lecturers:project',
-                                 kwargs={'project_pk': proj.pk,
-                                         'course_code':
-                                         request.session['selectedCourse']}))
+    if project.teams_with_preference().count() == 0:
+        messages.error(request, _(
+            "Cannot assign: No teams waiting for project"))
+    else:
+        project.assign_random_team()
+        messages.success(request, _(
+            "You have successfully assigned team: " +
+            str(project.team_assigned) + " to project: " + str(project)))
+
+    return redirect('lecturers:project',
+                    project_pk=project.pk,
+                    course_code=request.session['selectedCourse'])
 
 
 @login_required
 @user_passes_test(is_lecturer)
 @ensure_csrf_cookie
 def unassign_team(request, project_pk):
-    proj = get_object_or_404(Project, pk=project_pk)
-    if proj.lecturer.user == request.user:
-        proj.team_assigned = None
-        proj.save()
-        messages.success(request, _(
-            "You have successfully unassigned team from project: ") +
-            str(proj))
-    return redirect(reverse_lazy('lecturers:project',
-                                 kwargs={'project_pk': proj.pk,
-                                         'course_code':
-                                         request.session['selectedCourse']}))
+    proj = get_object_or_404(Project, pk=project_pk, lecturer=request.user.lecturer)
+    proj.team_assigned = None
+    proj.save()
+    messages.success(request, _(
+        "You have successfully unassigned team from project: ") + str(proj))
+    return redirect('lecturers:project',
+                    project_pk=proj.pk,
+                    course_code=request.session['selectedCourse'])
 
 @login_required
 @user_passes_test(is_lecturer)
@@ -295,8 +281,8 @@ def manage_projects(request):
                     messages.error(request, msg)
                     logger.error(msg)
 
-        return redirect(reverse('lecturers:project_list',
-                                kwargs={'course_code': request.session['selectedCourse']}))
+        return redirect('lecturers:project_list',
+                        course_code=request.session['selectedCourse'])
     else:
         raise Http404
 
@@ -304,57 +290,54 @@ def manage_projects(request):
 @user_passes_test(is_lecturer)
 def team_new(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
-    form = None
     if request.method == 'POST':
         form = TeamForm(request.POST, course=course, lecturer=request.user.lecturer)
+
+        if form.is_valid():
+            stud_1 = form.cleaned_data['member_1']
+            next_stud = form.cleaned_data['next_stud_check']
+            stud_2 = form.cleaned_data['member_2']
+            project_check = form.cleaned_data['project_check']
+            proj = form.cleaned_data['project']
+            try:
+                with transaction.atomic():
+                    new_team = Team.objects.create(course=course)
+                    if project_check and proj:
+                        new_team.select_preference(proj)
+                        new_team.save()
+                        proj.assign_team(new_team)
+                        proj.save()
+                    # Student's method 'leave_team' not used below
+                    # because project assignment override is possible
+                    stud_1_team = stud_1.team(course)
+                    if stud_1_team and (stud_1_team.team_members.count() == 1):
+                        stud_1_team.delete()
+                    stud_1.teams.add(new_team)
+                    stud_1.save()
+                    if next_stud and stud_2:
+                        stud_2_team = stud_2.team(course)
+                        if stud_2_team and (stud_2_team.team_members.count() == 1):
+                            stud_2_team.delete()
+                        stud_2.teams.add(new_team)
+                        stud_2.save()
+
+            except Exception as e:
+                logger.error("Exception: " + str(e))
+                messages.error(request, _(
+                    "Something went wrong. Try again."))
+                return render(request, "lecturers/team_new.html", context)
+
+            messages.success(request, _(
+                "You have succesfully added new team: ") + str(new_team))
+            return redirect('lecturers:team_list',
+                            course_codecourse_code)
+    # GET
     else:
         form = TeamForm(course=course, lecturer=request.user.lecturer)
-    context = {
-        'form': form,
-        'selectedCourse': course
-    }
 
-    if request.method == 'POST' and form.is_valid():
-        stud_1 = form.cleaned_data['member_1']
-        next_stud = form.cleaned_data['next_stud_check']
-        stud_2 = form.cleaned_data['member_2']
-        project_check = form.cleaned_data['project_check']
-        proj = form.cleaned_data['project']
-        try:
-            with transaction.atomic():
-                new_team = Team.objects.create(course=course)
-                if project_check and proj:
-                    new_team.select_preference(proj)
-                    new_team.save()
-                    proj.assign_team(new_team)
-                    proj.save()
-                # Student's method 'leave_team' not used below
-                # because project assignment override is possible
-                stud_1_team = stud_1.team(course)
-                if stud_1_team and (stud_1_team.team_members.count() == 1):
-                    stud_1_team.delete()
-                stud_1.teams.add(new_team)
-                stud_1.save()
-                if next_stud and stud_2:
-                    stud_2_team = stud_2.team(course)
-                    if stud_2_team and (stud_2_team.team_members.count() == 1):
-                        stud_2_team.delete()
-                    stud_2.teams.add(new_team)
-                    stud_2.save()
-
-        except Exception as e:
-            logger.error("Exception: " + str(e))
-            messages.error(request, _(
-                "Something went wrong. Try again."))
-            return render(request, "lecturers/team_new.html", context)
-
-        messages.success(request, _(
-            "You have succesfully added new team: ") + str(new_team))
-        return redirect(reverse('lecturers:team_list',
-                                kwargs={'course_code': course_code}))
-
-    # GET
-    return render(request, "lecturers/team_new.html", context)
+    return render(request, "lecturers/team_new.html",
+                           {'form': form,
+                           'selectedCourse': course})
 
 
 @login_required
@@ -414,8 +397,8 @@ def modify_team(request, team_pk, course_code=None):
                     if deleted_count == 2:
                         messages.success(request, 'You have successfully deleted team: ' + str(team))
                     team.delete()
-                    return redirect(reverse('lecturers:team_list',
-                                        kwargs={'course_code': course_code}))
+                    return redirect('lecturers:team_list',
+                                    course_code=course_code)
 
                 if change_project:
                     if team.project_assigned != proj:
@@ -429,14 +412,14 @@ def modify_team(request, team_pk, course_code=None):
             logger.error("Exception: " + str(e))
             messages.error(request, _(
                 "Something went wrong. Try again."))
-            return redirect(reverse('lecturers:team_list',
-                                    kwargs={'course_code': course_code}))
+            return redirect('lecturers:team_list',
+                            course_code=course_code)
 
         messages.success(request, 'You have successfully updated team: ' + str(team))
-        return redirect(reverse('lecturers:team_list',
-                                kwargs={'course_code': course_code}))
+        return redirect('lecturers:team_list',
+                        course_code=course_code)
 
-    return render(request, "lecturers/team_modify.html",
+    return render(request, 'lecturers/team_modify.html',
                   context={'form': form,
                            'team': team,
                            'selectedCourse': course})
@@ -460,9 +443,8 @@ def team_delete(request):
                 msg = _("Cannot delete team: " + str(team) + " - access denied")
                 messages.error(request, msg)
                 logger.error(msg)
-        return redirect(reverse('lecturers:team_list',
-                                kwargs={'course_code':
-                                        request.session['selectedCourse']}))
+        return redirect('lecturers:team_list',
+                        course_code=request.session['selectedCourse'])
     else:
         logger.error('Bad request: Only POST requests are allowed.')
         raise Http404
@@ -471,10 +453,12 @@ def team_delete(request):
 @login_required
 @user_passes_test(is_lecturer)
 @ensure_csrf_cookie
-def assign_teams_to_projects(request, course_code=None):
+def assign_teams_to_projects(request, course_code):
     course = get_object_or_404(Course, code__iexact=course_code)
     projects = Project.objects.filter(
-        lecturer=request.user.lecturer).filter(course=course)
+        lecturer=request.user.lecturer, course=course)
+    team_count = len([t for t in Team.objects.filter(course=course) if t.project_assigned==None])
+
     if projects:
         count = 0
         for proj in projects:
@@ -484,11 +468,11 @@ def assign_teams_to_projects(request, course_code=None):
                 break
 
         messages.success(request, _(
-            "Assigned {} of {} teams".format(count ,Team.objects.count())))
+            "Assigned {} of {} teams".format(count ,team_count)))
     else:
         messages.info(request, _("You don't have any projects"))
-    return redirect(reverse('lecturers:project_list',
-                            kwargs={'course_code': course_code}))
+    return redirect('lecturers:project_list',
+                    course_code=course_code)
 
 
 @login_required
@@ -672,8 +656,7 @@ def save_projects_to_file(request, course_code=None):
     response['Content-Disposition'] = 'attachment; filename="{}_{}.txt"' \
                                         .format(request.user.last_name, course_code)
 
-    for p in Project.objects.filter(lecturer=request.user.lecturer)\
-                                .filter(course=course):
+    for p in Project.objects.filter(lecturer=request.user.lecturer, course=course):
         response.write('{' + p.title + '}\n{' + p.description + '}\n')
 
     return response
@@ -714,5 +697,5 @@ def load_projects_from_file(request, course_code=None):
 
             messages.success(request, 'Added ' + str(added_projects) + ' projects')
 
-    return redirect(reverse('lecturers:project_list',
-                            kwargs={'course_code': course_code}))
+    return redirect('lecturers:project_list',
+                    course_code=course_code)
