@@ -48,10 +48,15 @@
         {% trans "Pick" %}
     </button>
 {% else %}
-    <button type="submit" class="btn btn-primary disabled" title="{% trans "Cannot pick another project, beacause you're already assigned." %}">
+    <button type="submit" class="btn btn-primary disabled" title="{% trans "Cannot pick another project, beacause you are already assigned." %}">
         {% trans "Pick" %}
     </button>
 {% endif %}
+{% for lecturer, students, vacancies in lecturer_info %}
+    <p class="pull-right panel-title panel-info-m">
+        {{ lecturer }}: <b style="{% if students > vacancies%}color:red{% endif %}">{{ students }}/{{ vacancies }}</b>
+    </p>
+{% endfor %}
 {% endblock %}
 
 {% block additional_js %}

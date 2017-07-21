@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..courses.models import Course
 from ..teams.models import Team
 from ..projects.models import Project
+from ..lecturers.models import Lecturer
 from .models import Student
 from .forms import MyDescriptionForm
 from projects_helper.apps.users.forms import ProjectFilterForm
@@ -59,13 +60,10 @@ def profile_edit(request):
         if form.is_valid():
             student = Student.objects.get(pk=request.user.student.pk)
             student.description = form.cleaned_data['description']
-            print(student.description)
             student.save()
             return redirect(reverse('students:profile'))
-
     else:
         form = MyDescriptionForm()
-
     return render(request, "students/profile_edit.html", {'description_form': form,
                                                           'selectedCourse' : course })
 
@@ -148,6 +146,18 @@ def project_list(request, course_code=None):
     projects = Project.objects.select_related('lecturer') \
                       .prefetch_related('team_set') \
                       .filter(course=course)
+    lecturers = Lecturer.objects.filter(project__in=projects).distinct()
+
+    lecturer_info = []
+    for lecturer in lecturers:
+        vacancies = projects.filter(lecturer=lecturer).count() * 2
+        teams = Team.objects.filter(course=course, project_preference__lecturer=lecturer)
+
+        student_count = 0
+        for t in teams:
+            student_count += t.member_count
+        lecturer_info.append((lecturer, student_count, vacancies))
+
     for p in projects:
         p.description = markdownify(p.description)
 
@@ -156,6 +166,7 @@ def project_list(request, course_code=None):
     return render(request,
                   template_name="students/project_list.html",
                   context={"projects": projects,
+                           "lecturer_info": lecturer_info,
                            "filterForm": filter_form,
                            "team": request.user.student.team(course),
                            "project_picked": proj_preference,
@@ -168,9 +179,9 @@ def project_list(request, course_code=None):
 def team_list(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
     teams = Team.objects.filter(course=course) \
-                #.exclude(project_preference__isnull=True) \
-                #.annotate(num_stud=Count('student')) \
-                #.order_by('-num_stud')
+                .annotate(num_stud=Count('student')) \
+                .order_by('-num_stud')
+
     return render(request,
                   template_name="students/team_list.html",
                   context={"teams": teams,

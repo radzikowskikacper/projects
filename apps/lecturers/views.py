@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_str
 from django.db import IntegrityError, transaction
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404, HttpResponse
 from django.http import Http404
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
@@ -177,10 +177,8 @@ def team_list(request, course_code=None):
     vacancies = Project.objects.filter(course=course, lecturer=request.user.lecturer).count() * 2
 
     try:
-        my_teams = Team.objects \
-            .filter(course=course,
-                    project_preference__lecturer=request.user.lecturer) \
-            .exclude(project_preference__isnull=True)
+        my_teams = Team.objects\
+            .filter(course=course, project_preference__lecturer=request.user.lecturer)
         teams_with_no_project = Team.objects.filter(course=course, project_preference__isnull=True)
     except Exception as e:
         logger.error(str(e))
@@ -254,9 +252,9 @@ def unassign_team(request, project_pk):
 @ensure_csrf_cookie
 def manage_projects(request):
     if request.method == 'POST':
-        chosen_projects = Project.objects.filter(
-            pk__in=request.POST.getlist('to_change'))
-
+        chosen_projects = get_list_or_404(Project,
+                                          pk__in=request.POST.getlist('to_change'),
+                                          lecturer=request.user.lecturer)
         if 'duplicate' in request.POST:
             for proj in chosen_projects:
                 if proj.lecturer.user == request.user:
@@ -270,16 +268,11 @@ def manage_projects(request):
 
         elif 'delete' in request.POST:
             for proj in chosen_projects:
-                if proj.lecturer.user == request.user:
-                    if proj.status() == 'free':
-                        proj.delete()
-                    else:
-                        messages.info(request, _(
-                            "Cannot delete occupied project: ") + proj.title)
+                if proj.status() == 'free':
+                    proj.delete()
                 else:
-                    msg = 'Cannot delete project: ' + proj.title + ' - access denied'
-                    messages.error(request, msg)
-                    logger.error(msg)
+                    messages.info(request, _(
+                        "Cannot delete occupied project: ") + proj.title)
 
         return redirect('lecturers:project_list',
                         course_code=request.session['selectedCourse'])
@@ -322,7 +315,6 @@ def team_new(request, course_code=None):
                         stud_2.save()
 
             except Exception as e:
-                logger.error("Exception: " + str(e))
                 messages.error(request, _(
                     "Something went wrong. Try again."))
                 return render(request, "lecturers/team_new.html", context)
@@ -330,7 +322,8 @@ def team_new(request, course_code=None):
             messages.success(request, _(
                 "You have succesfully added new team: ") + str(new_team))
             return redirect('lecturers:team_list',
-                            course_codecourse_code)
+                            course_code=course_code)
+
     # GET
     else:
         form = TeamForm(course=course, lecturer=request.user.lecturer)
@@ -440,15 +433,13 @@ def team_delete(request):
                     "You have succesfully deleted team: ") + str(team))
                 team.delete()
             else:
-                msg = _("Cannot delete team: " + str(team) + " - access denied")
-                messages.error(request, msg)
-                logger.error(msg)
+                messages.error(request, _("Cannot delete team: " + str(team) +
+                                                             " - access denied"))
         return redirect('lecturers:team_list',
                         course_code=request.session['selectedCourse'])
     else:
         logger.error('Bad request: Only POST requests are allowed.')
         raise Http404
-
 
 @login_required
 @user_passes_test(is_lecturer)
@@ -563,43 +554,37 @@ def export_students_to_file(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
     file_name = 'studenci_{}.csv'.format(course.code)
 
-    # file will be created in media directory at the same level as apps, settings, etc.
-    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    path_to_file = os.path.join(base_dir, 'media', file_name)
-
-    try:
-        with open(path_to_file, 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            course_info = [course.code, course.name]
-            writer.writerow(course_info)
-            writer.writerow([])
-            headers = ['L.p.', 'Nazwisko', 'Imiona', 'Adres e-mail',
-                       'Tytuł przypisanego projektu', 'Prowadzący']
-            writer.writerow(headers)
-            students = Student.objects \
-                .filter(teams__course=course) \
-                .order_by('user__last_name', 'user__first_name')
-
-            for i, s in enumerate(students):
-                stud_team = None
-                proj_title = lect_name = ""
-                stud_teams = s.teams.filter(course=course)
-                if len(stud_teams) > 0:
-                    stud_team = stud_teams[0]
-                    if stud_team.project_assigned:
-                        proj_title = stud_team.project_assigned.title
-                        lect_name = str(stud_team.project_assigned.lecturer)
-                row = [i + 1, s.user.last_name, s.user.first_name, s.user.email, proj_title, lect_name]
-                writer.writerow(row)
-    except Exception as e:
-        logger.error("Exception: " + str(e))
-        messages.info(request, _("There was an error while generating csv file."))
-        return redirect('lecturers:profile')
-
-    wrapper = FileWrapper(open(path_to_file, 'rb'))
-    response = HttpResponse(wrapper, content_type='application/force-download')
+    response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file_name)
     response['X-LIGHTTPD-send-file'] = smart_str(file_name)
+
+    try:
+        writer = csv.writer(response)
+        course_info = [course.code, course.name]
+        writer.writerow(course_info)
+        writer.writerow([])
+        headers = ['L.p.', 'Nazwisko', 'Imiona', 'Adres e-mail',
+                   'Tytuł przypisanego projektu', 'Prowadzący']
+        writer.writerow(headers)
+        students = Student.objects \
+            .filter(teams__course=course) \
+            .order_by('user__last_name', 'user__first_name')
+
+        for i, s in enumerate(students):
+            stud_team = None
+            proj_title = lect_name = ""
+            stud_teams = s.teams.filter(course=course)
+            if len(stud_teams) > 0:
+                stud_team = stud_teams[0]
+                if stud_team.project_assigned:
+                    proj_title = stud_team.project_assigned.title
+                    lect_name = str(stud_team.project_assigned.lecturer)
+            row = [i + 1, s.user.last_name, s.user.first_name, s.user.email, proj_title, lect_name]
+            writer.writerow(row)
+    except Exception as e:
+        logger.error("Exception: " + str(e))
+        messages.error(request, _("There was an error while generating csv file."))
+        return redirect('lecturers:profile')
 
     return response
 
@@ -611,39 +596,33 @@ def export_teams_to_file(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
     file_name = 'zespoly_{}.csv'.format(course.code)
 
-    # file will be created in media directory at the same level as apps, settings, etc.
-    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    path_to_file = os.path.join(base_dir, 'media', file_name)
-
-    try:
-        with open(path_to_file, 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            course_info = [course.code, course.name]
-            writer.writerow(course_info)
-            writer.writerow([])
-            headers = ['L.p.', 'Temat projektu', 'Prowadzący', 'Przypisany zespół']
-            writer.writerow(headers)
-            projects = Project.objects \
-                .filter(course=course) \
-                .order_by('lecturer__user__last_name', 'title')
-
-            for i, p in enumerate(projects):
-                stud_names = ""
-                if p.team_assigned:
-                    team = p.team_assigned
-                    stud_names = ', '.join(['{} {} ({})'
-                            .format(s.user.last_name, s.user.first_name, s.user.email) for s in team.team_members])
-                row = [i + 1, p.title, p.lecturer.user.get_full_name(), stud_names]
-                writer.writerow(row)
-    except Exception as e:
-        logger.error("Exception: " + str(e))
-        messages.info(request, _("There was an error while generating csv file."))
-        return redirect('lecturers:profile')
-
-    wrapper = FileWrapper(open(path_to_file, 'rb'))
-    response = HttpResponse(wrapper, content_type='application/force-download')
+    response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file_name)
     response['X-LIGHTTPD-send-file'] = smart_str(file_name)
+
+    try:
+        writer = csv.writer(response)
+        course_info = [course.code, course.name]
+        writer.writerow(course_info)
+        writer.writerow([])
+        headers = ['L.p.', 'Temat projektu', 'Prowadzący', 'Przypisany zespół']
+        writer.writerow(headers)
+        projects = Project.objects \
+            .filter(course=course) \
+            .order_by('lecturer__user__last_name', 'title')
+
+        for i, p in enumerate(projects):
+            stud_names = ''
+            if p.team_assigned:
+                team = p.team_assigned
+                stud_names = ', '.join(['{} {} ({})'
+                        .format(s.user.last_name, s.user.first_name, s.user.email) for s in team.team_members])
+            row = [i + 1, p.title, p.lecturer.user.get_full_name(), stud_names]
+            writer.writerow(row)
+    except Exception as e:
+        logger.error("Exception: " + str(e))
+        messages.error(request, _("There was an error while generating csv file."))
+        return redirect('lecturers:profile')
 
     return response
 
@@ -652,7 +631,7 @@ def export_teams_to_file(request, course_code=None):
 @ensure_csrf_cookie
 def save_projects_to_file(request, course_code=None):
     course = get_object_or_404(Course, code__iexact=course_code)
-    response = HttpResponse(content_type='text/plain')
+    response = HttpResponse(content_type='text/utf-8')
     response['Content-Disposition'] = 'attachment; filename="{}_{}.txt"' \
                                         .format(request.user.last_name, course_code)
 
@@ -670,19 +649,20 @@ def load_projects_from_file(request, course_code=None):
 
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
+
         if form.is_valid():
-            uploaded_file = iter(request.FILES['file'].readlines())
+            uploaded_file = iter((str(x, 'utf-8') for x in request.FILES['file'].readlines()))
             added_projects = 0
             for line in uploaded_file:
-                title, description = b'', b''
-                if line.startswith(b'{') and line.endswith(b'}\n'):
+                title, description = '', ''
+                if line.startswith('{') and line.endswith('}\n'):
                     title = line
                 else:
                     messages.error(request, 'Error reading file - uncorrect format.')
                     break
                 line = next(uploaded_file)
-                if line.startswith(b'{'):
-                    while not line.endswith(b'}\n'):
+                if line.startswith('{'):
+                    while not line.endswith('}\n'):
                         description += line
                         line = next(uploaded_file)
                     description += line
@@ -697,5 +677,4 @@ def load_projects_from_file(request, course_code=None):
 
             messages.success(request, 'Added ' + str(added_projects) + ' projects')
 
-    return redirect('lecturers:project_list',
-                    course_code=course_code)
+    return redirect('lecturers:project_list', course_code=course_code)

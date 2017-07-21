@@ -38,6 +38,14 @@ class StudentTest(TestCase):
         res = self.client.get(reverse('students:profile'))
         self.assertEqual(res.status_code, 200)
 
+    def test_profile_edit(self):
+        self.set_session()
+        res = self.client.get(reverse('students:profile_edit'))
+        self.assertEqual(res.status_code, 200)
+        res = self.client.post(reverse('students:profile_edit'),
+                                    data={'description' : 'test_descr'})
+        self.assertTrue(Student.objects.filter(description='test_descr').exists())
+
     def test_team_list(self):
         Team.objects.create(pk=1, course=self.course)
         res = self.client.get(reverse('students:team_list', kwargs=self.kwargs))

@@ -39,7 +39,7 @@
                 </td>
                 <td>
                     {% for stud in team.team_members %}
-                        <a href="mailto:{{ stud.user.email }}">{{ stud }}</a><br>
+                        <a href="mailto:{{ stud.user.email }}" class="tooltip-m"  data-html="true" data-toggle="tooltip" data-placement="right" title="<h5>{% trans "About me:"%}</h5>{{ stud.description }}">{{ stud }}</a><br>
                     {% endfor %}
                 </td>
                 <td>

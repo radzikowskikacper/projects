@@ -31,7 +31,6 @@ def generate_context(request):
             Course, code__iexact=request.session['selectedCourse'])
     return context
 
-
 def check_for_cookie(request):
     if request.user.is_authenticated():
         # redirect when user logged in but hasn't choosed course yet
@@ -40,7 +39,7 @@ def check_for_cookie(request):
 
 
 @ensure_csrf_cookie
-def home(request, course_code=None):
+def welcome(request, course_code=None):
     check_for_cookie(request)
     return render(request, 'users/welcome.html', context=generate_context(request))
 

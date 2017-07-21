@@ -116,10 +116,16 @@
                         -
                     </td>
                     <td>
-                        -
+                        {% if team.project_assigned %}
+                            <a href="{% url 'lecturers:project' selectedCourse.code team.project_assigned.pk %}">
+                                {{ team.project_assigned.title }}
+                            </a>
+                        {% else %}
+                            -
+                        {% endif %}
                     </td>
                     <td>
-                        -
+                        {% if team.is_locked %} {% trans "Yes" %} {% else %} {% trans "No" %} {% endif %}
                     </td>
                     <td>
                         <span class="pull-right">
