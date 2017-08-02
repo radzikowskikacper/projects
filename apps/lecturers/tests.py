@@ -1,23 +1,27 @@
 from django.test import TestCase
-from ..courses.models import Course
-from ..teams.models import Team
-from ..students.models import Student
-from ..projects.models import Project
-from .models import Lecturer
+from django.test.client import Client
+from projects_helper.apps.courses.models import Course
+from projects_helper.apps.teams.models import Team
+from projects_helper.apps.students.models import Student
+from projects_helper.apps.projects.models import Project
+from projects_helper.apps.lecturers.models import Lecturer
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
 class LecturerTest(TestCase):
 
-    def setUp(self):
-        self.user = User.objects.create_user('test1', 'test1@test.pl', 'test')
-        self.lecturer = Lecturer.objects.create(user=self.user)
-        self.client.login(username='test1', password='test')
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user('test1', 'test1@test.pl', 'test')
+        cls.lecturer = Lecturer.objects.create(user=cls.user)
 
         #course
-        self.code = 'TC'
+        cls.code = 'TC'
+        cls.kwargs = {'course_code' : cls.code}
+
+    def setUp(self):
         self.course = Course.objects.create(name='Test Course', code=self.code)
-        self.kwargs = {'course_code' : self.code}
+        self.client.login(username='test1', password='test')
 
     def is_in_messages(self, text, response):
         m = list(response.context.get('messages'))[0]
@@ -189,6 +193,7 @@ class LecturerTest(TestCase):
                           'form-1-name':'Modified Course', 'form-1-code':'MC', 'form-1-id':3,
                           'form-2-name':'New Course', 'form-2-code':'NC', 'form-2-id':'',
                           'form-TOTAL_FORMS':3, 'form-INITIAL_FORMS':2, 'form-MIN_NUM_FORMS':0, 'form-MAX_NUM_FORMS':10})
+
         self.assertFalse(Course.objects.filter(name='Test Course2').exists())
         self.assertTrue(Course.objects.filter(name='Modified Course').exists())
         self.assertTrue(Course.objects.filter(name='New Course').exists())
