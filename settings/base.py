@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'markdownx',
     'django_coverage',
     'bootstrap3',
+    'django_jenkins',
     'projects_helper.apps.projects',
     'projects_helper.apps.courses',
     'projects_helper.apps.teams',
