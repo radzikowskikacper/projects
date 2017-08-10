@@ -1,9 +1,9 @@
 from django.test import TestCase
-from ..courses.models import Course
-from ..teams.models import Team
-from ..lecturers.models import Lecturer
-from ..projects.models import Project
-from .models import Student
+from projects_helper.apps.courses.models import Course
+from projects_helper.apps.teams.models import Team
+from projects_helper.apps.lecturers.models import Lecturer
+from projects_helper.apps.projects.models import Project
+from projects_helper.apps.students.models import Student
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 

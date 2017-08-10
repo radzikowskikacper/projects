@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from ..courses.models import Course
+from projects_helper.apps.courses.models import Course
 from django.core.urlresolvers import reverse
 from projects_helper.settings.local import CAS_SERVER_URL
 
