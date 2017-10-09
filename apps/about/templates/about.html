@@ -46,14 +46,14 @@
               <img style="max-width: 100%; border: 2px solid white" src="{% static "images/about4.png" %}"/>
             </div>
         </div>
-        <!--<div class="row about-row">
+        <div class="row about-row">
             <div class="col-md-12" style="overflow:hidden">
-                <video>
+                <video controls>
                     <source src="{% static "films/helpmv.mp4" %}" type="video/mp4">
                     <p>Your browser does not support the video tag.</p>
                 </video>
             </div>
-        </div>-->
+        </div>
 
     <h6>Copyright by {% contributors %}</h6>
     <h6>Server info: version: {% version_number %}, Django version: {% django_version %}, debug: {% if debug %} True {% else %} False {% endif %}</h4>

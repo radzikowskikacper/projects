@@ -7,6 +7,12 @@
     margin-bottom: 30px;
 }
 
+.about-row video {
+    width: 70%;
+    margin: 40px auto 10px;
+    display: block;
+}
+
 .about-jumbotron img {
     max-width: 100%;
     border: 2px solid white;
