@@ -94,11 +94,6 @@ def pick_project(request):
                                 " doesn't have any assigned lecturer. " +
                                 " You can't pick that project right now."))
 
-            elif project_picked.lecturer.max_students_reached():
-                messages.info(request,
-                              _("Max number of students who can be assigned " +
-                                "to this lecturer has been reached. " +
-                                "Choose project from another lecturer."))
             elif project_picked.status() == "free" and not team.is_locked:
                 try:
                     team.select_preference(project_picked)
@@ -106,6 +101,11 @@ def pick_project(request):
                     team.save()
                 except Exception as e:
                     logger.error("Student cannot pick project. " + str(e))
+
+                if project_picked.lecturer.max_students_reached():
+                    messages.info(request, _("Max number of students who can be assigned " +
+                                            "to this lecturer has been reached. " +
+                                            "Choose project from another lecturer."))
                 messages.success(request,
                                  _("You have successfully picked project ") +
                                  project_picked.title)
@@ -247,19 +247,20 @@ def join_team(request):
         if team_pk:
             team = Team.objects.get(pk=team_pk)
             student = request.user.student
+
+            course = get_object_or_404(
+                Course, code__iexact=request.session['selectedCourse'])
+            student.leave_team(student.team(course))
+            student.join_team(team)
+            student.save()
+
             if team.project_preference.lecturer.max_students_reached():
                 messages.info(request,
                               _("Max number of students who can be assigned " +
                                 "to this lecturer has been reached. " +
                                 "Choose project from another lecturer."))
-            else:
-                course = get_object_or_404(
-                    Course, code__iexact=request.session['selectedCourse'])
-                student.leave_team(student.team(course))
-                student.join_team(team)
-                student.save()
-                messages.success(request,
-                                 _("You have successfully joined selected team "))
+            messages.success(request,
+                             _("You have successfully joined selected team "))
     else:
         logger.error('Bad request: Only POST requests are allowed.')
 
