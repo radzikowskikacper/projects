@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-02 15:22+0200\n"
+"POT-Creation-Date: 2017-12-18 14:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,7 +80,7 @@ msgstr "Projekty"
 #: projects_helper/apps/lecturers/templates/lecturers/project_table.html:8
 #: projects_helper/apps/students/admin.py:13
 #: projects_helper/apps/students/templates/students/project_table.html:8
-#: projects_helper/apps/students/templates/students/team_list.html:10
+#: projects_helper/apps/students/templates/students/team_list.html:11
 msgid "Teams"
 msgstr "Zespoły"
 
@@ -97,7 +97,7 @@ msgid "code"
 msgstr "kod"
 
 #: projects_helper/apps/courses/models.py:16
-#: projects_helper/apps/projects/models.py:9
+#: projects_helper/apps/projects/models.py:12
 #: projects_helper/apps/teams/models.py:11
 msgid "course"
 msgstr "przedmiot"
@@ -107,7 +107,8 @@ msgid "courses"
 msgstr "przedmioty"
 
 #: projects_helper/apps/lecturers/admin.py:21
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:60
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:70
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:128
 msgid "Yes"
 msgstr "Tak"
 
@@ -115,53 +116,44 @@ msgstr "Tak"
 msgid "Administrator"
 msgstr "Administrator"
 
-#: projects_helper/apps/lecturers/forms.py:23
+#: projects_helper/apps/lecturers/forms.py:33
 #, python-format
 msgid "%(model_name)s's %(field_labels)s are not unique."
 msgstr "%(model_name)s's %(field_labels)s nie są unikalne."
 
-#: projects_helper/apps/lecturers/forms.py:48
+#: projects_helper/apps/lecturers/forms.py:57
 msgid "Add team member"
 msgstr "Dodaj członka zespołu"
 
-#: projects_helper/apps/lecturers/forms.py:53
+#: projects_helper/apps/lecturers/forms.py:62
 msgid "Add another member"
 msgstr "Dodaj kolejną osobę"
 
-#: projects_helper/apps/lecturers/forms.py:64
+#: projects_helper/apps/lecturers/forms.py:73
 msgid "Assign this team to existing project"
 msgstr "Przypisz ten zespół do istniejącego projektu"
 
-#: projects_helper/apps/lecturers/forms.py:111
-#: projects_helper/apps/lecturers/forms.py:123
-#: projects_helper/apps/lecturers/forms.py:145
-#: projects_helper/apps/lecturers/forms.py:162
-#: projects_helper/apps/lecturers/forms.py:190
-#: projects_helper/apps/lecturers/forms.py:191
-#: projects_helper/apps/lecturers/forms.py:192
-#: projects_helper/apps/lecturers/forms.py:193
+#: projects_helper/apps/lecturers/forms.py:120
+#: projects_helper/apps/lecturers/forms.py:132
+#: projects_helper/apps/lecturers/forms.py:154
+#: projects_helper/apps/lecturers/forms.py:178
+#: projects_helper/apps/lecturers/forms.py:179
+#: projects_helper/apps/lecturers/forms.py:180
 #: projects_helper/apps/students/templates/students/project_detail.html:19
 #: projects_helper/apps/students/templates/students/project_detail.html:38
 msgid "None"
 msgstr "Brak"
 
-#: projects_helper/apps/lecturers/forms.py:116
-#: projects_helper/apps/lecturers/forms.py:128
-#: projects_helper/apps/lecturers/forms.py:138
-#: projects_helper/apps/lecturers/forms.py:155
+#: projects_helper/apps/lecturers/forms.py:125
+#: projects_helper/apps/lecturers/forms.py:137
+#: projects_helper/apps/lecturers/forms.py:147
 msgid "Change"
 msgstr "Zmień"
 
-#: projects_helper/apps/lecturers/forms.py:133
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:31
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:89
-msgid "Project preference"
-msgstr "Preferowany projekt"
-
-#: projects_helper/apps/lecturers/forms.py:150
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:32
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:90
-#: projects_helper/apps/students/templates/students/team_list.html:24
+#: projects_helper/apps/lecturers/forms.py:142
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:40
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:100
+#: projects_helper/apps/students/templates/students/team_list.html:25
 msgid "Assigned project"
 msgstr "Przydzielony projekt"
 
@@ -175,7 +167,7 @@ msgid "students limit"
 msgstr "limit studentów"
 
 #: projects_helper/apps/lecturers/models.py:18
-#: projects_helper/apps/projects/models.py:13
+#: projects_helper/apps/projects/models.py:16
 msgid "lecturer"
 msgstr "prowadzący"
 
@@ -206,6 +198,7 @@ msgstr "Powrót do profilu"
 #: projects_helper/apps/lecturers/templates/lecturers/project_new.html:11
 #: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:11
 #: projects_helper/apps/lecturers/templates/lecturers/team_new.html:11
+#: projects_helper/apps/students/templates/students/project.html:9
 msgid "Back"
 msgstr "Powrót"
 
@@ -228,7 +221,7 @@ msgstr "Kod"
 
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:39
 #: projects_helper/apps/lecturers/templates/lecturers/project_list.html:49
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:128
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:144
 msgid "Delete"
 msgstr "Usuń"
 
@@ -237,25 +230,25 @@ msgid "Add course"
 msgstr "Dodaj przedmiot"
 
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:62
-#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:36
-#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:36
-#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:122
+#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:37
+#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:37
+#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:104
 #: projects_helper/apps/lecturers/templates/lecturers/team_new.html:42
 msgid "Submit"
 msgstr "Zatwierdź"
 
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:64
-#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:38
-#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:38
-#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:124
+#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:39
+#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:39
+#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:106
 #: projects_helper/apps/lecturers/templates/lecturers/team_new.html:44
 msgid "Reset form"
 msgstr "Resetuj formularz"
 
 #: projects_helper/apps/lecturers/templates/lecturers/course_manage.html:65
-#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:39
-#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:39
-#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:125
+#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:40
+#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:40
+#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:107
 #: projects_helper/apps/lecturers/templates/lecturers/team_new.html:45
 msgid "Reset"
 msgstr "Resetuj"
@@ -291,7 +284,7 @@ msgid "Profile"
 msgstr "Profil"
 
 #: projects_helper/apps/lecturers/templates/lecturers/profile.html:26
-#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:51
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:54
 msgid "Create new project"
 msgstr "Utwórz nowy projekt"
 
@@ -331,70 +324,63 @@ msgid "Back to project list"
 msgstr "Powrót do listy projektów"
 
 #: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:15
+#: projects_helper/apps/students/templates/students/project.html:13
 msgid "Project details"
 msgstr "Szczegóły projektu"
 
 #: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:20
-msgid "Create a copy of this project"
-msgstr "Utwórz kopię tego projektu"
-
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:21
-msgid "Copy"
-msgstr "Kopiuj"
-
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:23
 msgid "Edit this project"
 msgstr "Edytuj ten projekt"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:24
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:65
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:117
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:21
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:75
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:133
 msgid "Edit"
 msgstr "Edytuj"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:37
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:34
 #: projects_helper/apps/lecturers/templates/lecturers/project_table.html:7
 #: projects_helper/apps/students/templates/students/project_table.html:10
 msgid "Title"
 msgstr "Tytuł"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:41
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:38
 #: projects_helper/apps/students/templates/students/project_detail.html:13
 msgid "Description"
 msgstr "Opis"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:44
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:41
 #: projects_helper/apps/students/templates/students/project_detail.html:17
 msgid "Team assigned"
 msgstr "Przypisany zespół"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:60
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:57
 #: projects_helper/apps/students/templates/students/project_detail.html:36
 msgid "Teams preferring this project"
 msgstr "Zespoły preferujące ten projekt"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:73
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:70
 msgid "Assign this team"
 msgstr "Przypisz ten zespół"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:74
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:71
 msgid "Assign"
 msgstr "Przypisz"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:95
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:92
 msgid "Automatically choose and assign one team to the project"
 msgstr "Automatycznie wybierz i przypisz jeden zespół do tego projektu"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:96
-#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:56
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:93
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:67
 msgid "Auto assign"
 msgstr "Przypisz automatycznie"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:102
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:99
 msgid "Unassign assigned team"
 msgstr "Wypisz przypisany zespół"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:103
+#: projects_helper/apps/lecturers/templates/lecturers/project_detail.html:100
 msgid "Unassign team"
 msgstr "Wypisz zespół"
 
@@ -411,12 +397,34 @@ msgstr "Tytuł projektu..."
 msgid "Delete selected projects"
 msgstr "Usuń wybrane projekty"
 
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:51
+#, fuzzy
+#| msgid "Delete selected projects"
+msgid "Duplicate selected projects"
+msgstr "Usuń wybrane projekty"
+
 #: projects_helper/apps/lecturers/templates/lecturers/project_list.html:52
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:131
+msgid "Duplicate"
+msgstr ""
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:55
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:147
 msgid "New"
 msgstr "Nowy"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:55
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:59
+#, fuzzy
+#| msgid "Show project details"
+msgid "Save projects to file"
+msgstr "Pokaż szczegóły projektu"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:63
+#, fuzzy
+#| msgid "Show project details"
+msgid "Upload project file"
+msgstr "Pokaż szczegóły projektu"
+
+#: projects_helper/apps/lecturers/templates/lecturers/project_list.html:66
 msgid "Automatically assign teams to projects"
 msgstr "Automatycznie przypisz zespoły do projektów"
 
@@ -424,17 +432,17 @@ msgstr "Automatycznie przypisz zespoły do projektów"
 msgid "Modify project"
 msgstr "Modyfikuj projekt"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:35
-#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:121
+#: projects_helper/apps/lecturers/templates/lecturers/project_modify.html:36
+#: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:103
 msgid "Confirm changes"
 msgstr "Potwierdź zmiany"
 
-#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:35
+#: projects_helper/apps/lecturers/templates/lecturers/project_new.html:36
 msgid "Create project"
 msgstr "Utwórz projekt"
 
 #: projects_helper/apps/lecturers/templates/lecturers/project_table.html:9
-#: projects_helper/apps/students/templates/students/profile.html:44
+#: projects_helper/apps/students/templates/students/profile.html:49
 #: projects_helper/apps/students/templates/students/project_table.html:9
 msgid "Status"
 msgstr "Status"
@@ -465,59 +473,70 @@ msgstr "zajęty"
 msgid "My teams"
 msgstr "Moje zespoły"
 
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:30
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:88
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:24
+msgid "Occupancy"
+msgstr "Obciążenie"
+
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:38
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:98
 msgid "Members"
 msgstr "Członkowie"
 
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:33
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:91
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:39
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:99
+msgid "Project preference"
+msgstr "Preferowany projekt"
+
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:41
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:101
 msgid "Assigned"
 msgstr "Przypisany"
 
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:60
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:70
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:128
 msgid "No"
 msgstr "Nie"
 
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:64
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:116
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:74
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:132
 msgid "Edit this team"
 msgstr "Edytuj ten zespół"
 
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:80
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:90
 msgid "Teams without project preference"
 msgstr "Zespoły bez preferencji projektowych"
 
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:127
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:143
 msgid "Delete selected teams"
 msgstr "Usuń wybrane zespoły"
 
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:130
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:146
 msgid "Create new team"
 msgstr "Utwórz nowy zespół"
 
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:134
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:150
 msgid "Export student list to csv file"
 msgstr "Eksportuj listę studentów do pliku csv"
 
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:135
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:151
 msgid "Export CSV students"
 msgstr "Eksportuj CSV studenci"
 
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:137
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:153
 msgid "Export team list to csv file"
 msgstr "Eksportuj listę zespołów do pliku csv"
 
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:138
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:154
 msgid "Export CSV teams"
 msgstr "Eksportuj CSV zespoły"
 
-#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:150
+#: projects_helper/apps/lecturers/templates/lecturers/team_list.html:166
 msgid "Are you sure?"
 msgstr "Czy jesteś pewien?"
 
 #: projects_helper/apps/lecturers/templates/lecturers/team_modify.html:10
 #: projects_helper/apps/lecturers/templates/lecturers/team_new.html:10
+#: projects_helper/apps/students/templates/students/project.html:8
 msgid "Back to team list"
 msgstr "Powrót do listy zespołów"
 
@@ -533,8 +552,7 @@ msgstr "Nowy zespół"
 msgid "Create team"
 msgstr "Utwórz zespół"
 
-#: projects_helper/apps/lecturers/views.py:131
-#: projects_helper/apps/lecturers/views.py:189
+#: projects_helper/apps/lecturers/views.py:134
 msgid ""
 "\n"
 " You must provide unique project name"
@@ -542,123 +560,91 @@ msgstr ""
 "\n"
 " Musisz wprowadzić unikalną nazwę projektu"
 
-#: projects_helper/apps/lecturers/views.py:135
-#: projects_helper/apps/lecturers/views.py:193
+#: projects_helper/apps/lecturers/views.py:138
 msgid "You have succesfully added new project: "
 msgstr "Udało ci się dodać projekt: "
 
-#: projects_helper/apps/lecturers/views.py:155
+#: projects_helper/apps/lecturers/views.py:158
 msgid "You must provide unique project name"
 msgstr "Musisz wprowadzić unikalną nazwę projektu"
 
-#: projects_helper/apps/lecturers/views.py:161
+#: projects_helper/apps/lecturers/views.py:164
 msgid "You have successfully updated project: "
 msgstr "Udało ci się zaaktualizować projekt: "
 
-#: projects_helper/apps/lecturers/views.py:176
-msgid "copy"
-msgstr "kopia"
-
-#: projects_helper/apps/lecturers/views.py:228
-msgid "Cannot assign team. Team or project not found!"
-msgstr "Nie można przydzielić zespołu. Nie znaleziono projektu lub zespołu!"
-
-#: projects_helper/apps/lecturers/views.py:238
-#: projects_helper/apps/lecturers/views.py:263
+#: projects_helper/apps/lecturers/views.py:209
+#: projects_helper/apps/lecturers/views.py:229
 msgid "You have successfully assigned team: "
 msgstr "Pomyślnie przypisałeś zespół: "
 
-#: projects_helper/apps/lecturers/views.py:241
-#: projects_helper/apps/lecturers/views.py:266
-msgid "Cannot assign: access denied"
-msgstr "Nie można przydzielić: odmowa dostępu"
-
-#: projects_helper/apps/lecturers/views.py:259
+#: projects_helper/apps/lecturers/views.py:225
 msgid "Cannot assign: No teams waiting for project"
 msgstr "Nie można przydzielić: Żaden zespół nie wybrał projektu"
 
-#: projects_helper/apps/lecturers/views.py:285
+#: projects_helper/apps/lecturers/views.py:245
 msgid "You have successfully unassigned team from project: "
 msgstr "Pomyślnie wypisałeś zespół z projektu: "
 
-#: projects_helper/apps/lecturers/views.py:306
+#: projects_helper/apps/lecturers/views.py:275
 msgid "Cannot delete occupied project: "
 msgstr "Nie można usunąć projektu, który został wybrany przez jakiś zespół: "
 
-#: projects_helper/apps/lecturers/views.py:308
-msgid "Cannot delete project: "
-msgstr "Nie można usunąć projektu: "
-
-#: projects_helper/apps/lecturers/views.py:362
-#: projects_helper/apps/lecturers/views.py:465
+#: projects_helper/apps/lecturers/views.py:319
+#: projects_helper/apps/lecturers/views.py:407
 msgid "Something went wrong. Try again."
 msgstr "Coś poszło nie tak. Spróbuj ponownie."
 
-#: projects_helper/apps/lecturers/views.py:366
+#: projects_helper/apps/lecturers/views.py:323
 msgid "You have succesfully added new team: "
 msgstr "Udało ci się dodać nowy zespół: "
 
-#: projects_helper/apps/lecturers/views.py:434
-msgid "You have successfully deleted team: "
-msgstr "Pomyślnie usunąłeś zespół: "
-
-#: projects_helper/apps/lecturers/views.py:455
-msgid ""
-"Cannot change project preference,  because this team is assigned. Unassign "
-"team first."
-msgstr ""
-"Nie można zmienić preferowanego projektu,  ponieważ ten zespół jest "
-"przypisany. Najpierw wypisz zespół."
-
-#: projects_helper/apps/lecturers/views.py:470
-msgid "You have successfully updated team: "
-msgstr "Udało ci się zaaktualizować zespół:"
-
-#: projects_helper/apps/lecturers/views.py:492
+#: projects_helper/apps/lecturers/views.py:433
 msgid "You have succesfully deleted team: "
 msgstr "Pomyślnie usunąłeś zespół: "
 
-#: projects_helper/apps/lecturers/views.py:495
+#: projects_helper/apps/lecturers/views.py:436
 msgid "Cannot delete team: "
 msgstr "Nie można usunąć zespołu: "
 
-#: projects_helper/apps/lecturers/views.py:517
-msgid "You have successfully assigned teams to projects"
-msgstr "Pomyślnie przypisałeś zespoły do projektów"
+#: projects_helper/apps/lecturers/views.py:462
+#, fuzzy
+#| msgid "Assign this team"
+msgid "Assigned {} of {} teams"
+msgstr "Przypisz ten zespół"
 
-#: projects_helper/apps/lecturers/views.py:519
+#: projects_helper/apps/lecturers/views.py:464
 msgid "You don't have any projects"
 msgstr "Nie masz żadnych projektów"
 
-#: projects_helper/apps/lecturers/views.py:555
+#: projects_helper/apps/lecturers/views.py:500
 msgid "You must provide unique course name and course code"
 msgstr "Musisz wprowadzić unikalną nazwę i kod przedmiotu"
 
-#: projects_helper/apps/lecturers/views.py:562
+#: projects_helper/apps/lecturers/views.py:507
 msgid "You have succesfully deleted {} courses"
 msgstr "Pomyślnie usunąłeś {} przedmiotów"
 
-#: projects_helper/apps/lecturers/views.py:566
+#: projects_helper/apps/lecturers/views.py:511
 msgid "You have succesfully modified {} courses"
 msgstr "Pomyślnie zmodyfikowałeś {} przedmiotów"
 
-#: projects_helper/apps/lecturers/views.py:570
+#: projects_helper/apps/lecturers/views.py:515
 msgid "You have succesfully added new course."
 msgstr "Udało ci się dodać nowy przedmiot."
 
-#: projects_helper/apps/lecturers/views.py:573
+#: projects_helper/apps/lecturers/views.py:518
 msgid ""
 "You don't have permission to delete course which has related projects/teams: "
 msgstr ""
 "Nie masz uprawnień do usunięcia przedmiotu, z którym powiązane są projekty/"
 "zespoły: "
 
-#: projects_helper/apps/lecturers/views.py:600
+#: projects_helper/apps/lecturers/views.py:545
 msgid "You have succesfully performed clean-up for current course."
 msgstr "Pomyślnie wykonałeś czyszczenie dla aktualnego przedmiotu."
 
-#: projects_helper/apps/lecturers/views.py:642
-#: projects_helper/apps/lecturers/views.py:686
+#: projects_helper/apps/lecturers/views.py:586
+#: projects_helper/apps/lecturers/views.py:624
 msgid "There was an error while generating csv file."
 msgstr "Wystąpił błąd podczas generowania pliku csv."
 
@@ -666,23 +652,23 @@ msgstr "Wystąpił błąd podczas generowania pliku csv."
 msgid "Teams with preference"
 msgstr "Zespoły z preferencją"
 
-#: projects_helper/apps/projects/models.py:5
+#: projects_helper/apps/projects/models.py:7
 msgid "title"
 msgstr "tytuł"
 
-#: projects_helper/apps/projects/models.py:6
+#: projects_helper/apps/projects/models.py:9
 msgid "desciption"
 msgstr "opis"
 
-#: projects_helper/apps/projects/models.py:18
+#: projects_helper/apps/projects/models.py:21
 msgid "team assigned"
 msgstr "przypisany zespół"
 
-#: projects_helper/apps/projects/models.py:26
+#: projects_helper/apps/projects/models.py:29
 msgid "project"
 msgstr "projekt"
 
-#: projects_helper/apps/projects/models.py:27
+#: projects_helper/apps/projects/models.py:30
 msgid "projects"
 msgstr "projekty"
 
@@ -695,11 +681,17 @@ msgstr "Przedmioty"
 msgid "teams"
 msgstr "zespoły"
 
-#: projects_helper/apps/students/models.py:18
+#: projects_helper/apps/students/models.py:17
+#, fuzzy
+#| msgid "desciption"
+msgid "description"
+msgstr "opis"
+
+#: projects_helper/apps/students/models.py:21
 msgid "student"
 msgstr "student"
 
-#: projects_helper/apps/students/models.py:19
+#: projects_helper/apps/students/models.py:22
 msgid "students"
 msgstr "studenci"
 
@@ -711,34 +703,52 @@ msgstr "PROJEKTY"
 msgid "TEAMS"
 msgstr "ZESPOŁY"
 
-#: projects_helper/apps/students/templates/students/profile.html:20
-#: projects_helper/apps/students/templates/students/team_list.html:23
+#: projects_helper/apps/students/templates/students/profile.html:14
+msgid "Edit my information"
+msgstr ""
+
+#: projects_helper/apps/students/templates/students/profile.html:25
+#: projects_helper/apps/students/templates/students/team_list.html:24
 msgid "Team"
 msgstr "Zespół"
 
-#: projects_helper/apps/students/templates/students/profile.html:22
+#: projects_helper/apps/students/templates/students/profile.html:27
 msgid "You don't belong to any team"
 msgstr "Nie należysz do żadnego zespołu"
 
-#: projects_helper/apps/students/templates/students/profile.html:27
+#: projects_helper/apps/students/templates/students/profile.html:32
 msgid "You"
 msgstr "Ty"
 
-#: projects_helper/apps/students/templates/students/profile.html:33
+#: projects_helper/apps/students/templates/students/profile.html:38
 msgid "Project preference "
 msgstr "Preferowany projekt "
 
-#: projects_helper/apps/students/templates/students/profile.html:35
+#: projects_helper/apps/students/templates/students/profile.html:40
 msgid "You have not picked project"
 msgstr "Nie wybrałeś projektu"
 
-#: projects_helper/apps/students/templates/students/profile.html:46
+#: projects_helper/apps/students/templates/students/profile.html:51
 msgid "You are not assigned to project"
 msgstr "Nie jesteś przydzielony do żadnego projektu"
 
-#: projects_helper/apps/students/templates/students/profile.html:48
+#: projects_helper/apps/students/templates/students/profile.html:53
 msgid "You are assigned to project:"
 msgstr "Jesteś przydzielony do projektu:"
+
+#: projects_helper/apps/students/templates/students/profile.html:61
+msgid "About me"
+msgstr ""
+
+#: projects_helper/apps/students/templates/students/profile_edit.html:10
+#, fuzzy
+#| msgid "desciption"
+msgid "Edit desctiption"
+msgstr "opis"
+
+#: projects_helper/apps/students/templates/students/profile_edit.html:22
+msgid "Accept"
+msgstr ""
 
 #: projects_helper/apps/students/templates/students/project_detail.html:10
 msgid "email"
@@ -754,7 +764,9 @@ msgid "Pick"
 msgstr "Wybierz"
 
 #: projects_helper/apps/students/templates/students/project_list.html:51
-msgid "Cannot pick another project, beacause you're already assigned."
+#, fuzzy
+#| msgid "Cannot pick another project, beacause you're already assigned."
+msgid "Cannot pick another project, beacause you are already assigned."
 msgstr "Nie możesz zmienić projektu, ponieważ zostałeś już przypisany."
 
 #: projects_helper/apps/students/templates/students/project_pick_modal.html:13
@@ -782,35 +794,39 @@ msgstr "Nie, utwórz nowy zespół"
 msgid "Lecturer"
 msgstr "Prowadzący"
 
-#: projects_helper/apps/students/templates/students/team_list.html:22
-#: projects_helper/apps/students/templates/students/team_list.html:73
+#: projects_helper/apps/students/templates/students/team_list.html:23
+#: projects_helper/apps/students/templates/students/team_list.html:74
 msgid "Join"
 msgstr "Dołącz"
 
-#: projects_helper/apps/students/templates/students/team_list.html:25
+#: projects_helper/apps/students/templates/students/team_list.html:26
 msgid "Preferred project"
 msgstr "Preferowany projekt"
 
-#: projects_helper/apps/students/templates/students/team_list.html:72
+#: projects_helper/apps/students/templates/students/team_list.html:42
+msgid "About me:"
+msgstr ""
+
+#: projects_helper/apps/students/templates/students/team_list.html:73
 msgid "Join selected team."
 msgstr "Dołącz do wybranego zespołu."
 
-#: projects_helper/apps/students/templates/students/team_list.html:77
+#: projects_helper/apps/students/templates/students/team_list.html:78
 msgid "Leave current team."
 msgstr "Opuść aktualny zespół."
 
-#: projects_helper/apps/students/templates/students/team_list.html:78
-#: projects_helper/apps/students/templates/students/team_list.html:85
+#: projects_helper/apps/students/templates/students/team_list.html:79
+#: projects_helper/apps/students/templates/students/team_list.html:86
 msgid "Leave team"
 msgstr "Opuść zespół"
 
-#: projects_helper/apps/students/views.py:70
-#: projects_helper/apps/students/views.py:91
+#: projects_helper/apps/students/views.py:93
+#: projects_helper/apps/students/views.py:114
 msgid "Project "
 msgstr "Projekt "
 
-#: projects_helper/apps/students/views.py:76
-#: projects_helper/apps/students/views.py:213
+#: projects_helper/apps/students/views.py:106
+#: projects_helper/apps/students/views.py:259
 msgid ""
 "Max number of students who can be assigned to this lecturer has been "
 "reached. Choose project from another lecturer."
@@ -818,19 +834,19 @@ msgstr ""
 "Maksymalna liczba studentów, którzy mogą zapisać się do tego prowadzącego "
 "została osiągnięta. Wybierz projekt od innego prowadzącego."
 
-#: projects_helper/apps/students/views.py:87
+#: projects_helper/apps/students/views.py:110
 msgid "You have successfully picked project "
 msgstr "Udało ci się wybrać projekt "
 
-#: projects_helper/apps/students/views.py:96
+#: projects_helper/apps/students/views.py:119
 msgid "You can't pick project: project already assigned"
 msgstr "Nie możesz wybrać projektu: projekt posiada już przypisany zespół"
 
-#: projects_helper/apps/students/views.py:223
+#: projects_helper/apps/students/views.py:263
 msgid "You have successfully joined selected team "
 msgstr "Udało ci się dołączyć do wybranego zespołu "
 
-#: projects_helper/apps/students/views.py:252
+#: projects_helper/apps/students/views.py:292
 msgid ""
 "You have successfully left the team. Your project preference has not "
 "changed. If you want to change it, choose another project."
@@ -910,7 +926,7 @@ msgstr "Witaj w serwisie Zapisy na projekty."
 msgid "Login to continue."
 msgstr "Zaloguj się, aby kontynuować."
 
-#: projects_helper/apps/users/views.py:59
+#: projects_helper/apps/users/views.py:58
 msgid ""
 "Error: Your account type cannot be recognized by the service. Please contact "
 "administrator."
@@ -918,11 +934,11 @@ msgstr ""
 "Serwis nie może rozpoznać typu twojego konta. Proszę, skontaktuj się z "
 "administratorem"
 
-#: projects_helper/settings/base.py:104
+#: projects_helper/settings/base.py:105
 msgid "English"
 msgstr ""
 
-#: projects_helper/settings/base.py:105
+#: projects_helper/settings/base.py:106
 msgid "Polski"
 msgstr ""
 
@@ -965,6 +981,40 @@ msgstr ""
 #: projects_helper/templates/base.html:14
 msgid "Student Projects Helper"
 msgstr "Zapisy na projekty"
+
+#~ msgid "Create a copy of this project"
+#~ msgstr "Utwórz kopię tego projektu"
+
+#~ msgid "Copy"
+#~ msgstr "Kopiuj"
+
+#~ msgid "copy"
+#~ msgstr "kopia"
+
+#~ msgid "Cannot assign team. Team or project not found!"
+#~ msgstr "Nie można przydzielić zespołu. Nie znaleziono projektu lub zespołu!"
+
+#~ msgid "Cannot assign: access denied"
+#~ msgstr "Nie można przydzielić: odmowa dostępu"
+
+#~ msgid "Cannot delete project: "
+#~ msgstr "Nie można usunąć projektu: "
+
+#~ msgid "You have successfully deleted team: "
+#~ msgstr "Pomyślnie usunąłeś zespół: "
+
+#~ msgid ""
+#~ "Cannot change project preference,  because this team is assigned. "
+#~ "Unassign team first."
+#~ msgstr ""
+#~ "Nie można zmienić preferowanego projektu,  ponieważ ten zespół jest "
+#~ "przypisany. Najpierw wypisz zespół."
+
+#~ msgid "You have successfully updated team: "
+#~ msgstr "Udało ci się zaaktualizować zespół:"
+
+#~ msgid "You have successfully assigned teams to projects"
+#~ msgstr "Pomyślnie przypisałeś zespoły do projektów"
 
 #~ msgid "user type"
 #~ msgstr "typ użytkownika"
