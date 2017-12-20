@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'projects_helper.apps.students',
     'projects_helper.apps.lecturers',
     'projects_helper.apps.about',
+    'projects_helper.apps.files',
     'django.contrib.admin.apps.SimpleAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
