@@ -10,6 +10,7 @@ from ..courses.models import Course
 from ..teams.models import Team
 from ..projects.models import Project
 from ..lecturers.models import Lecturer
+from ..files.models import File
 from .models import Student
 from .forms import MyDescriptionForm
 from projects_helper.apps.users.forms import ProjectFilterForm
@@ -295,3 +296,21 @@ def new_team(request):
     return redirect(reverse('students:team_list',
                             kwargs={'course_code':
                                     request.session['selectedCourse']}))
+
+@login_required
+@user_passes_test(is_student)
+@ensure_csrf_cookie
+def upload_file(request):
+    project_id = 0
+    team_id = 0
+
+    filedata = request.FILES['image_path'].read()
+    filename = ''
+    File.objects.create(filedata = filedata, filename = filename, project = project_id, team = team_id)
+
+@login_required
+@user_passes_test(is_student)
+@ensure_csrf_cookie
+def delete_file(request):
+    file_id = 0
+    File.objets.get(id = file_id).delete()

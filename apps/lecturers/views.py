@@ -15,6 +15,7 @@ from ..courses.models import Course
 from ..teams.models import Team
 from ..projects.models import Project
 from ..students.models import Student
+from ..files.models import File
 from ..users.forms import ProjectFilterForm
 from ..lecturers.forms import ProjectForm, TeamForm, TeamModifyForm, UploadFileForm
 from .models import Lecturer
@@ -110,8 +111,9 @@ def project(request, project_pk, course_code=None):
     proj = Project.objects.get(pk=project_pk)
     course = get_object_or_404(Course, code__iexact=course_code)
     proj.description = markdownify(proj.description)
+    files = File.objects.filter(project = proj, team = proj.team_assigned) if proj.status == 'occupied' else []
     return render(request, 'lecturers/project_detail.html',
-                  context={'project': proj, 'selectedCourse': course})
+                  context={'project': proj, 'selectedCourse': course, 'files' : files})
 
 @login_required
 @user_passes_test(is_lecturer)
@@ -678,3 +680,30 @@ def load_projects_from_file(request, course_code=None):
             messages.success(request, 'Added ' + str(added_projects) + ' projects')
 
     return redirect('lecturers:project_list', course_code=course_code)
+
+@login_required
+@user_passes_test(lambda x: is_lecturer(x) or is_student(x))
+@ensure_csrf_cookie
+def do_download(request):
+    filename = ''
+    wrapper = FileWrapper(open(filename))
+    response = StreamingHttpResponse(wrapper, content_type='text/csv')
+    response['Content-Length'] = os.path.getsize(filename)
+    os.remove(filename)
+    return response
+
+@login_required
+@user_passes_test(lambda x: is_lecturer(x) or is_student(x))
+@ensure_csrf_cookie
+def do_export(request):
+    file_id = 0
+    file = File.objects.get(id = file_id)
+    filename = file.filename
+
+    if not os.path.exists(tmpDir):
+        os.makedirs(tmpDir)
+
+    with open(tmpDir + filename, 'w') as retfile:
+        retfile.write(bytearray(file.filedata))
+
+        return _JsonResponse({'filename': filename})
