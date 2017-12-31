@@ -1,4 +1,4 @@
-s{% load i18n %}
+{% load i18n %}
 {% load bootstrap3 %}
 
 {# Panel content #}
@@ -14,6 +14,12 @@ s{% load i18n %}
         {{ project.description|safe }}
     </div>
 
+    {% if project.team_assigned == team %}
+    asd
+    {% else %}
+    sdf
+    {% endif %}
+    
     <h4>{% trans "Team assigned" %}:</h4>
     {% if project.team_assigned == None %}
         {% trans "None" %}
@@ -49,6 +55,8 @@ s{% load i18n %}
         {% endfor %}
     </ol>
     {% endif %}
+
+    {% if team.id
 
 </div>
 {% endblock %}
