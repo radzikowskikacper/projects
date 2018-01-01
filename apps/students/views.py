@@ -162,7 +162,7 @@ def project_list(request, course_code=None):
     for p in projects:
         p.description = markdownify(p.description)
         if p.status() == 'occupied' and p.team_assigned == request.user.student.team(course):
-            p.files = File.object.filter(project = p, team = p.team)
+            p.files = File.objects.filter(project = p, team = p.team)
 
     filter_form = ProjectFilterForm()
     proj_preference = request.user.student.project_preference(course)
