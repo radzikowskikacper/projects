@@ -302,7 +302,7 @@ def new_team(request):
 @login_required
 @user_passes_test(is_student)
 @ensure_csrf_cookie
-def file(request, course_code, project_pk, file_id = None):
+def files(request, course_code, project_pk, file_id = None):
     if request.method == 'GET':
         file = File.objects.get(id=file_id,
                                 team = request.user.student.team(course_code))
