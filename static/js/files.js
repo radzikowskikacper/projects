@@ -55,7 +55,9 @@ $(document).ready(function(){
         })
     })
 
-    $('#file_upload_btn').click(function(){
-
+    $('#file_upload_btn').click(function(event){
+        event.preventDefault()
+        
+        $('form#upload_form').submit()
     })
 })
