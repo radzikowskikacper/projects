@@ -238,10 +238,20 @@ class LecturerTest(TestCase):
         self.assertEqual(str(res.content, 'utf-8'), 'TC,Test Course\r\n\r\nL.p.,Nazwisko,Imiona,Adres e-mail,Tytuł przypisanego projektu,Prowadzący\r\n1,,,test1@test.pl,,\r\n')
 
     def test_handle_file(self):
+        user2 = User.objects.create_user('test2', 'test2@test.pl', 'test')
+        lecturer2 = Lecturer.objects.create(user=user2)
+
         team = Team.objects.create(pk=4, course=self.course)
         project = Project.objects.create(pk=16, title='ĄĆ', course=self.course, description='ąęćź', lecturer=self.lecturer, team_assigned = team)
+
         team.project_preference = project
         File.objects.create(id = 0, filename = 'dokumentacja.txt', project = project, team = team, filedata = 'aaaa'.encode())
 
         reply = self.client.get(reverse('lecturers:download_file', args=[self.course.code, project.id, 0]))
+        self.assertEqual(reply.status_code, 200)
+
+        project.lecturer = lecturer2
+        project.save()
+        
+        self.client.login(username='test2', password='test')
         self.assertEqual(reply.status_code, 200)
