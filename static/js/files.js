@@ -15,7 +15,7 @@ $(document).ready(function(){
         event.preventDefault();
 
         $.ajax({
-            url : 'file/' + $(this).attr('file_id') + '/',
+            url : $(this).closest('table').attr('project_id') '/file/' + $(this).closest('tr').attr('file_id') + '/',
             method : 'DELETE',
             success : function(data){
                 $(this).parent().parent().parent().remove();
