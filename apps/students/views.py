@@ -321,7 +321,11 @@ def files(request, course_code, project_pk, file_id = None):
         return response
 
     elif request.method == 'POST':
-        pass
+        if not file_id is None:
+            File.objects.create(team = request.user.student.team(Course.objects.get(code = course_code)),
+                                filename = '', filedata = '',
+                                project = Project.objects.get(id = project_pk))
+            return HttpResponse(status=200)
 
     elif request.method == 'DELETE':
         file = File.objects.get(id=file_id,
