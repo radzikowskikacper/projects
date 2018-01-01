@@ -306,7 +306,7 @@ def new_team(request):
 def files(request, course_code, project_pk, file_id = None):
     if request.method == 'GET':
         file = File.objects.get(id=file_id,
-                                team = request.user.student.team(course_code))
+                                team = request.user.student.team(Course.objects.get(code = course_code)))
 
         file_name = '{}_{}'.format(project_pk, file_id)
 
