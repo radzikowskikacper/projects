@@ -5,6 +5,7 @@ from projects_helper.apps.teams.models import Team
 from projects_helper.apps.students.models import Student
 from projects_helper.apps.projects.models import Project
 from projects_helper.apps.lecturers.models import Lecturer
+from projects_helper.apps.files.models import File
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
@@ -235,3 +236,12 @@ class LecturerTest(TestCase):
         student.join_team(team1)
         res = self.client.get(reverse('lecturers:export_students', args=[self.code]))
         self.assertEqual(str(res.content, 'utf-8'), 'TC,Test Course\r\n\r\nL.p.,Nazwisko,Imiona,Adres e-mail,Tytuł przypisanego projektu,Prowadzący\r\n1,,,test1@test.pl,,\r\n')
+
+    def test_handle_file(self):
+        team = Team.objects.create(pk=4, course=self.course)
+        project = Project.objects.create(pk=16, title='ĄĆ', course=self.course, description='ąęćź', lecturer=self.lecturer, team_assigned = team)
+        team.project_preference = project
+        File.objects.create(id = 0, filename = 'dokumentacja.txt', project = project, team = team, filedata = 'aaaa'.encode())
+
+        reply = self.client.get(reverse('lecturers:download_file', args=[self.course.code, project.id, 0]))
+        self.assertEqual(reply.status_code, 200)
