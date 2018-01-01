@@ -30,13 +30,13 @@ $(document).ready(function(){
     };
 
     $('#lec_file_download_btn').click(function(event){
-        open_iframe('file/' + $(this).attr('file_id') + '/';)
+        open_iframe('file/' + $(this).attr('file_id') + '/');
     })
 
     $('#st_file_download_btn').click(function(event){
         event.preventDefault();
 
-        open_iframe($(this).closest('table').attr('project_id') + '/file/' + $(this).closest('tr').attr('file_id') + '/';)
+        open_iframe($(this).closest('table').attr('project_id') + '/file/' + $(this).closest('tr').attr('file_id') + '/');
     })
 
     $('#file_delete_btn').click(function(event){
