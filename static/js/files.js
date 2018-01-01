@@ -12,5 +12,5 @@ $(document).ready(function(){
 			document.body.appendChild(iframe);
 		}
 		iframe.src = url;
-    })
+    }
 })
