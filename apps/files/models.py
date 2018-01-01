@@ -18,6 +18,3 @@ class File(models.Model):
                                          on_delete=models.SET_NULL,
                                          null=True,
                                          blank=True)
-
-    class Meta:
-        unique_together = ['team', 'project']
