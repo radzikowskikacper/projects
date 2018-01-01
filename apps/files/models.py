@@ -13,7 +13,7 @@ class File(models.Model):
                                null=True,
                                blank=False)
 
-    team = models.OneToOneField('teams.Team',
+    team = models.ForeignKey('teams.Team',
                                          verbose_name=_('team'),
                                          on_delete=models.SET_NULL,
                                          null=True,
