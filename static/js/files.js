@@ -40,7 +40,6 @@ $(document).ready(function(){
             },
             headers : {
 	            'X-CSRFToken' : getCookie('csrftoken'),
-	            'Content-Type': content_type
 	        }
         })
     })
