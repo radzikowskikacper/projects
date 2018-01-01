@@ -5,8 +5,8 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_str
 from django.db import IntegrityError, transaction
-from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404, HttpResponse
-from django.http import Http404
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404, HttpResponse,
+from django.http import Http404, StreamingHttpResponse
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -15,6 +15,7 @@ from ..courses.models import Course
 from ..teams.models import Team
 from ..projects.models import Project
 from ..students.models import Student
+from ..students.views import is_student
 from ..files.models import File
 from ..users.forms import ProjectFilterForm
 from ..lecturers.forms import ProjectForm, TeamForm, TeamModifyForm, UploadFileForm
@@ -684,26 +685,18 @@ def load_projects_from_file(request, course_code=None):
 @login_required
 @user_passes_test(lambda x: is_lecturer(x) or is_student(x))
 @ensure_csrf_cookie
-def do_download(request):
-    filename = ''
-    wrapper = FileWrapper(open(filename))
-    response = StreamingHttpResponse(wrapper, content_type='text/csv')
-    response['Content-Length'] = os.path.getsize(filename)
-    os.remove(filename)
-    return response
+def handle_file(request, project_pk, file_id):
+    file = File.objects.get(id = file_id,
+                            project = Project.objects.get(id = project_pk, lecturer = request.user.lecturer))
 
-@login_required
-@user_passes_test(lambda x: is_lecturer(x) or is_student(x))
-@ensure_csrf_cookie
-def do_export(request):
-    file_id = 0
-    file = File.objects.get(id = file_id)
-    filename = file.filename
+    if request.method == 'GET':
+        file_name = '{}_{}'.format(project_pk, file_id)
 
-    if not os.path.exists(tmpDir):
-        os.makedirs(tmpDir)
+        with open(file_name, 'w') as retfile:
+            retfile.write(bytearray(file.filedata))
 
-    with open(tmpDir + filename, 'w') as retfile:
-        retfile.write(bytearray(file.filedata))
-
-        return _JsonResponse({'filename': filename})
+        wrapper = FileWrapper(open(file_name))
+        response = StreamingHttpResponse(wrapper)
+        response['Content-Length'] = os.path.getsize(file_name)
+        os.remove(file_name)
+        return response
