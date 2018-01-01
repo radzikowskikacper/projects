@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_str
 from django.db import IntegrityError, transaction
-from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404, HttpResponse,
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404, HttpResponse
 from django.http import Http404, StreamingHttpResponse
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
