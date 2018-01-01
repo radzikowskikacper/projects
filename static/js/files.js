@@ -11,7 +11,9 @@ $(document).ready(function(){
 		iframe.src = 'file/' + $(this).attr('file_id') + '/';
     })
 
-    $('#file_delete_btn').click(function(){
+    $('#file_delete_btn').click(function(event){
+        $event.preventDefault();
+        
         $.ajax({
             url : 'file/' + $(this).attr('file_id') + '/',
             method : 'DELETE',
