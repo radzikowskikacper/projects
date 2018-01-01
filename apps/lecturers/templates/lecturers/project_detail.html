@@ -84,7 +84,7 @@
                     <td> {{ f.filename }} </td>
                     <td>
                         <span class="pull-right">
-                            <button type="submit" title="{% trans "Download this file" %}" class="btn btn-primary" onclick='download_file({{ project.id }}, {{ f.id }})' >
+                            <button type="submit" title="{% trans "Download this file" %}" class="btn btn-primary" file_id = '{{ f.id }}' id='file_download_btn'>
                                 {% trans "Download" %}
                             </button>
                         </span>
@@ -121,4 +121,8 @@
     {% endif %}
     </div>
 {% endif %}
+{% endblock %}
+
+{% block additional_js %}
+    <script src="{% static "js/files.js" %}"></script>
 {% endblock %}
