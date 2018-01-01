@@ -111,7 +111,7 @@ def project(request, project_pk, course_code=None):
     proj = Project.objects.get(pk=project_pk)
     course = get_object_or_404(Course, code__iexact=course_code)
     proj.description = markdownify(proj.description)
-    files = File.objects.filter(project = proj, team = proj.team_assigned) if proj.status == 'occupied' else []
+    files = File.objects.filter(project = proj, team = proj.team_assigned) if proj.status() == 'occupied' else []
     return render(request, 'lecturers/project_detail.html',
                   context={'project': proj, 'selectedCourse': course, 'files' : files})
 
