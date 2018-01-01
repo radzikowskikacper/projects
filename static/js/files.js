@@ -32,12 +32,12 @@ $(document).ready(function(){
     $('#file_delete_btn').click(function(event){
         event.preventDefault();
 
-        this = $(this)
+        t = $(this);
         $.ajax({
             url : $(this).closest('table').attr('project_id') + '/file/' + $(this).closest('tr').attr('file_id') + '/',
             method : 'DELETE',
             success : function(data){
-                this.parent().parent().parent().remove();
+                t.parent().parent().parent().remove();
             },
             headers : {
 	            'X-CSRFToken' : getCookie('csrftoken'),
