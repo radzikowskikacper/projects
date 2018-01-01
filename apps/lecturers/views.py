@@ -698,5 +698,6 @@ def handle_file(request, course_code, project_pk, file_id):
         wrapper = FileWrapper(open(file_name))
         response = StreamingHttpResponse(wrapper, content_type='text/csv')
         response['Content-Length'] = os.path.getsize(file_name)
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(file.filename)
         os.remove(file_name)
         return response
