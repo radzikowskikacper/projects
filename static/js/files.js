@@ -19,12 +19,11 @@ $(document).ready(function(){
             method : 'DELETE',
             success : function(data){
                 $(this).parent().parent().parent().remove();
-            }
+            },
             headers : {
 	            'X-CSRFToken' : getCookie('csrftoken'),
 	            'Content-Type': content_type
-	        },
-
+	        }
         })
     })
 
