@@ -685,7 +685,7 @@ def load_projects_from_file(request, course_code=None):
 @login_required
 @user_passes_test(lambda x: is_lecturer(x) or is_student(x))
 @ensure_csrf_cookie
-def handle_file(request, project_pk, file_id):
+def handle_file(request, course_code, project_pk, file_id):
     file = File.objects.get(id = file_id,
                             project = Project.objects.get(id = project_pk, lecturer = request.user.lecturer))
 
