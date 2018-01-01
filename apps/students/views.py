@@ -161,6 +161,8 @@ def project_list(request, course_code=None):
 
     for p in projects:
         p.description = markdownify(p.description)
+        if p.status() == 'occupied' and p.team_assigned == request.user.student.team(course):
+            p.files = File.object.filter(project = p, team = p.team)
 
     filter_form = ProjectFilterForm()
     proj_preference = request.user.student.project_preference(course)
@@ -296,6 +298,32 @@ def new_team(request):
     return redirect(reverse('students:team_list',
                             kwargs={'course_code':
                                     request.session['selectedCourse']}))
+
+@login_required
+@user_passes_test(is_student)
+@ensure_csrf_cookie
+def file(request, course_code, project_pk, file_id = None):
+    if request.method == 'GET':
+        file = File.objects.get(id=file_id,
+                                team = request.user.student.team(course_code))
+
+        file_name = '{}_{}'.format(project_pk, file_id)
+
+        with open(file_name, 'wb') as retfile:
+            retfile.write(bytearray(file.filedata))
+
+        wrapper = FileWrapper(open(file_name))
+        response = StreamingHttpResponse(wrapper, content_type='application/force-download')
+        response['Content-Length'] = os.path.getsize(file_name)
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(file.filename)
+        os.remove(file_name)
+        return response
+
+    elif request.method == 'POST':
+        pass
+
+    elif request.method == 'DELETE':
+        pass
 
 @login_required
 @user_passes_test(is_student)
