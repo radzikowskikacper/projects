@@ -4,7 +4,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from django.http import Http404
+from django.http import Http404, StreamingHttpResponse
 from django.utils.translation import ugettext_lazy as _
 from ..courses.models import Course
 from ..teams.models import Team
@@ -17,7 +17,8 @@ from projects_helper.apps.users.forms import ProjectFilterForm
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from markdownx.utils import markdownify
-import logging
+from wsgiref.util import FileWrapper
+import logging, os
 
 
 ## Instantiating module's logger.
@@ -323,7 +324,11 @@ def files(request, course_code, project_pk, file_id = None):
         pass
 
     elif request.method == 'DELETE':
-        pass
+        file = File.objects.get(id=file_id,
+                                team = request.user.student.team(course_code))
+
+        file.delete()
+        return HttpResponse(status=200)
 
 @login_required
 @user_passes_test(is_student)

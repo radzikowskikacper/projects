@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load bootstrap3 %}
+{% load static %}
 
 {# Panel content #}
 
@@ -15,7 +16,7 @@
     </div>
 
     {% if project.team_assigned == team %}
-    <div>>
+    <div>
         <h4>{% trans "Project files" %}:</h4>
         <table class="table table-hover">
             {% for f in project.files %}
@@ -25,6 +26,13 @@
                         <span class="pull-right">
                             <button type="submit" title="{% trans "Download this file" %}" class="btn btn-primary" file_id = '{{ f.id }}' id='file_download_btn'>
                                 {% trans "Download" %}
+                            </button>
+                        </span>
+                    </td>
+                    <td>
+                        <span class="pull-right">
+                            <button type="submit" title="{% trans "Remove this file" %}" class="btn btn-primary" file_id = '{{ f.id }}' id='file_delete_btn'>
+                                {% trans "Remove" %}
                             </button>
                         </span>
                     </td>
@@ -71,4 +79,8 @@
     {% endif %}
 
 </div>
+{% endblock %}
+
+{% block additional_js %}
+    <script src="{% static "js/files.js" %}"></script>
 {% endblock %}

@@ -1,7 +1,5 @@
 $(document).ready(function(){
     $('#file_download_btn').click(function(){
-        //url(r'^projects/(?P<project_pk>\d+)/file/(?P<file_id>\d+)/download$', views.do_download, name="download_file"),
-
 		var hiddenIFrameID = 'hiddenDownloader';
 		iframe = document.getElementById(hiddenIFrameID);
 		if (iframe === null){
@@ -11,5 +9,19 @@ $(document).ready(function(){
 			document.body.appendChild(iframe);
 		}
 		iframe.src = 'file/' + $(this).attr('file_id') + '/';
+    })
+
+    $('#file_delete_btn').click(function(){
+        $.ajax({
+            url : 'file/' + $(this).attr('file_id') + '/',
+            method : 'DELETE',
+            success : function(data){
+                $(this).parent().parent().parent().remove();
+            }
+        })
+    })
+
+    $('#file_upload_btn').click(function(){
+
     })
 })
