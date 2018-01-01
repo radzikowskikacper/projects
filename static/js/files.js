@@ -12,8 +12,8 @@ $(document).ready(function(){
     })
 
     $('#file_delete_btn').click(function(event){
-        $event.preventDefault();
-        
+        event.preventDefault();
+
         $.ajax({
             url : 'file/' + $(this).attr('file_id') + '/',
             method : 'DELETE',
