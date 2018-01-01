@@ -325,7 +325,7 @@ def files(request, course_code, project_pk, file_id = None):
 
     elif request.method == 'DELETE':
         file = File.objects.get(id=file_id,
-                                team = request.user.student.team(course_code))
+                                team = request.user.student.team(Course.objects.get(code = course_code)))
 
         file.delete()
         return HttpResponse(status=200)
