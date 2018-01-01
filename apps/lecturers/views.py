@@ -696,7 +696,7 @@ def handle_file(request, course_code, project_pk, file_id):
             retfile.write(bytearray(file.filedata))
 
         wrapper = FileWrapper(open(file_name))
-        response = StreamingHttpResponse(wrapper)
+        response = StreamingHttpResponse(wrapper, content_type='text/csv')
         response['Content-Length'] = os.path.getsize(file_name)
         os.remove(file_name)
         return response
