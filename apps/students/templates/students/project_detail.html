@@ -20,7 +20,7 @@
         <h4>{% trans "Project files" %}:</h4>
 
         <div>
-            <form style="display: inline-block" id="upload_form" action="{% url 'students:file_handler' selectedCourse.code project.id %}" method="post" enctype="multipart/form-data">
+            <form style="display: inline-block" id="upload_form" action="{% url 'students:file_handler' selectedCourse.code project.id None %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <input type="file" name="fileToUpload" id="fileToUpload">
             <button type="submit" title="{% trans "Upload this file" %}" class="btn btn-primary">
