@@ -21,7 +21,7 @@
 
         <div>
             <input type="file" name="fileToUpload" id="fileToUpload">
-            <button type="submit" title="{% trans "Upload this file" %}" class="btn btn-primary" id='file_upload_btn' project_id='project.id'>
+            <button type="submit" title="{% trans "Upload this file" %}" class="btn btn-primary" id='file_upload_btn' project_id='{{ project.id }}'>
                 {% trans "Upload" %}
                 </button>
         </div>
