@@ -305,20 +305,30 @@ def new_team(request):
 @ensure_csrf_cookie
 def files(request, course_code, project_pk, file_id = None):
     if request.method == 'GET':
-        file = File.objects.get(id=file_id,
-                                team = request.user.student.team(Course.objects.get(code = course_code)))
+        with open('test', 'w') as tt:
+            tt.write('a')
+            file = File.objects.get(id=file_id,
+                                    team = request.user.student.team(Course.objects.get(code = course_code)))
+            tt.write('b')
+            file_name = '{}_{}'.format(project_pk, file_id)
+            tt.write('c')
 
-        file_name = '{}_{}'.format(project_pk, file_id)
+            with open(file_name, 'wb') as retfile:
+                retfile.write(bytearray(file.filedata))
+            tt.write('d')
 
-        with open(file_name, 'wb') as retfile:
-            retfile.write(bytearray(file.filedata))
+            wrapper = FileWrapper(open(file_name))
+            tt.write('e')
+            response = StreamingHttpResponse(wrapper, content_type='application/force-download')
+            tt.write('f')
+            response['Content-Length'] = os.path.getsize(file_name)
+            tt.write('g')
+            response['Content-Disposition'] = 'attachment; filename="{}"'.format(file.filename)
+            tt.write('h')
 
-        wrapper = FileWrapper(open(file_name))
-        response = StreamingHttpResponse(wrapper, content_type='application/force-download')
-        response['Content-Length'] = os.path.getsize(file_name)
-        response['Content-Disposition'] = 'attachment; filename="{}"'.format(file.filename)
-        os.remove(file_name)
-        return response
+            os.remove(file_name)
+            tt.write('i')
+            return response
 
     elif request.method == 'POST':
         if file_id is None:
