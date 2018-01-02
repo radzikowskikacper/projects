@@ -332,29 +332,14 @@ def files(request, course_code, project_pk, file_id = None):
 
                 return HttpResponse(status=200)
             except Exception as e:
-                messages.error(request, _("Cannot upload file '" + str(e) + "'"))
+                messages.error(request, _("Cannot upload file"))
+                return HttpResponse(status=500)
 
     elif request.method == 'DELETE':
         file = File.objects.get(id=file_id,
                                 team = request.user.student.team(Course.objects.get(code = course_code)))
 
         file.delete()
+        messages.success(request, _(
+            "You have succesfully deleted file"))
         return HttpResponse(status=200)
-
-@login_required
-@user_passes_test(is_student)
-@ensure_csrf_cookie
-def upload_file(request):
-    project_id = 0
-    team_id = 0
-
-    filedata = request.FILES['image_path'].read()
-    filename = ''
-    File.objects.create(filedata = filedata, filename = filename, project = project_id, team = team_id)
-
-@login_required
-@user_passes_test(is_student)
-@ensure_csrf_cookie
-def delete_file(request):
-    file_id = 0
-    File.objets.get(id = file_id).delete()
