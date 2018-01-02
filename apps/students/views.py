@@ -314,7 +314,7 @@ def files(request, course_code, project_pk, file_id = None):
             tt.write('c')
 
             with open(file_name, 'wb') as retfile:
-                retfile.write(bytearray(file.filedata))
+                retfile.write(file.filedata)
             tt.write('d')
 
             wrapper = FileWrapper(open(file_name))
