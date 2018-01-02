@@ -323,7 +323,7 @@ def files(request, course_code, project_pk, file_id = None):
     elif request.method == 'POST':
         if file_id is None:
             File.objects.create(team = request.user.student.team(Course.objects.get(code = course_code)),
-                                filename = '', filedata = ''.encode(),
+                                filename = 'a.txt', filedata = request.FILES['fileToUpload'].read(),
                                 project = Project.objects.get(id = project_pk))
             return HttpResponse(status=200)
 
