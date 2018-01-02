@@ -695,7 +695,7 @@ def handle_file(request, course_code, project_pk, file_id):
         with open(file_name, 'wb') as retfile:
             retfile.write(bytearray(file.filedata))
 
-        wrapper = FileWrapper(open(file_name))
+        wrapper = FileWrapper(open(file_name, 'rb'))
         response = StreamingHttpResponse(wrapper, content_type='application/force-download')
         response['Content-Length'] = os.path.getsize(file_name)
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(file.filename)
