@@ -70,16 +70,12 @@ $(document).ready(function(){
             contentType: false,
             cache: false,
             success: function (data) {
-                $("#result").text(data);
+                window.location.reload()
                 console.log("SUCCESS : ", data);
-                $("#btnSubmit").prop("disabled", false);
-
             },
             error: function (e) {
-                $("#result").text(e.responseText);
+                
                 console.log("ERROR : ", e);
-                $("#btnSubmit").prop("disabled", false);
-
             }
         });
 
