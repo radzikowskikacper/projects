@@ -306,28 +306,19 @@ def new_team(request):
 def files(request, course_code, project_pk, file_id = None):
     if request.method == 'GET':
         with open('test', 'w') as tt:
-            tt.write('a')
             file = File.objects.get(id=file_id,
                                     team = request.user.student.team(Course.objects.get(code = course_code)))
-            tt.write('b')
             file_name = '{}_{}'.format(project_pk, file_id)
-            tt.write('c')
 
             with open(file_name, 'wb') as retfile:
                 retfile.write(file.filedata)
-            tt.write('d')
 
-            wrapper = FileWrapper(open(file_name))
-            tt.write('e')
+            wrapper = FileWrapper(open(file_name, 'rb'))
             response = StreamingHttpResponse(wrapper, content_type='application/force-download')
-            tt.write('f')
             response['Content-Length'] = os.path.getsize(file_name)
-            tt.write('g')
             response['Content-Disposition'] = 'attachment; filename="{}"'.format(file.filename)
-            tt.write('h')
 
             os.remove(file_name)
-            tt.write('i')
             return response
 
     elif request.method == 'POST':
