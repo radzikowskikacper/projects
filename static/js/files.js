@@ -39,7 +39,7 @@ $(document).ready(function(){
         open_iframe($(this).closest('table').attr('project_id') + '/file/' + $(this).closest('tr').attr('file_id') + '/');
     })
 
-    $('{name="file_delete_btn"]').click(function(event){
+    $('[name="file_delete_btn"]').click(function(event){
         event.preventDefault();
 
         t = $(this);
