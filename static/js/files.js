@@ -79,5 +79,6 @@ $(document).ready(function(){
             }
         });
 
+        $('div.content').prepend('<div role="alert" class="alert alert-info alert-dismissible"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>File is being uploaded please wait.</div>')
     })
 })
