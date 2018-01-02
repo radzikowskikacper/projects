@@ -57,7 +57,31 @@ $(document).ready(function(){
 
     $('#file_upload_btn').click(function(event){
         event.preventDefault()
-        
-        $('form#upload_form').submit()
+
+        form = $('form#pick_project_form')[0]
+        var data = new FormData(form);
+        var url = $(this).attr('project_id') + '/file/' + $(this).closest('tr').attr('file_id') + '/',
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: url,
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (data) {
+                $("#result").text(data);
+                console.log("SUCCESS : ", data);
+                $("#btnSubmit").prop("disabled", false);
+
+            },
+            error: function (e) {
+                $("#result").text(e.responseText);
+                console.log("ERROR : ", e);
+                $("#btnSubmit").prop("disabled", false);
+
+            }
+        });
+
     })
 })

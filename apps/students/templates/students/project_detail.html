@@ -20,13 +20,10 @@
         <h4>{% trans "Project files" %}:</h4>
 
         <div>
-            <form style="display: inline-block" id="upload_form" action="{% url 'students:file_handler' selectedCourse.code project.id %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
             <input type="file" name="fileToUpload" id="fileToUpload">
-            <button type="submit" title="{% trans "Upload this file" %}" class="btn btn-primary" id='file_upload_btn'>
+            <button type="submit" title="{% trans "Upload this file" %}" class="btn btn-primary" id='file_upload_btn' project_id='project.id'>
                 {% trans "Upload" %}
                 </button>
-            </form>
         </div>
 
         <table class="table table-hover" project_id = '{{ project.id }}'>
@@ -38,10 +35,6 @@
                             <button type="submit" title="{% trans "Download this file" %}" class="btn btn-primary" id='st_file_download_btn'>
                                 {% trans "Download" %}
                             </button>
-                        </span>
-                    </td>
-                    <td>
-                        <span class="pull-right">
                             <button type="submit" title="{% trans "Remove this file" %}" class="btn btn-primary" id='file_delete_btn'>
                                 {% trans "Remove" %}
                             </button>
