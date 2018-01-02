@@ -60,7 +60,7 @@ $(document).ready(function(){
 
         form = $('form#pick_project_form')[0]
         var data = new FormData(form);
-        var url = $(this).attr('project_id') + '/file/' + $(this).closest('tr').attr('file_id') + '/',
+        var url = $(this).attr('project_id') + '/file/'
         $.ajax({
             type: "POST",
             enctype: 'multipart/form-data',
