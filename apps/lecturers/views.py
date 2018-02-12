@@ -37,14 +37,23 @@ def is_lecturer(user):
 @user_passes_test(is_lecturer)
 @ensure_csrf_cookie
 def profile(request):
-    if 'selectedCourse' not in request.session:
-        return redirect(reverse('users:select_course'))
-    course = get_object_or_404(
-        Course, code__iexact=request.session['selectedCourse'])
-    return render(request,
-                  "lecturers/profile.html",
-                  {'selectedCourse': course})
-
+    if request.method == 'GET':
+        if 'selectedCourse' not in request.session:
+            return redirect(reverse('users:select_course'))
+        course = get_object_or_404(
+            Course, code__iexact=request.session['selectedCourse'])
+        request.user.max_students = Lecturer.objects.get(user_id = request.user.id).max_students
+        return render(request,
+                      "lecturers/profile.html",
+                      {'selectedCourse': course})
+    elif request.method == 'POST':
+        l = Lecturer.objects.get(user_id = request.user.id)
+        l.max_students = request.POST.get('max_students')
+        course = get_object_or_404(
+            Course, code__iexact=request.session['selectedCourse'])
+        return render(request,
+                      "lecturers/profile.html",
+                      {'selectedCourse': course})
 
 @login_required
 @user_passes_test(is_lecturer)
