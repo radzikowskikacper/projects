@@ -53,6 +53,10 @@ def profile(request):
         request.user.max_students = Lecturer.objects.get(user_id = request.user.id).max_students
         course = get_object_or_404(
             Course, code__iexact=request.session['selectedCourse'])
+
+        messages.success(request, _(
+            "You have successfully changed preferences"))
+
         return render(request,
                       "lecturers/profile.html",
                       {'selectedCourse': course})
