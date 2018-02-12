@@ -115,7 +115,7 @@
         <form id="assign_all_form" action="{% url 'lecturers:assign_all_teams' project.pk %}" method="post">
             {% csrf_token %}
             <button type="submit" title="{% trans "Assign all team" %}" class="btn btn-primary" form="assign_form">
-                {% bootstrap_icon "pencil" %} {% trans "Assign all team" %}
+                {% bootstrap_icon "pencil" %} {% trans "Assign all teams" %}
             </button>
         </form>
 
