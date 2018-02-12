@@ -486,9 +486,9 @@ def assign_teams_to_projects(request, course_code):
 @login_required
 @user_passes_test(is_lecturer)
 @ensure_csrf_cookie
-def assign_all_teams(request, project_code):
+def assign_all_teams(request, project_pk):
     project = Project.objects.filter(
-        lecturer=request.user.lecturer, id = project_code)
+        lecturer=request.user.lecturer, id = project_pk)
     project.assign_all_teams()
     messages.success(request, _(
             "Assigned all teams"))
