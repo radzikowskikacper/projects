@@ -85,7 +85,7 @@
                     <td> {{ f.filename }} </td>
                     <td>
                         <span class="pull-right">
-                            <button type="submit" title="{% trans "Download this file" %}" class="btn btn-primary" file_id = '{{ f.id }}' name='lec_file_download_btn'>
+                            <button type="submit" title="{% trans "Download this file" %}" class="btn btn-primary" file_id = '{{ f.id }}' <name></name>='lec_file_download_btn'>
                                 {% trans "Download" %}
                             </button>
                         </span>
@@ -111,6 +111,14 @@
                 {% bootstrap_icon "pencil" %} {% trans "Auto assign" %}
             </button>
         </form>
+
+        <form id="assign_all_form" action="{% url 'lecturers:assign_all_teams' project.pk %}" method="post">
+            {% csrf_token %}
+            <button type="submit" title="{% trans "Assign all team" %}" class="btn btn-primary" form="assign_form">
+                {% bootstrap_icon "pencil" %} {% trans "Assign all team" %}
+            </button>
+        </form>
+
     {% elif project.status == "occupied" %}
         <form id="unassign_form" action="{% url 'lecturers:unassign_team' project.pk %}" method="post">
             {% csrf_token %}
