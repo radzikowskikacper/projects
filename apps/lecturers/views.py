@@ -487,11 +487,15 @@ def assign_teams_to_projects(request, course_code):
 @user_passes_test(is_lecturer)
 @ensure_csrf_cookie
 def assign_all_teams(request, project_pk):
-    project = Project.objects.get(
-        lecturer=request.user.lecturer, id = project_pk)
-    project.assign_all_teams()
+    project = get_object_or_404(Project, pk=project_pk, lecturer=request.user.lecturer)
+
+    for t in Team.objects.filter(project_preference = project):
+        project.pk = None
+        project.team_assigned = t;
+        project.save()
+
     messages.success(request, _(
-            "Assigned all teams"))
+            "Assigned {} teams".format(t)))
     return redirect('lecturers:project_list', course_code=request.session['selectedCourse'])
 
 @login_required
