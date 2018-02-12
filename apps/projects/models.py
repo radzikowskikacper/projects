@@ -57,5 +57,11 @@ class Project(models.Model):
                 logger.error("Project cannot be saved. " + str(e))
         return False
 
+    def assign_all_teams(self):
+        for t in self.teams_with_preference().filter(project = self):
+            self.pk = None
+            self.assign_team(t)
+            self.save()
+
     def __str__(self):
         return self.title
