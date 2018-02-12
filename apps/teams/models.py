@@ -6,7 +6,8 @@ class Team(models.Model):
     project_preference = models.ForeignKey('projects.Project',
                                            verbose_name=_('project preference'),
                                            null=True,
-                                           blank=True)
+                                           blank=True,
+                                           on_delete=models.SET_NULL,)
     course = models.ForeignKey('courses.Course',
                                verbose_name=_('course'),
                                null=True,
