@@ -495,7 +495,7 @@ def assign_all_teams(request, project_pk):
         project.save()
 
     messages.success(request, _(
-            "Assigned {} teams".format(t)))
+            "Assigned all teams"))
     return redirect('lecturers:project_list', course_code=request.session['selectedCourse'])
 
 @login_required

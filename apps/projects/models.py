@@ -24,7 +24,7 @@ class Project(models.Model):
                                          blank=True)
 
     class Meta:
-        unique_together = ('lecturer', 'title', 'course')
+#        unique_together = ('lecturer', 'title', 'course')
         ordering = ['lecturer', 'course', 'title']
         verbose_name = _('project')
         verbose_name_plural = _('projects')
@@ -56,12 +56,6 @@ class Project(models.Model):
             except Exception as e:
                 logger.error("Project cannot be saved. " + str(e))
         return False
-
-    def assign_all_teams(self):
-        for t in self.teams_with_preference().filter(project = self):
-            self.pk = None
-            self.assign_team(t)
-            self.save()
 
     def __str__(self):
         return self.title
