@@ -17,6 +17,16 @@
 {% block panel_content %}
     <div class="panel-body">
         {% include "users/profile.html" %}
+        <div>
+            <h4>{% trans "Students limit" %}</h4>
+            <form method="POST">
+                {% csrf_token %}
+            <input name="max_students" id="id_max_students" title="" placeholder="Students limit" required="" maxlength="255" type="text" value="{{ user.max_students }}">
+            <button type="submit" title="{% trans "Create project" %}" class="btn btn-primary">
+                {% trans "Set" %}
+            </button>
+            </form>
+        </div>
     </div>
 {% endblock %}
 
