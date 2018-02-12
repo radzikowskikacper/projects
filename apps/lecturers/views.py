@@ -49,6 +49,8 @@ def profile(request):
     elif request.method == 'POST':
         l = Lecturer.objects.get(user_id = request.user.id)
         l.max_students = request.POST.get('max_students')
+        l.save()
+        request.user.max_students = Lecturer.objects.get(user_id = request.user.id).max_students
         course = get_object_or_404(
             Course, code__iexact=request.session['selectedCourse'])
         return render(request,
