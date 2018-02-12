@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
