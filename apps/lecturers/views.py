@@ -492,9 +492,9 @@ def assign_all_teams(request, project_pk):
     project = get_object_or_404(Project, pk=project_pk, lecturer=request.user.lecturer)
 
     for t in Team.objects.filter(project_preference = project):
-        project.pk = None
         project.team_assigned = t;
         project.save()
+        project.pk = None
 
     messages.success(request, _(
             "Assigned all teams"))
