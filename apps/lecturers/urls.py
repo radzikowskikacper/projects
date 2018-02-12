@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^(?P<course_code>[a-zA-Z0-9]+)/teams/$', views.team_list, name="team_list"),
     url(r'^projects/(?P<project_pk>\d+)/assign_selected/(?P<team_pk>\d+)$', views.assign_selected_team, name="assign_selected_team"),
     url(r'^projects/(?P<project_pk>\d+)/assign/$', views.assign_team, name="assign_team"),
+    url(r'^projects/(?P<project_pk>\d+)/assign_all/$', views.assign_all_teams, name="assign_all_teams"),
     url(r'^projects/(?P<project_pk>\d+)/unassign/$', views.unassign_team, name="unassign_team"),
     url(r'^projects/manage_projects/$', views.manage_projects, name="manage_projects"),
     url(r'^teams/del/$', views.team_delete, name="team_delete"),
