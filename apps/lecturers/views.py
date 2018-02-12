@@ -493,8 +493,9 @@ def assign_all_teams(request, project_pk):
 
     for t in Team.objects.filter(project_preference = project):
         project.team_assigned = t;
-        t.project_preference = project
         project.save()
+        t.project_preference = project
+        t.save()
         project.pk = None
 
     messages.success(request, _(
