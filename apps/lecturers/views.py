@@ -493,6 +493,7 @@ def assign_all_teams(request, project_pk):
 
     for t in Team.objects.filter(project_preference = project):
         project.team_assigned = t;
+        t.project_preference = project
         project.save()
         project.pk = None
 
