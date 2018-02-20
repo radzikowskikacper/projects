@@ -19,7 +19,7 @@ from django.template.loader import render_to_string
 from markdownx.utils import markdownify
 from wsgiref.util import FileWrapper
 import logging, os
-
+from config_custom import MAX_FILE_SIZE, MAX_FILE_UPLOADS
 
 ## Instantiating module's logger.
 logger = logging.getLogger('projects_helper.apps.lecturers.views')
@@ -324,13 +324,25 @@ def files(request, course_code, project_pk, file_id = None):
     elif request.method == 'POST':
         if file_id is None:
             try:
+                files = File.objects.filter(team=request.user.student.team(Course.objects.get(code=course_code)),
+                                            project = Project.objets.get(id = project_pk))
+
+                if len(files) >= MAX_FILE_UPLOADS:
+                    messages.error(request, _("Too many files uploaded for this team [limit {} files]".format(MAX_FILE_UPLOADS)))
+                    return HttpResponse(status=500)
+
+                if request.FILES['fileToUpload'].size > MAX_FILE_SIZE * 1024 * 1024:
+                    messages.error(request, _("File is too big [limit {} MB]".format(MAX_FILE_SIZE)))
+                    return HttpResponse(status=500)
+
                 File.objects.create(team = request.user.student.team(Course.objects.get(code = course_code)),
-                                    filename = request.FILES['fileToUpload'].name, filedata = request.FILES['fileToUpload'].read(),
-                                    project = Project.objects.get(id = project_pk))
+                                        filename = request.FILES['fileToUpload'].name, filedata = request.FILES['fileToUpload'].read(),
+                                        project = Project.objects.get(id = project_pk))
                 messages.success(request, _(
-                        "You have succesfully uploaded file"))
+                            "You have succesfully uploaded file"))
 
                 return HttpResponse(status=200)
+
             except Exception as e:
                 messages.error(request, _("Cannot upload file"))
                 return HttpResponse(status=500)
