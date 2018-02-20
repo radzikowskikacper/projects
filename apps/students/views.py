@@ -325,7 +325,7 @@ def files(request, course_code, project_pk, file_id = None):
         if file_id is None:
             try:
                 files = File.objects.filter(team=request.user.student.team(Course.objects.get(code=course_code)),
-                                            project = Project.objetcs.get(id = project_pk))
+                                            project = Project.objects.get(id = project_pk))
 
                 if len(files) >= MAX_FILE_UPLOADS:
                     messages.error(request, _("Too many files uploaded for this team [limit {} files]".format(MAX_FILE_UPLOADS)))
