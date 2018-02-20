@@ -174,7 +174,9 @@ def project_list(request, course_code=None):
                            "filterForm": filter_form,
                            "team": request.user.student.team(course),
                            "project_picked": proj_preference,
-                           "selectedCourse": course})
+                           "selectedCourse": course,
+                           "nlimit" : MAX_FILE_UPLOADS,
+                           "slimit": MAX_FILE_SIZE})
 
 
 @login_required

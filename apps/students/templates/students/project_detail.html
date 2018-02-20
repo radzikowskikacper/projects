@@ -17,7 +17,7 @@
 
     {% if project.team_assigned == team %}
     <div>
-        <h4>{% trans "Project files" %}:</h4>
+        <h4>{% trans "Project files" %} [ Limit {{ nlimit }} files, {{ slimit }} MB each] :</h4>
 
         <div>
             <input type="file" name="fileToUpload" id="fileToUpload">
